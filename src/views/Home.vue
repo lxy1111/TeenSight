@@ -352,4 +352,14 @@
 				}
 			}
 		}
+	.el-submenu__title i {
+		color: #909399;
+		width: 1rem;
+	}
+	.el-submenu [class^=el-icon-] {
+		vertical-align: middle;
+		margin-right: 9px;
+		width: 1rem !important;
+		text-align: center;
+	}
 </style>

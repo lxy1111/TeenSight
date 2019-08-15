@@ -370,7 +370,9 @@
   .Style{
     margin-left: 0px;
     padding: 10px;
-    border: 1px solid #d1dbe5;
+    padding-left: 0;
+    padding-right: 0;
+    border: 0px solid #d1dbe5;
     border-radius: 20px;
     background-color: #fff;
     overflow: hidden;

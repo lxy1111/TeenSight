@@ -8,37 +8,58 @@
         </el-tabs>
         <!--工具条-->
         <div class="retrieval  criteria Style">
-            <el-form :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
-                <el-form-item label="姓名" prop="name">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+            <el-form style="margin-top: 2rem;" :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
+                <el-form-item>
+                    <el-col :span="8" label="姓名" prop="name">
+                        <span style="margin-right: 1rem">姓名</span>
+                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    </el-col>
+                    <el-col :span="8" label="学号" prop="name">
+                        <span style="margin-right: 1rem">学号</span>
+                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    </el-col>
+                    <el-col :span="8" label="性别">
+                        <span style="margin-right: 1rem">性别</span>
+                        <el-radio-group v-model="editForm.sex">
+                            <el-radio class="radio" :label="1">男</el-radio>
+                            <el-radio class="radio" :label="0">女</el-radio>
+                        </el-radio-group>
+                    </el-col>
                 </el-form-item>
-                <el-form-item label="学号" prop="name">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+
+                <el-form-item>
+                    <el-col :span="8" label="年级-班级">
+                        <span style="margin-right: 1rem">年级-班级</span>
+                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    </el-col>
+                    <el-col :span="8" label="身份证号">
+                        <span style="margin-right: 1rem">身份证号</span>
+                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    </el-col>
                 </el-form-item>
-                <el-form-item label="性别">
-                    <el-radio-group v-model="editForm.sex">
-                        <el-radio class="radio" :label="1">男</el-radio>
-                        <el-radio class="radio" :label="0">女</el-radio>
-                    </el-radio-group>
+
+                <el-form-item>
+                    <el-col :span="8" label="家长姓名">
+                        <span style="margin-right: 1rem">家长姓名</span>
+                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    </el-col>
+                    <el-col :span="8" label="家长手机号">
+                        <span style="margin-right: 1rem">家长手机号</span>
+                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    </el-col>
                 </el-form-item>
-                <el-form-item label="年级-班级">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+
+                <el-form-item>
+                    <el-col :span="8" label="身高（厘米）">
+                        <span style="margin-right: 1rem">家长姓名</span>
+                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    </el-col>
+                    <el-col :span="8" label="体重（kg）">
+                        <span style="margin-right: 1rem">体重（kg）</span>
+                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    </el-col>
                 </el-form-item>
-                <el-form-item label="身份证号">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="家长姓名">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="家长手机号">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="身高（厘米）">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="体重（kg）">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                </el-form-item>
+
             </el-form>
             <div slot="footer" align="center" class="dialog-footer">
                 <el-button @click.native="editFormVisible = false">返回</el-button>
@@ -268,7 +289,7 @@
 
 </script>
 
-<style scoped>
+<style>
     .bread-title {
         margin-bottom: 20px;
         margin-left: 20px;
@@ -276,12 +297,49 @@
     .Style{
         margin-left: 0px;
         padding: 10px;
-        border: 1px solid #d1dbe5;
+        padding-left: 0;
+        padding-right: 0;
+        border: 0px solid #d1dbe5;
         border-radius: 20px;
         background-color: #fff;
         overflow: hidden;
 
     }
-
-
+    .el-tabs--card>.el-tabs__header {
+        border-bottom: 0px solid #E4E7ED !important;
+    }
+    .el-tabs__header {
+        padding: 0;
+        position: relative;
+        margin: 0px 0 0px;
+    }
+    .el-tabs--card>.el-tabs__header .el-tabs__nav {
+        border: 0px solid #E4E7ED;
+        border-bottom: none;
+        border-radius: 4px 4px 0 0;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .Style[data-v-45538424] {
+        margin-left: 0px;
+        padding: 10px;
+        border: 0px solid #d1dbe5 !important;
+        border-radius: 20px;
+        background-color: #fff;
+        overflow: hidden;
+    }
+    .el-form-item__label {
+        text-align: center !important;
+        vertical-align: middle;
+        float: left;
+        font-size: 14px;
+        color: #606266;
+        line-height: 40px;
+        padding: 0 0px 0 0;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .el-button {
+        border-radius: 2rem;
+    }
 </style>

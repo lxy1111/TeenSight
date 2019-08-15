@@ -53,7 +53,7 @@
         <el-table
                 ref="multipleTable"
                 :data="teachers"
-                border
+                stripe="true"
                 tooltip-effect="dark"
                 style="width: 100%"
                 @selection-change="">
@@ -82,8 +82,8 @@
                   label="操作"
                   show-overflow-tooltip align="center">
             <template slot-scope="scope">
-            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-button>
-            <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+              <span style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">详情</span>
+              <span style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleDel(scope.$index, scope.row)">删除</span>
             </template>
           </el-table-column>
         </el-table>
@@ -98,24 +98,40 @@
     <!--编辑界面-->
     <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="学校名称" prop="name">
-          <el-input v-model="editForm.name" auto-complete="off"></el-input>
+
+        <el-form-item>
+          <el-col :span="12">
+            <span style="margin-right: 1rem;">学校名称</span>
+            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+          </el-col>
+          <el-col :span="12">
+            <span style="margin-right: 1rem;">年级班号</span>
+            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+          </el-col>
         </el-form-item>
-        <el-form-item label="年级班号">
-          <el-input v-model="editForm.name" auto-complete="off"></el-input>
+
+        <el-form-item>
+          <el-col :span="12">
+            <span style="margin-right: 1rem;">负责人</span>
+            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+          </el-col>
+          <el-col :span="12">
+            <span style="margin-right: 1rem;">联系电话</span>
+            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+          </el-col>
         </el-form-item>
-        <el-form-item label="负责人">
-          <el-input v-model="editForm.name" auto-complete="off"></el-input>
+
+        <el-form-item>
+          <el-col :span="12">
+            <span style="margin-right: 1rem;">登陆账号</span>
+            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+          </el-col>
+          <el-col :span="12">
+            <span style="margin-right: 1rem;">登陆密码</span>
+            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+          </el-col>
         </el-form-item>
-        <el-form-item label="联系电话">
-          <el-input v-model="editForm.name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="登陆账号">
-          <el-input v-model="editForm.name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="登陆密码">
-          <el-input v-model="editForm.name" auto-complete="off"></el-input>
-        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="editFormVisible = false">取消</el-button>
@@ -414,7 +430,9 @@
   .Style{
     margin-left: 0px;
     padding: 10px;
-    border: 1px solid #d1dbe5;
+    padding-left: 0;
+    padding-right: 0;
+    border: 0px solid #d1dbe5;
     border-radius: 20px;
     background-color: #fff;
     overflow: hidden;

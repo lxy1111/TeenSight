@@ -2,7 +2,7 @@
   <section>
     <!--工具条-->
     <div class="retrieval  criteria Style">
-      <el-form :inline="true" :model="filters">
+      <el-form style="margin-left: 2rem;" :inline="true" :model="filters">
         <el-form-item label="姓名"></el-form-item>
         <el-form-item>
           <el-select
@@ -30,7 +30,7 @@
                   filterable
                   remote
                   reserve-keyword
-                  placeholder="搜索学校姓名"
+                  placeholder="搜索学校名称"
                   :remote-method="remoteMethod"
                   :loading="loading">
             <el-option
@@ -62,19 +62,31 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item><el-button type="primary" round @click="Search">重置</el-button></el-form-item>
+        <el-form-item>
+          <el-button class="reset-student" type="primary" round @click="Search">
+            <span style="font-size: 0.9rem;font-family: PingFang SC;">
+              重置
+            </span>
+          </el-button>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button class="reset-student" type="primary" round @click="Search">
+            <span style="font-size: 0.9rem;font-family: PingFang SC;">
+              添加学生
+            </span>
+          </el-button>
+        </el-form-item>
+
       </el-form>
 
-
-
-      <br>
       <div class="retrieval  criteria Style">
         <el-table
                 ref="multipleTable"
                 :data="students"
-                border
+                stripe="true"
+                highlight-current-row="true"
                 tooltip-effect="dark"
-                style="width: 100%"
                 @selection-change="handleSelectionChange">
           <el-table-column
                   prop="stuName"
@@ -112,8 +124,8 @@
                   label="操作"
                   show-overflow-tooltip align="center">
             <template scope="scope">
-            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-button>
-            <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+            <span style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">详情</span>
+            <span style="color: #7980FA;"size="small" @click="handleDel(scope.$index, scope.row)">删除</span>
             </template>
           </el-table-column>
         </el-table>
@@ -125,8 +137,8 @@
     <!--工具条-->
 
     <!--编辑界面-->
-    <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
-      <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+    <el-dialog title="编辑" style="border: 0;" v-model="editFormVisible" :close-on-click-modal="false">
+      <el-form style="border: 0;" :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
         <el-form-item label="姓名" prop="name">
           <el-input v-model="editForm.name" auto-complete="off"></el-input>
         </el-form-item>
@@ -190,7 +202,56 @@
   export default {
     data() {
       return {
-       students:[],
+       students:[{
+         classNo: 1,
+         createTime: "2019-08-11 08:21:11",
+         gradeNo: 1,
+         id: 1,
+         number: "10152510229",
+         schoolName: "ecnu",
+         sex: 0,
+         stuName: "李昂"
+       },
+         {
+           classNo: 1,
+           createTime: "2019-08-11 08:21:11",
+           gradeNo: 1,
+           id: 1,
+           number: "10152510229",
+           schoolName: "ecnu",
+           sex: 0,
+           stuName: "李昂"
+         },
+         {
+           classNo: 1,
+           createTime: "2019-08-11 08:21:11",
+           gradeNo: 1,
+           id: 1,
+           number: "10152510229",
+           schoolName: "ecnu",
+           sex: 0,
+           stuName: "李昂"
+         },
+         {
+           classNo: 1,
+           createTime: "2019-08-11 08:21:11",
+           gradeNo: 1,
+           id: 1,
+           number: "10152510229",
+           schoolName: "ecnu",
+           sex: 0,
+           stuName: "李昂"
+         },
+         {
+           classNo: 1,
+           createTime: "2019-08-11 08:21:11",
+           gradeNo: 1,
+           id: 1,
+           number: "10152510229",
+           schoolName: "ecnu",
+           sex: 0,
+           stuName: "李昂"
+         }],
         filters: {
           name: ''
         },
@@ -424,21 +485,128 @@
     },
     mounted() {
      // this.getUsers();
-    this.getStudentsList()
+      //this.getStudentsList();
     }
   }
 
 </script>
 
-<style scoped>
+<style>
   .Style{
     margin-left: 0px;
-    padding: 10px;
-    border: 1px solid #d1dbe5;
-    border-radius: 20px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 0px solid #d1dbe5;
+    border-radius: 1rem;
     background-color: #fff;
     overflow: hidden;
 
+  }
+  .container .main .content-container .content-wrapper[data-v-88dff836] {
+    background-color: #fff;
+    box-sizing: border-box;
+    border-radius: 1rem;
+    border: 0;
+    box-shadow: 0 0 1rem lightgrey;
+    margin-top: 1rem;
+  }
+  .container .main .content-container .breadcrumb-container .title[data-v-88dff836] {
+    width: 200px;
+    float: left;
+    color: black;
+    font-size: 1.1rem;
+    font-weight: bold;
+    font-family: PingFang SC;
+  }
+  .el-form el-form__inline{
+    padding-top: 1rem;
+    padding-bottom: 0px;
+    font-family: PingFang SC;
+    margin-left: 2rem !important;
+    padding-right: 1rem;
+  }
+  .el-form-item__label {
+    text-align: right;
+    vertical-align: middle;
+    float: left;
+    font-size: 14px;
+    color: #606266;
+    line-height: 40px;
+    padding: 0 0px 0 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  .el-input {
+    width: 8rem;
+  }
+  .el-input__inner{
+    border-radius: 2rem;
+  }
+  .el-select__input {
+    border: none;
+    outline: 0;
+    padding: 0;
+    margin-left: 15px;
+    color: #666;
+    font-size: 0.85rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    height: 28px;
+    background-color: transparent;
+    font-family: PingFang SC;
+  }
+  .el-input--suffix .el-input__inner {
+    padding-right: 30px;
+    font-family: PingFang SC;
+    font-size: 0.85rem;
+  }
+  .el-input--small .el-input__icon {
+     line-height: 0rem;
+  }
+  .el-select .el-input .el-select__caret {
+    color: #7980FA;
+    font-size: 1rem;
+    -webkit-transition: -webkit-transform .3s;
+    transition: -webkit-transform .3s;
+    transition: transform .3s;
+    transition: transform .3s,-webkit-transform .3s;
+    -webkit-transform: rotateZ(180deg);
+    transform: rotateZ(180deg);
+    cursor: pointer;
+  }
+  .el-button--primary {
+    color: #FFF;
+    background-color: #7980FA;
+    border-color: #7980FA;
+    font-family: PingFang SC;
+    border: 0;
+    box-shadow: 0 2px 10px #7980FA;
+  }
+  .el-tabs--card>.el-tabs__header {
+    border-bottom: 0px solid #E4E7ED !important;
+  }
+  .el-tabs__header {
+    padding: 0;
+    position: relative;
+    margin: 0px 0 0px;
+  }
+  .el-tabs--card>.el-tabs__header .el-tabs__nav {
+    border: 0px solid #E4E7ED;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  .Style[data-v-45538424] {
+    margin-left: 0px;
+    padding: 10px;
+    border: 0px solid #d1dbe5 !important;
+    border-radius: 20px;
+    background-color: #fff;
+    overflow: hidden;
   }
 
 </style>

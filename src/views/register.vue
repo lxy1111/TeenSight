@@ -1,6 +1,11 @@
 <template >
-    <el-form style="border-radius: 1rem;" :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-form style="border-radius: 1rem; margin-bottom: 0;
+                    position: absolute; top: 50%; margin-top: 0;
+                    transform: translate(0,-50%); height: 65%;
+                    margin-left: 0; left: 65%; width: 20%"
+             :model="ruleForm2" :rules="rules2" ref="ruleForm2"
+             label-position="left" label-width="0px" class="demo-ruleForm login-container">
+        <el-tabs style="margin-bottom: 2rem;" v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="填写账户信息" name="first"></el-tab-pane>
             <el-tab-pane label="登记学校信息" name="second"></el-tab-pane>
         </el-tabs>
@@ -24,7 +29,7 @@
                        :loading="logining">下一步</el-button>
             <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
         </el-form-item>
-        <el-form-item style="text-align: right">
+        <el-form-item style="text-align: right; margin-top: -1.5rem;">
             <el-link disabled style="color: #B8B8B8;">已有账号？</el-link>
             <el-link style="color: #787FFA;" @click="showlogin" >快捷登录</el-link>
         </el-form-item>
@@ -119,7 +124,7 @@
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     .login-input{
         .el-input__inner {
             -webkit-appearance: none;
@@ -135,7 +140,7 @@
             height: 40px;
             line-height: 40px;
             outline: 0;
-            padding: 0 15px;
+            padding-left: 2rem;
             -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
             transition: border-color .2s cubic-bezier(.645,.045,.355,1);
             width: 100%;
@@ -201,5 +206,44 @@
         border-bottom: 1px;
         border-right: 1px;
         padding-left: 0.5rem;
+    }
+    .el-tabs--bottom .el-tabs__item.is-bottom:nth-child(2), .el-tabs--bottom .el-tabs__item.is-top:nth-child(2), .el-tabs--top .el-tabs__item.is-bottom:nth-child(2), .el-tabs--top .el-tabs__item.is-top:nth-child(2) {
+        margin-left: 1rem;
+    }
+    .el-tabs--bottom .el-tabs__item.is-bottom:last-child, .el-tabs--bottom .el-tabs__item.is-top:last-child, .el-tabs--top .el-tabs__item.is-bottom:last-child, .el-tabs--top .el-tabs__item.is-top:last-child {
+
+    }
+    .el-tabs__item.is-active {
+        color: #7980FA;
+    }
+    .el-tabs__active-bar {
+        margin-left: 1rem;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        background-color: #7980FA;
+        z-index: 1;
+        -webkit-transition: -webkit-transform .3s cubic-bezier(.645,.045,.355,1);
+        transition: -webkit-transform .3s cubic-bezier(.645,.045,.355,1);
+        transition: transform .3s cubic-bezier(.645,.045,.355,1);
+        transition: transform .3s cubic-bezier(.645,.045,.355,1),-webkit-transform .3s cubic-bezier(.645,.045,.355,1);
+        list-style: none;
+    }
+    el-tabs__active-bar is-top {
+        width: 50%;
+    }
+    .el-tabs__item:hover {
+        color: #7980FA;
+        cursor: pointer;
+    }
+    .el-tabs__item.is-active {
+        color: #7980FA;
+    }
+    .el-form-item {
+        margin-bottom: 1rem;
+    }
+    .el-tabs el-tabs--top {
+        margin-bottom: 5rem !important;
     }
 </style>
