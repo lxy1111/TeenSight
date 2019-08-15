@@ -2,7 +2,8 @@ import babelpolyfill from 'babel-polyfill'
 import Vue from 'vue'
 import App from './App'
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-default/index.css'
+import 'element-ui/lib/theme-chalk/index.css'
+import VDistpicker from 'v-distpicker'
 //import './assets/theme/theme-green/index.css'
 import VueRouter from 'vue-router'
 import store from './vuex/store'
@@ -23,6 +24,7 @@ Vue.use(VueRouter)
 Vue.use(Vuex)
 Vue.use(myCharts)
 Vue.use(VueResource);
+Vue.component('v-distpicker', VDistpicker)
 
 //NProgress.configure({ showSpinner: false });
 
@@ -36,9 +38,10 @@ router.beforeEach((to, from, next) => {
     sessionStorage.removeItem('user');
   }
   let user = JSON.parse(sessionStorage.getItem('user'));
-  if (!user && to.path != '/login') {
+  if (!user && to.path != '/login' && to.path!='/register') {
     next({ path: '/login' })
-  } else {
+  }
+  else {
     next()
   }
 })

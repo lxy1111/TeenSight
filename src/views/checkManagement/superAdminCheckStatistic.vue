@@ -5,13 +5,12 @@
       <el-form :inline="true" :model="filters">
         <el-row type="flex" >
           <el-form-item>
-            <el-select size="small" v-model="form.versionStatus" placeholder="请搜索学校名称">
-              <el-option
-                      v-for="item in versionOptions"
-                      :label="item.label"
-                      :value="item.value">
-              </el-option>
-            </el-select>
+            <el-input  size="small" v-model="input" placeholder="请输入内容">
+
+            </el-input>
+          </el-form-item>
+          <el-form-item>
+         <img src="../../assets/img/search.png" @click="handlesearch">
           </el-form-item>
             <el-form-item prop="planeOnlineDateSecond" label="年级">
               <el-select size="small" v-model="form.versionStatus" placeholder="请选择">
@@ -40,10 +39,11 @@
                 </el-option>
               </el-select>
             </el-form-item>
-          <el-form-item><el-button type="primary" round @click="Search">重置</el-button></el-form-item>
-
+          <el-form-item><el-button type="primary"  round @click="Search">重置</el-button></el-form-item>
         </el-row>
       </el-form>
+    </div>
+    <div :hidden="ishidden" class="retrieval  criteria Style">
       <el-form :model="form" label-width="160px">
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="4" >
@@ -108,7 +108,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="retrieval  criteria Style">
+    <div :hidden="ishidden" class="retrieval  criteria Style">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >学校统计总览</el-breadcrumb-item>
       </el-breadcrumb>
@@ -204,7 +204,7 @@
         </el-row>
       </el-form>
     </div>
-    <div class="retrieval  criteria Style">
+    <div :hidden="ishidden" class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >年级统计</el-breadcrumb-item>
@@ -223,7 +223,7 @@
       </el-form>
     </div>
 
-    <div class="retrieval  criteria Style">
+    <div :hidden="ishidden"class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >班级统计</el-breadcrumb-item>
@@ -287,7 +287,7 @@
         </el-row>
       </el-form>
     </div>
-    <div class="retrieval  criteria Style">
+    <div :hidden="ishidden" class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >性别统计</el-breadcrumb-item>
@@ -315,7 +315,7 @@
         </el-row>
       </el-form>
     </div>
-    <div class="retrieval  criteria Style">
+    <div :hidden="ishidden"  class="retrieval  criteria Style">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >一年级</el-breadcrumb-item>
       </el-breadcrumb>
@@ -382,6 +382,7 @@
   export default {
     data() {
       return {
+        ishidden:true,
         filters: {
           name: ''
         },
@@ -568,6 +569,9 @@
         }).catch(() => {
 
         });
+      },
+      handlesearch(){
+          this.ishidden=false;
       },
       //显示编辑界面
       handleEdit: function (index, row) {

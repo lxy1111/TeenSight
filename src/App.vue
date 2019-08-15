@@ -1,5 +1,5 @@
 <template>
-	<div id="app">
+	<div id="app" :style="backgroundDiv">
 		<transition name="fade"
 		            mode="out-in">
 			<router-view></router-view>
@@ -10,6 +10,15 @@
 <script>
 export default {
 	name: 'app',
+	data() {
+
+		return {
+			backgroundDiv: {
+				backgroundImage: 'url(' + require('./assets/img/background.jpg') + ')',
+				backgroundSize: '100% 100%'
+			}
+		}
+	},
 	components: {
 	}
 }
@@ -27,6 +36,7 @@ body {
 	font-size: 14px;
 	-webkit-font-smoothing: antialiased;
 }
+
 
 #app {
 	position: absolute;

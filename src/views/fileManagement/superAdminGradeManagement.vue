@@ -52,37 +52,39 @@
       <div class="retrieval  criteria Style">
         <el-table
                 ref="multipleTable"
-                :data="grades"
+                :data="teachers"
                 border
                 tooltip-effect="dark"
                 style="width: 100%"
-                @selection-change="handleSelectionChange">
+                @selection-change="">
           <el-table-column
-                  prop="address"
+                  prop="classgradeNo"
                   label="年级-班号"
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="address"
+                  prop="school"
                   label="所在学校"
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="address"
+                  prop="teacher"
                   label="负责人"
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="address"
+                  prop="tel"
                   label="联系电话"
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="address"
+                  prop="id"
                   label="操作"
                   show-overflow-tooltip align="center">
+            <template slot-scope="scope">
             <el-button size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-button>
             <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+            </template>
           </el-table-column>
         </el-table>
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
@@ -94,35 +96,35 @@
 
 
     <!--编辑界面-->
-    <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
+    <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="姓名" prop="name">
+        <el-form-item label="学校名称" prop="name">
           <el-input v-model="editForm.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="性别">
-          <el-radio-group v-model="editForm.sex">
-            <el-radio class="radio" :label="1">男</el-radio>
-            <el-radio class="radio" :label="0">女</el-radio>
-          </el-radio-group>
+        <el-form-item label="年级班号">
+          <el-input v-model="editForm.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="editForm.age" :min="0" :max="200"></el-input-number>
+        <el-form-item label="负责人">
+          <el-input v-model="editForm.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="生日">
-          <el-date-picker type="date" placeholder="选择日期" v-model="editForm.birth"></el-date-picker>
+        <el-form-item label="联系电话">
+          <el-input v-model="editForm.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="地址">
-          <el-input type="textarea" v-model="editForm.addr"></el-input>
+        <el-form-item label="登陆账号">
+          <el-input v-model="editForm.name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="登陆密码">
+          <el-input v-model="editForm.name" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="editFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+        <el-button type="primary" @click.native="editSubmit" :loading="editLoading">保存</el-button>
       </div>
     </el-dialog>
 
     <!--新增界面-->
-    <el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
+    <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
         <el-form-item label="姓名" prop="name">
           <el-input v-model="addForm.name" auto-complete="off"></el-input>
@@ -154,40 +156,12 @@
 <script>
   import util from '../../common/js/util'
   //import NProgress from 'nprogress'
-  import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser } from '../../api/api';
+  import { getUserListPage,getTeachersList, removeUser, batchRemoveUser, editUser, addUser } from '../../api/api';
 
   export default {
     data() {
       return {
-        tableData3: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
+        teachers:[],
         filters: {
           name: ''
         },
@@ -269,6 +243,38 @@
       handleCurrentChange(val) {
         this.page = val;
         this.getUsers();
+      },
+      getTeachersList(){
+        let para = {
+          page: this.page,
+          pageSize: 10
+        };
+        this.listLoading = true;
+        console.log("hihihi");
+        // 发送请求:将数据返回到一个回到函数中
+        // 并且响应成功以后会执行then方法中的回调函数
+
+
+        getTeachersList(para)
+                .then(res => {
+                  console.log("login get success");
+                  console.log(res);
+                  let reslist=res.data.result.items;
+                  this.total=res.data.result.items.length;
+                  for(let i=0;i<this.total;i++){
+                    let teacher={
+                      classgradeNo:reslist[i].gradeNo+"-"+reslist[i].classNo,
+                      school:reslist[i].schoolName,
+                      teacher:reslist[i].teacherName,
+                      tel:reslist[i].teacherPhone
+                    }
+                    this.teachers.push(teacher);
+                  }
+                  console.log(this.teachers);
+                })
+                .catch(failResponse => {
+                  console.log("login get fail");
+                });
       },
       //获取用户列表
       getUsers() {
@@ -397,7 +403,8 @@
       }
     },
     mounted() {
-      this.getUsers();
+     // this.getUsers();
+     this.getTeachersList();
     }
   }
 

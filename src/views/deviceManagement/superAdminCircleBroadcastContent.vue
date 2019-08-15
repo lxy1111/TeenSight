@@ -20,38 +20,33 @@
         </el-table-column>
         <el-table-column
                 prop="address"
-                label="设备ID"
+                label="排序次序"
                 show-overflow-tooltip align="center">
         </el-table-column>
         <el-table-column
                 prop="address"
-                label="是否为本机构设备"
-                show-overflow-tooltip align="center">
-        </el-table-column>
-        <el-table-column
-                prop="address"
-                label="是否共享"
-                show-overflow-tooltip align="center">
-        </el-table-column>
-        <el-table-column
-                prop="address"
-                label="位置"
+                label="备注"
                 show-overflow-tooltip align="center">
         </el-table-column>
         <el-table-column
                 prop="address"
                 label="操作"
                 show-overflow-tooltip align="center">
+          <template slot-scope="scope">
+            <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
+        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+        </el-pagination>
     </div>
 
     <!--工具条-->
-    <el-col :span="24" class="toolbar">
-      <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
-      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
-      </el-pagination>
-    </el-col>
+<!--    <el-col :span="24" class="toolbar">-->
+<!--      <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>-->
+<!--      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">-->
+<!--      </el-pagination>-->
+<!--    </el-col>-->
 
     <!--编辑界面-->
     <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">

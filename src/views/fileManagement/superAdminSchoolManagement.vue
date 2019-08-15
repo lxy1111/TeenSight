@@ -31,7 +31,7 @@
                 border
                 tooltip-effect="dark"
                 style="width: 100%"
-                @selection-change="handleSelectionChange">
+                @selection-change="">
           <el-table-column
                   prop="schoolName"
                   label="学校名称"
@@ -49,7 +49,7 @@
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="city"
+                  prop="location"
                   label="学校位置"
                   show-overflow-tooltip align="center">
           </el-table-column>
@@ -57,8 +57,8 @@
                   prop="id"
                   label="操作"
                   show-overflow-tooltip align="center">
-            <template scope="scope">
-          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-button>
+            <template slot-scope="scope">
+          <el-button size="small" @click="handleEdit(scope.row)">详情</el-button>
           <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -71,7 +71,7 @@
     <!--工具条-->
 
     <!--编辑界面-->
-    <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
+    <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
         <el-form-item label="学校名称" prop="name">
           <el-input v-model="editForm.schoolName" auto-complete="off"></el-input>
@@ -177,7 +177,7 @@
           schoolName:'',
           schoolType:'',
           schoolAccount:'',
-          city:'',
+          location:'',
           id:''
         },
 
@@ -234,8 +234,17 @@
                 .then(res => {
                   console.log("login get success");
                   console.log(res);
-                  this.schools=res.data.result.items;
+                  let schoolslist=res.data.result.items;
                   this.total=res.data.result.items.length;
+                  for(let i=0;i<this.total;i++){
+                     let school={
+                        schoolName: schoolslist[i].schoolName,
+                        schoolType: schoolslist[i].schoolType,
+                        schoolAccount: schoolslist[i].schoolAccount,
+                        location: schoolslist[i].province+schoolslist[i].city+schoolslist[i].county
+                     }
+                     this.schools.push(school);
+                  }
                   console.log(this.schools[0].city);
                   //this.myInfo = successResponse.data.datas[0];
                 })
@@ -281,7 +290,7 @@
         });
       },
       //显示编辑界面
-      handleEdit: function (index, row) {
+      handleEdit: function (row) {
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
       },
@@ -379,6 +388,11 @@
 </script>
 
 <style scoped>
+  .el-button--primary {
+    color: #FFF;
+    background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
+    border-color: #6C73FA;
+  }
   .Style{
     margin-left: 0px;
     padding: 10px;

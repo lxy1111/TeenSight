@@ -8,55 +8,42 @@
         </el-tabs>
         <!--工具条-->
         <div class="retrieval  criteria Style">
-            <el-row type="flex" >
-                <el-form :inline="true" :model="filters">
-                    <el-form-item label="搜索学生姓名">
-                    </el-form-item>
-                    <el-form-item>
-                        <el-select
-                                v-model="value"
-                                multiple
-                                filterable
-                                remote
-                                reserve-keyword
-                                placeholder="输入学生姓名搜索"
-                                :remote-method="remoteMethod"
-                                :loading="loading">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-            </el-row>
-            <el-row type="flex" >
-                <el-form :inline="true" :model="filters">
-                    <el-form-item label="采集日期">
-                    </el-form-item>
-                </el-form>
-            </el-row>
-            <el-row type="flex" >
-                <el-form :inline="true" :model="filters">
-                    <el-form-item label="第一次">
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="第二次">
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="第三次">
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item>
-                </el-form>
-            </el-row>
+            <el-form :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
+                <el-form-item label="姓名" prop="name">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="学号" prop="name">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="性别">
+                    <el-radio-group v-model="editForm.sex">
+                        <el-radio class="radio" :label="1">男</el-radio>
+                        <el-radio class="radio" :label="0">女</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="年级-班级">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="身份证号">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="家长姓名">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="家长手机号">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="身高（厘米）">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="体重（kg）">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" align="center" class="dialog-footer">
+                <el-button @click.native="editFormVisible = false">返回</el-button>
+                <el-button type="primary" @click.native="editSubmit" :loading="editLoading">保存</el-button>
+            </div>
 
         </div>
     </section>

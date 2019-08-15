@@ -1,4 +1,4 @@
-import Login from './views/Login.vue'
+import login from './views/Login.vue'
 import NotFound from './views/404.vue'
 import Home from './views/Home.vue'
 import Main from './views/Main.vue'
@@ -21,14 +21,21 @@ import superAdminCircleBroadcastContent from "./views/deviceManagement/superAdmi
 import superAdminBroadcastContent from "./views/deviceManagement/superAdminBroadcastContent";
 import superAdminMessageList from "./views/messageManagement/superAdminMessageList";
 import superAdminStudentDetail from "./views/fileManagement/superAdminStudentDetail";
+import register from "./views/register";
 
 let routes = [
     {
-    path: '/login',
-        component: Login,
-        name: '',
+        path: '/login',
+        component: login,
+        name: 'login',
         hidden: true
-},
+  },
+    {
+        path: '/register',
+        component: register,
+        name: 'register',
+        hidden: true
+    },
 {
     path: '/404',
         component: NotFound,
@@ -57,8 +64,8 @@ let routes = [
     name: '普查管理',
     iconCls: 'fa fa-id-card-o',
     children: [
-    { path: '/superAdminCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' },
-    { path: '/superAdminCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
+    { path: '/superAdminCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' }
+    // { path: '/superAdminCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
 ]
 },
 {
