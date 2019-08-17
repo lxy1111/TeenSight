@@ -5,7 +5,7 @@
                     margin-left: 0; left: 65%; width: 20%"
              :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left"
              label-width="0px" class="demo-ruleForm login-container">
-        <h3 class="title">管理员登录</h3>
+        <h3 class="title">登录</h3>
         <el-form-item prop="account">
           <el-input class="login-input" style="border-radius: 2rem !important;" prefix-icon="el-icon-user" type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="账号"></el-input>
         </el-form-item>
@@ -36,6 +36,7 @@
 
 <script>
   import { requestLogin } from '../api/api';
+  import globalvariable from '../global'
   //import NProgress from 'nprogress'
   export default {
     name:"login",
@@ -87,10 +88,22 @@
               } else {
                 let user={
                   name: this.ruleForm2.account,
-                  avatar:this.ruleForm2.checkPass
+                  avatar:this.ruleForm2.checkPass,
+                    type:data.result.type
                 }
                 sessionStorage.setItem('user', JSON.stringify(user));
-                this.$router.push({path: '/superAdminInstituteManagement'});
+                let type=data.result.type;
+                console.log(type);
+                if(type==0) {
+                    globalvariable.setHideSuperAdmin(true);
+                    console.log(globalvariable.hideSuperAdmin);
+                    this.$router.push({path: '/superAdmin/superAdminInstituteManagement'});
+                }else if(type==1){
+                    this.$router.push({path: '/institute/instituteSchoolManagement'});
+                }
+                else if(type==3){
+                    this.$router.push({path: '/school/schoolSchoolManagement'});
+                }
               }
             });
           } else {

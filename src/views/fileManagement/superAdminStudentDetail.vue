@@ -63,7 +63,7 @@
             </el-form>
             <div slot="footer" align="center" class="dialog-footer">
                 <el-button @click.native="editFormVisible = false">返回</el-button>
-                <el-button type="primary" @click.native="editSubmit" :loading="editLoading">保存</el-button>
+                <el-button type="primary" v-if="!hideedit" @click.native="editSubmit" :loading="editLoading">保存</el-button>
             </div>
 
         </div>
@@ -78,6 +78,8 @@
     export default {
         data() {
             return {
+                path:'',
+                hideedit:false,
                 activeName: 'stuinfo',
                 filters: {
                     name: ''
@@ -158,6 +160,25 @@
 
             }
         },
+        mounted(){
+            var user = sessionStorage.getItem('user');
+            if (user) {
+                user = JSON.parse(user);
+                if(user.type==0){
+                    this.path='superAdmin';
+                    this.hideedit=false;
+                }
+                else if(user.type==1){
+                    this.path='institute';
+                    this.hideedit=true;
+                }
+                else if(user.type==2){
+                    this.path='school';
+                    this.hideedit=true;
+                }
+            }
+
+        },
         methods: {
             //性别显示转换
 
@@ -166,7 +187,7 @@
 
                 }
                 if(tab.name=='sightdata'){
-                    this.$router.push({ path: '/superAdminSightData' });
+                    this.$router.push({ path: '/'+this.path+'/'+this.path+'SightData' });
                 }
                 if(tab.name=='history'){
 
@@ -279,6 +300,8 @@
                     }
                 });
             },
+
+
             selsChange: function (sels) {
                 this.sels = sels;
             },

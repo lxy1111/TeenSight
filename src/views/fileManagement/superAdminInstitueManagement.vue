@@ -53,9 +53,9 @@
                   label="操作"
                   show-overflow-tooltip align="center">
             <template slot-scope="scope">
-              <span style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleShow(scope.$index, scope.row)">详情</span>
-              <span style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">修改</span>
-              <span style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleDel(scope.$index, scope.row)">删除</span>
+              <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleShow(scope.$index, scope.row)">详情</el-link>
+              <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleShow(scope.$index, scope.row)">修改</el-link>
+              <el-link style="color: #7980FA; margin-right: 1rem;" size="small"  @click="handleDel(scope.$index, scope.row)">删除</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -88,7 +88,7 @@
           </el-col>
           <el-col :span="12">
             <span style="margin-right: 1rem;">所含学校</span>
-            <el-input v-model="editForm.insAccount" auto-complete="off" :disabled="editable"></el-input>
+            <el-input v-model="editForm.schoolList" auto-complete="off" :disabled="editable"></el-input>
           </el-col>
         </el-form-item>
 
@@ -178,7 +178,7 @@
     editUser,
     addUser,
     getInstitutionList,
-    addInstitutes
+    addInstitutes, getInstituteDetail,removeInstitute
   } from '../../api/api';
   import VDistpicker from 'v-distpicker'
   export default {
@@ -187,6 +187,7 @@
     },
     data() {
       return {
+        disabledelete:false,
         editable: true,
         options: [{
           value: '1',
@@ -241,7 +242,9 @@
           mobile: "",
           principal: "",
           province: "",
-          type: ""
+          type: "",
+          schoolList:"",
+          id:''
         },
 
         form:{
@@ -338,15 +341,15 @@
         }).then(() => {
           this.listLoading = true;
           //NProgress.start();
-          let para = { id: row.id };
-          removeUser(para).then((res) => {
+          let para = { codeList: [row.id] };
+          removeInstitute(para).then((res) => {
             this.listLoading = false;
             //NProgress.done();
             this.$message({
               message: '删除成功',
               type: 'success'
             });
-            this.getUsers();
+            this.getInstitutionList();
           });
         }).catch(() => {
 
@@ -356,7 +359,6 @@
       handleEdit: function (index, row) {
         this.editFormVisible = true;
         this.editable=false;
-        this.editForm = Object.assign({}, row);
       },
 
 
@@ -364,7 +366,19 @@
         this.editFormVisible = true;
         this.editable=true;
         let detail = Object.assign({}, row);
-
+        let id=detail.id;
+        let para={
+          id:id
+        }
+        getInstituteDetail(para)
+                .then(res => {
+                  console.log(res);
+               this.editForm=res.data.result;
+                  //this.myInfo = successResponse.data.datas[0];
+                })
+                .catch(failResponse => {
+                  console.log("fail");
+                });
       },
       //显示新增界面
       handleAdd: function () {
@@ -448,6 +462,7 @@
     mounted() {
      // this.getUsers();
       this.getInstitutionList();
+
     }
   }
 

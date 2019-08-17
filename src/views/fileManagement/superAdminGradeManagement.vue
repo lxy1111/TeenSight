@@ -82,8 +82,8 @@
                   label="操作"
                   show-overflow-tooltip align="center">
             <template slot-scope="scope">
-              <span style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">详情</span>
-              <span style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleDel(scope.$index, scope.row)">删除</span>
+              <el-link style="color: #7980FA; " size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-link>
+              <el-link style="color: #7980FA; " size="small" v-if="!hidedelete" @click="handleDel(scope.$index, scope.row)">删除</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -102,29 +102,29 @@
         <el-form-item>
           <el-col :span="12">
             <span style="margin-right: 1rem;">学校名称</span>
-            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+            <el-input v-model="editForm.school" auto-complete="off"></el-input>
           </el-col>
           <el-col :span="12">
             <span style="margin-right: 1rem;">年级班号</span>
-            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+            <el-input v-model="editForm.classgradeNo" auto-complete="off"></el-input>
           </el-col>
         </el-form-item>
 
         <el-form-item>
           <el-col :span="12">
             <span style="margin-right: 1rem;">负责人</span>
-            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+            <el-input v-model="editForm.teacher" auto-complete="off"></el-input>
           </el-col>
           <el-col :span="12">
             <span style="margin-right: 1rem;">联系电话</span>
-            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+            <el-input v-model="editForm.tel" auto-complete="off"></el-input>
           </el-col>
         </el-form-item>
 
         <el-form-item>
           <el-col :span="12">
             <span style="margin-right: 1rem;">登陆账号</span>
-            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+            <el-input v-model="editForm.account" auto-complete="off"></el-input>
           </el-col>
           <el-col :span="12">
             <span style="margin-right: 1rem;">登陆密码</span>
@@ -172,11 +172,20 @@
 <script>
   import util from '../../common/js/util'
   //import NProgress from 'nprogress'
-  import { getUserListPage,getTeachersList, removeUser, batchRemoveUser, editUser, addUser } from '../../api/api';
+  import {
+    getUserListPage,
+    getTeachersList,
+    removeUser,
+    batchRemoveUser,
+    editUser,
+    addUser,
+    removeTeacher
+  } from '../../api/api';
 
   export default {
     data() {
       return {
+        hidedelete:true,
         teachers:[],
         filters: {
           name: ''
@@ -214,12 +223,12 @@
         },
         //编辑界面数据
         editForm: {
-          id: 0,
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
+            classgradeNo:'',
+            school:'',
+            teacher:'',
+            tel:'',
+           account:'',
+          id:''
         },
 
         form:{
@@ -269,7 +278,7 @@
         console.log("hihihi");
         // 发送请求:将数据返回到一个回到函数中
         // 并且响应成功以后会执行then方法中的回调函数
-
+       this.teachers=[];
 
         getTeachersList(para)
                 .then(res => {
@@ -282,7 +291,9 @@
                       classgradeNo:reslist[i].gradeNo+"-"+reslist[i].classNo,
                       school:reslist[i].schoolName,
                       teacher:reslist[i].teacherName,
-                      tel:reslist[i].teacherPhone
+                      account:reslist[i].teacherAccount,
+                      tel:reslist[i].teacherPhone,
+                      id:reslist[i].id
                     }
                     this.teachers.push(teacher);
                   }
@@ -315,14 +326,14 @@
           this.listLoading = true;
           //NProgress.start();
           let para = { id: row.id };
-          removeUser(para).then((res) => {
+          removeTeacher(para).then((res) => {
             this.listLoading = false;
             //NProgress.done();
             this.$message({
               message: '删除成功',
               type: 'success'
             });
-            this.getUsers();
+            this.getTeachersList();
           });
         }).catch(() => {
 
@@ -421,6 +432,19 @@
     mounted() {
      // this.getUsers();
      this.getTeachersList();
+      var user = sessionStorage.getItem('user');
+      if (user) {
+        user = JSON.parse(user);
+        if(user.type==0){
+          this.hidedelete=false;
+        }
+        else if(user.type==1){
+          this.hidedelete=true;
+        }
+        else if(user.type==2){
+          this.hidedelete=true;
+        }
+      }
     }
   }
 

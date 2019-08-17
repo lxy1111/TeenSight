@@ -35,7 +35,7 @@
 				<!--导航菜单-->
 				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect"
 					 unique-opened router v-show="!collapsed">
-					<template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">
+					<template v-for="(item,index) in $router.options.routes" v-if="!item.hidden&&item.path==role">
 						<el-submenu   :index="index+''" v-if="!item.leaf">
 							<template  slot="title"><i :class="item.iconCls"></i><span style="color: #6C73FA">{{item.name}}</span></template>
 							<el-menu-item v-for="child in item.children" :index="child.path" :key="child.path" v-if="!child.hidden">
@@ -87,6 +87,7 @@
 	export default {
 		data() {
 			return {
+				role:'',
 				sysName:'VUEADMIN',
 				collapsed:false,
 				sysUserName: '',
@@ -143,6 +144,15 @@
 				user = JSON.parse(user);
 				this.sysUserName = user.name || '';
 				this.sysUserAvatar = user.avatar || '';
+				if(user.type==0){
+					this.role='/superAdmin'
+				}
+				else if(user.type==1){
+					this.role='/institute'
+				}
+				else if(user.type==3){
+					this.role='/school'
+				}
 			}
 		}
 	}

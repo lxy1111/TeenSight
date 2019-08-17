@@ -1,32 +1,79 @@
 <template >
-    <el-form style="border-radius: 1rem; margin-bottom: 0;
+    <el-form v-if="!clickNextStep" style="border-radius: 1rem; margin-bottom: 0;
                     position: absolute; top: 50%; margin-top: 0;
                     transform: translate(0,-50%); height: 65%;
                     margin-left: 0; left: 65%; width: 20%"
-             :model="ruleForm2" :rules="rules2" ref="ruleForm2"
+             :model="ruleForm" :rules="rules2" ref="ruleForm"
              label-position="left" label-width="0px" class="demo-ruleForm login-container">
-        <el-tabs style="margin-bottom: 2rem;" v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="填写账户信息" name="first"></el-tab-pane>
-            <el-tab-pane label="登记学校信息" name="second"></el-tab-pane>
+        <el-tabs style="margin-bottom: 2rem;" v-model="activeName" >
+            <el-tab-pane label="填写账户信息"  disabled name="first"></el-tab-pane>
+            <el-tab-pane label="登记学校信息"  disabled name="second"></el-tab-pane>
         </el-tabs>
-        <el-form-item prop="account">
-            <el-input class="login-input" type="text"  auto-complete="off" placeholder="设置您的用户名"></el-input>
+        <el-form-item prop="schoolAccount">
+            <el-input class="login-input" type="text" v-model="ruleForm.schoolAccount" auto-complete="off" placeholder="设置您的用户名"></el-input>
         </el-form-item>
-        <el-form-item prop="checkPass">
-            <el-input class="login-input" type="password" auto-complete="off" placeholder="设置您的登录密码"></el-input>
+        <el-form-item prop="schoolPassword">
+            <el-input class="login-input" type="password" v-model="ruleForm.schoolPassword" auto-complete="off" placeholder="设置您的登录密码"></el-input>
         </el-form-item>
-        <el-form-item >
-            <el-input class="login-input" type="password" auto-complete="off" placeholder="请再次输入您的登录密码"></el-input>
+        <el-form-item prop="repeatPassword">
+            <el-input class="login-input" type="password" v-model="ruleForm.repeatPassword" auto-complete="off" placeholder="请再次输入您的登录密码"></el-input>
         </el-form-item>
-        <el-form-item >
-            <el-input class="login-input" type="password" auto-complete="off" placeholder="请输入手机号码"></el-input>
+        <el-form-item prop="schoolPhone">
+            <el-input class="login-input" type="text" v-model="ruleForm.schoolPhone" auto-complete="off" placeholder="请输入手机号"></el-input>
         </el-form-item>
         <el-form-item style="width:100%;">
             <el-button type="primary" style="width:100%;
                       background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
                       border-radius: 2rem; border: 0;box-shadow: 0 5px 10px #7980FA;"
-                       @click.native.prevent="login"
-                       :loading="logining">下一步</el-button>
+                       @click.native.prevent="nextStep"
+                       :loading="logining" >下一步</el-button>
+            <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
+        </el-form-item>
+        <el-form-item style="text-align: right; margin-top: -1.5rem;">
+            <el-link disabled style="color: #B8B8B8;">已有账号？</el-link>
+            <el-link style="color: #787FFA;" @click="showlogin" >快捷登录</el-link>
+        </el-form-item>
+    </el-form>
+    <el-form v-else  style="border-radius: 1rem; margin-bottom: 0;
+                    position: absolute; top: 50%; margin-top: 0;
+                    transform: translate(0,-50%); height: 65%;
+                    margin-left: 0; left: 65%; width: 20%"
+             :model="ruleForm" :rules="rules2" ref="ruleForm"
+             label-position="left" label-width="0px" class="demo-ruleForm login-container">
+        <el-tabs style="margin-bottom: 2rem;" v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="填写账户信息" disabled name="first"></el-tab-pane>
+            <el-tab-pane label="登记学校信息" disabled name="second"></el-tab-pane>
+        </el-tabs>
+        <el-form-item prop="schoolName">
+            <el-input class="login-input" v-model="ruleForm.schoolName" type="text"  auto-complete="off" placeholder="学校名称"></el-input>
+        </el-form-item>
+        <el-form-item prop="schoolType">
+            <el-select v-model="ruleForm.schoolType" placeholder= "选择学校类型">
+                <el-option
+                        v-for="item in options"
+                        :key="parseInt(item.value)"
+                        :label="item.label"
+                        :value="parseInt(item.value)">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item  prop="county">
+            <v-distpicker @selected="onSelected"></v-distpicker>
+        </el-form-item>
+        <el-form-item style="width:100%;" >
+            <el-button type="primary" style="width:100%;
+                      background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
+                      border-radius: 2rem; border: 0;box-shadow: 0 5px 10px #7980FA;"
+                       @click.native.prevent="register"
+                       :loading="logining" >完成</el-button>
+            <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
+        </el-form-item>
+        <el-form-item style="width:100%;" >
+            <el-button type="primary" style="width:100%;
+                      background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
+                      border-radius: 2rem; border: 0;box-shadow: 0 5px 10px #7980FA;"
+                       @click.native.prevent="lastStep"
+                       :loading="logining" >上一步</el-button>
             <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
         </el-form-item>
         <el-form-item style="text-align: right; margin-top: -1.5rem;">
@@ -37,32 +84,119 @@
 </template>
 
 <script>
-    import { requestLogin } from '../api/api';
+    import {requestLogin, requestRegister} from '../api/api';
+    import VDistpicker from 'v-distpicker'
     //import NProgress from 'nprogress'
     export default {
         name:"register",
+        components:{
+          VDistpicker
+        },
         data() {
             return {
+                firstdisable:true,
+                seconddisable:true,
+                clickNextStep:false,
                 activeName:"first",
                 logining: false,
-                ruleForm2: {
-                    account: 'admin',
-                    checkPass: '123456'
+                ruleForm: {
+                    schoolAccount: '',
+                    schoolPassword: '',
+                    repeatPassword:'',
+                    schoolName:'',
+                    schoolType:'',
+                    province:'',
+                    city:'',
+                    county:'',
+                    schoolPhone:''
                 },
+                options: [{
+                    value: '0',
+                    label: '小学'
+                }, {
+                    value: '1',
+                    label: '初中'
+                },
+                    {
+                        value:'2',
+                        label : '高中'
+                    }],
                 rules2: {
-                    account: [
+                    schoolAccount: [
                         { required: true, message: '请输入账号', trigger: 'blur' },
                         //{ validator: validaePass }
                     ],
-                    checkPass: [
+                    schoolPassword: [
                         { required: true, message: '请输入密码', trigger: 'blur' },
                         //{ validator: validaePass2 }
+                    ],
+                    repeatPassword: [
+                        { required: true, message: '请输入密码', trigger: 'blur' },
+                        //{ validator: validaePass2 }
+                    ],
+                    schoolName: [
+                        { required: true, message: '请输入学校名称', trigger: 'blur' },
+                        //{ validator: validaePass2 }
+                    ],
+                    schoolType: [
+                        { required: true, message: '请选择学校类型', trigger: 'blur' },
+                        //{ validator: validaePass2 }
+                    ],
+                    county:[
+                        {required: true, message: '请选择地区', trigger: 'blur'}
+                    ],
+                    schoolPhone:[
+                        {required: true, message: '请输入电话', trigger: 'blur'}
                     ]
                 },
                 checked: true
             };
         },
         methods: {
+            register(){
+                this.$refs.ruleForm.validate((valid) => {
+                    if(valid){
+                       requestRegister(this.ruleForm).then(data=>{
+                               console.log(data);
+                           this.$message({
+                               message: '注册成功!',
+                               type: 'success'
+                           });
+                           this.$router.push({path: '/login'});
+
+                           }
+                       ).catch(
+
+                       )
+                    }
+                });
+            },
+            onSelected(data) {
+                this.ruleForm.province=data.province.value;
+                this.ruleForm.city=data.city.value;
+                this.ruleForm.county=data.area.value;
+                console.log(data)
+            },
+            lastStep(){
+              this.clickNextStep=false;
+              this.activeName="first";
+              this.seconddisable=true;
+            },
+            nextStep(){
+                this.$refs.ruleForm.validate((valid) => {
+                    if(this.ruleForm.password!=this.ruleForm.repeatpassword){
+                        this.$message.error('两次输入密码不一致!');
+                        return ;
+                    }
+                    if(valid){
+                        this.clickNextStep=true;
+                        this.activeName="second";
+                        this.firstdisable=true;
+
+                    }
+                });
+
+            },
             showlogin(){
                 this.$router.push({ path: '/login' });
             },

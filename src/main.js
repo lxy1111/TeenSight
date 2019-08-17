@@ -17,6 +17,8 @@ import VueResource from 'vue-resource'
 import 'font-awesome/css/font-awesome.min.css'
 import myCharts from "./common/js/myCharts";
 import axios from 'axios'
+import globalvariable from './global'
+
 
 Vue.prototype.$axios = axios
 Vue.use(ElementUI)

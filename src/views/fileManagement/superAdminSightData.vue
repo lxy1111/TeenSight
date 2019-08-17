@@ -386,10 +386,10 @@
 
             handleClick(tab, event) {
                if(tab.name=='stuinfo'){
-                   this.$router.push({ path: '/superAdminStudentDetail' });
+                   this.$router.push({ path: '/superAdmin/superAdminStudentDetail' });
                }
                if(tab.name=='sightdata'){
-                   this.$router.push({ path: '/superAdminSightData' });
+                   this.$router.push({ path: '/superAdmin/superAdminSightData' });
                }
                if(tab.name=='history'){
 

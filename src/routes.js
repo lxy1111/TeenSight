@@ -22,6 +22,9 @@ import superAdminBroadcastContent from "./views/deviceManagement/superAdminBroad
 import superAdminMessageList from "./views/messageManagement/superAdminMessageList";
 import superAdminStudentDetail from "./views/fileManagement/superAdminStudentDetail";
 import register from "./views/register";
+import globalvariable from './global'
+
+
 
 let routes = [
     {
@@ -44,50 +47,109 @@ let routes = [
 },
 //{ path: '/main', component: Main },
 {
-    path: '/',
+    path: '/superAdmin',
     component: Home,
     name: '档案管理',
     iconCls: 'el-icon-message',//图标样式class
     children: [
-    { path: '/superAdminInstituteManagement', component: superAdminInstitueManagement, name: '政府机构信息' },
-    { path: '/superAdminSchoolManagement', component: superAdminSchoolManagement, name: '学校信息' },
-    { path: '/superAdminGradeManagement', component: superAdminGradeManagement, name: '年级信息' },
-    { path: '/superAdminStudentsManagement', component: superAdminStudentsManagement, name: '学生信息' },
-        { path: '/superAdminStudentDetail', component: superAdminStudentDetail,hidden:true,name:'个人信息'},
-        { path: '/superAdminSightData', component: superAdminSightData,hidden:true,name:'屈光档案'},
-        { path: '/superAdminSightData', component: superAdminSightData,hidden:true,name:'历史记录'},
+    { path: '/superAdmin/superAdminInstituteManagement', component: superAdminInstitueManagement, name: '政府机构信息' },
+    { path: '/superAdmin/superAdminSchoolManagement', component: superAdminSchoolManagement, name: '学校信息' },
+    { path: '/superAdmin/superAdminGradeManagement', component: superAdminGradeManagement, name: '年级信息' },
+    { path: '/superAdmin/superAdminStudentsManagement', component: superAdminStudentsManagement, name: '学生信息' },
+        { path: '/superAdmin/superAdminStudentDetail', component: superAdminStudentDetail,hidden:true,name:'个人信息'},
+        { path: '/superAdmin/superAdminSightData', component: superAdminSightData,hidden:true,name:'屈光档案'},
+        { path: '/superAdmin/superAdminSightData', component: superAdminSightData,hidden:true,name:'历史记录'},
 ]
 },
 {
-    path: '/',
+    path: '/superAdmin',
         component: Home,
     name: '普查管理',
     iconCls: 'fa fa-id-card-o',
     children: [
-    { path: '/superAdminCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' }
+    { path: '/superAdmin/superAdminCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' }
     // { path: '/superAdminCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
 ]
 },
 {
-    path: '/',
+    path: '/superAdmin',
     component: Home,
     name: '设备管理',
     iconCls: 'fa fa-bar-chart',
     children: [
-    { path: '/superAdminAvailableDevices', component: superAdminAvailableDevices, name: '可用设备' },
-    { path: '/superAdminCircleBroadcastContent', component: superAdminCircleBroadcastContent, name: '轮播内容' },
-    { path: '/superAdminBroadcastContent', component: superAdminBroadcastContent, name: '公告内容' }
+    { path: '/superAdmin/superAdminAvailableDevices', component: superAdminAvailableDevices, name: '可用设备' },
+    { path: '/superAdmin/superAdminCircleBroadcastContent', component: superAdminCircleBroadcastContent, name: '轮播内容' },
+    { path: '/superAdmin/superAdminBroadcastContent', component: superAdminBroadcastContent, name: '公告内容' }
 ]
 },
 {
-    path: '/',
+    path: '/superAdmin',
         component: Home,
     name: '消息管理',
     iconCls: 'fa fa-bar-chart',
     children: [
-    { path: '/superAdminMessageList', component: superAdminMessageList, name: '消息列表' }
+    { path: '/superAdmin/superAdminMessageList', component: superAdminMessageList, name: '消息列表' }
 ]
-}
+},
+    {
+        path: '/institute',
+        component: Home,
+        name: '档案管理',
+        iconCls: 'el-icon-message',//图标样式class
+        children: [
+            { path: '/institute/instituteSchoolManagement', component: superAdminSchoolManagement, name: '学校信息' },
+            { path: '/institute/instituteGradeManagement', component: superAdminGradeManagement, name: '年级信息' },
+            { path: '/institute/instituteStudentsManagement', component: superAdminStudentsManagement, name: '学生信息' },
+            { path: '/institute/instituteStudentDetail', component: superAdminStudentDetail,hidden:true,name:'个人信息'},
+            { path: '/institute/instituteSightData', component: superAdminSightData,hidden:true,name:'屈光档案'},
+            { path: '/institute/instituteSightData', component: superAdminSightData,hidden:true,name:'历史记录'},
+        ]
+    },
+    {
+        path: '/institute',
+        component: Home,
+        name: '普查管理',
+        iconCls: 'fa fa-id-card-o',
+        children: [
+            { path: '/institute/instituteCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' }
+            // { path: '/superAdminCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
+        ]
+    },
+    {
+        path: '/school',
+        component: Home,
+        name: '档案管理',
+        iconCls: 'el-icon-message',//图标样式class
+        children: [
+            { path: '/school/schoolSchoolManagement', component: superAdminSchoolManagement, name: '学校信息' },
+            { path: '/school/schoolGradeManagement', component: superAdminGradeManagement, name: '年级信息' },
+            { path: '/school/schoolStudentsManagement', component: superAdminStudentsManagement, name: '学生信息' },
+            { path: '/school/schoolStudentDetail', component: superAdminStudentDetail,hidden:true,name:'个人信息'},
+            { path: '/school/schoolSightData', component: superAdminSightData,hidden:true,name:'屈光档案'},
+            { path: '/school/schoolSightData', component: superAdminSightData,hidden:true,name:'历史记录'},
+        ]
+    },
+    {
+        path: '/school',
+        component: Home,
+        name: '普查管理',
+        iconCls: 'fa fa-id-card-o',
+        children: [
+            { path: '/school/schoolCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' }
+            // { path: '/superAdminCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
+        ]
+    },
+    {
+        path: '/school',
+        component: Home,
+        name: '设备管理',
+        iconCls: 'fa fa-bar-chart',
+        children: [
+            { path: '/school/schoolAvailableDevices', component: superAdminAvailableDevices, name: '可用设备' },
+            { path: '/school/schoolCircleBroadcastContent', component: superAdminCircleBroadcastContent, name: '轮播内容' },
+            { path: '/school/schoolBroadcastContent', component: superAdminBroadcastContent, name: '公告内容' }
+        ]
+    }
 ];
 
 export default routes;

@@ -58,8 +58,8 @@
                   label="操作"
                   show-overflow-tooltip align="center">
             <template slot-scope="scope">
-          <span style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.row)">详情</span>
-          <span style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleDel(scope.$index, scope.row)">删除</span>
+          <el-link style="color: #7980FA; " size="small" @click="handleEdit(scope.row)">详情</el-link>
+          <el-link style="color: #7980FA; " size="small" v-if="!hidedelete" @click="handleDel(scope.$index, scope.row)">删除</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -80,18 +80,18 @@
           </el-col>
           <el-col :span="12">
             <span style="margin-right: 1rem;">负责人</span>
-            <el-input v-model="editForm.schoolName" auto-complete="off"></el-input>
+            <el-input v-model="editForm.principal" auto-complete="off"></el-input>
           </el-col>
         </el-form-item>
 
         <el-form-item>
           <el-col :span="12">
             <span style="margin-right: 1rem;">联系电话</span>
-            <el-input v-model="editForm.schoolName" auto-complete="off"></el-input>
+            <el-input v-model="editForm.schoolPhone" auto-complete="off"></el-input>
           </el-col>
           <el-col :span="12">
             <span style="margin-right: 1rem;">所在位置</span>
-            <el-input v-model="editForm.city" auto-complete="off"></el-input>
+            <el-input v-model="editForm.location" auto-complete="off"></el-input>
           </el-col>
         </el-form-item>
 
@@ -102,7 +102,7 @@
           </el-col>
           <el-col :span="12">
             <span style="margin-right: 1rem;">登陆密码</span>
-            <el-input v-model="editForm.schoolAccount" auto-complete="off"></el-input>
+            <el-input v-model="editForm.schoolPassword" auto-complete="off"></el-input>
           </el-col>
         </el-form-item>
       </el-form>
@@ -146,11 +146,20 @@
   import util from '../../common/js/util'
   import axios from 'axios';
   //import NProgress from 'nprogress'
-  import {getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getSchoolListPage} from '../../api/api';
+  import {
+    getUserListPage,
+    removeUser,
+    batchRemoveUser,
+    editUser,
+    addUser,
+    getSchoolListPage,
+    removeSchool
+  } from '../../api/api';
 
   export default {
     data() {
       return {
+        hidedelete: false,
         filters: {
           name: ''
         },
@@ -192,7 +201,10 @@
           schoolType:'',
           schoolAccount:'',
           location:'',
-          id:''
+          schoolPhone:'',
+          principal:'',
+          id:'',
+          schoolPassword:''
         },
 
         form:{
@@ -240,6 +252,7 @@
         };
         this.listLoading = true;
         console.log("hihihi");
+        this.schools=[];
         // 发送请求:将数据返回到一个回到函数中
         // 并且响应成功以后会执行then方法中的回调函数
 
@@ -255,7 +268,10 @@
                         schoolName: schoolslist[i].schoolName,
                         schoolType: schoolslist[i].schoolType,
                         schoolAccount: schoolslist[i].schoolAccount,
-                        location: schoolslist[i].province+schoolslist[i].city+schoolslist[i].county
+                        location: schoolslist[i].province+schoolslist[i].city+schoolslist[i].county,
+                        schoolPassword:schoolslist[i].schoolPassword,
+                       schoolPhone: schoolslist[i].schoolPhone,
+                       id:schoolslist[i].id
                      }
                      this.schools.push(school);
                   }
@@ -290,14 +306,14 @@
           this.listLoading = true;
           //NProgress.start();
           let para = { id: row.id };
-          removeUser(para).then((res) => {
+          removeSchool(para).then((res) => {
             this.listLoading = false;
             //NProgress.done();
             this.$message({
               message: '删除成功',
               type: 'success'
             });
-            this.getUsers();
+            this.getSchoolsList();
           });
         }).catch(() => {
 
@@ -396,6 +412,19 @@
     mounted() {
       // this.getUsers();
       this.getSchoolsList();
+      var user = sessionStorage.getItem('user');
+      if (user) {
+        user = JSON.parse(user);
+        if(user.type==0){
+          this.hidedelete=false;
+        }
+        else if(user.type==1){
+          this.hidedelete=true;
+        }
+        else if(user.type==3){
+          this.hidedelete=true;
+        }
+      }
     }
   }
 

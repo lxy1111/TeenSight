@@ -124,8 +124,8 @@
                   label="操作"
                   show-overflow-tooltip align="center">
             <template scope="scope">
-            <span style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">详情</span>
-            <span style="color: #7980FA;"size="small" @click="handleDel(scope.$index, scope.row)">删除</span>
+            <el-link style="color: #7980FA;" size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-link>
+            <el-link style="color: #7980FA;" size="small" v-if="!hidedelete" @click="handleDel(scope.$index, scope.row)">删除</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -202,56 +202,9 @@
   export default {
     data() {
       return {
-       students:[{
-         classNo: 1,
-         createTime: "2019-08-11 08:21:11",
-         gradeNo: 1,
-         id: 1,
-         number: "10152510229",
-         schoolName: "ecnu",
-         sex: 0,
-         stuName: "李昂"
-       },
-         {
-           classNo: 1,
-           createTime: "2019-08-11 08:21:11",
-           gradeNo: 1,
-           id: 1,
-           number: "10152510229",
-           schoolName: "ecnu",
-           sex: 0,
-           stuName: "李昂"
-         },
-         {
-           classNo: 1,
-           createTime: "2019-08-11 08:21:11",
-           gradeNo: 1,
-           id: 1,
-           number: "10152510229",
-           schoolName: "ecnu",
-           sex: 0,
-           stuName: "李昂"
-         },
-         {
-           classNo: 1,
-           createTime: "2019-08-11 08:21:11",
-           gradeNo: 1,
-           id: 1,
-           number: "10152510229",
-           schoolName: "ecnu",
-           sex: 0,
-           stuName: "李昂"
-         },
-         {
-           classNo: 1,
-           createTime: "2019-08-11 08:21:11",
-           gradeNo: 1,
-           id: 1,
-           number: "10152510229",
-           schoolName: "ecnu",
-           sex: 0,
-           stuName: "李昂"
-         }],
+        path:'',
+        hidedelete:false,
+       students:[],
         filters: {
           name: ''
         },
@@ -396,7 +349,7 @@
       handleEdit: function (index, row) {
        // this.editFormVisible = true;
       //  this.editForm = Object.assign({}, row);
-        this.$router.push({ path: '/superAdminStudentDetail' });
+        this.$router.push({ path: '/'+this.path+'/'+this.path+'StudentDetail' });
       },
       //显示新增界面
       handleAdd: function () {
@@ -485,7 +438,23 @@
     },
     mounted() {
      // this.getUsers();
-      //this.getStudentsList();
+      this.getStudentsList();
+      var user = sessionStorage.getItem('user');
+      if (user) {
+        user = JSON.parse(user);
+        if(user.type==0){
+          this.path='superAdmin';
+          this.hidedelete=false;
+        }
+        else if(user.type==1){
+          this.path='institute';
+          this.hidedelete=true;
+        }
+        else if(user.type==2){
+          this.path='school';
+          this.hidedelete=true;
+        }
+      }
     }
   }
 
