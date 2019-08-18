@@ -10,7 +10,7 @@
                   filterable
                   remote
                   reserve-keyword
-                  placeholder="搜索教育机构名称"
+                  placeholder="搜索机构名称"
                   :remote-method="remoteMethod"
                   :loading="loading">
             <el-option
@@ -21,6 +21,28 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item>
+          <v-distpicker @selected="onSelected"></v-distpicker>
+        </el-form-item>
+        <el-form-item>
+          <el-select
+                  v-model="value"
+                  multiple
+                  filterable
+                  remote
+                  reserve-keyword
+                  placeholder="搜索机构账号"
+                  :remote-method="remoteMethod"
+                  :loading="loading">
+            <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item><el-button type="primary" round @click="">重置</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="handleAdd">添加机构</el-button></el-form-item>
       </el-form>
 
@@ -86,10 +108,10 @@
             <span style="margin-right: 1rem;">联系电话</span>
             <el-input v-model="editForm.mobile" auto-complete="off" :disabled="editable"></el-input>
           </el-col>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">所含学校</span>
-            <el-input v-model="editForm.schoolList" auto-complete="off" :disabled="editable"></el-input>
-          </el-col>
+<!--          <el-col :span="12">-->
+<!--            <span style="margin-right: 1rem;">所含学校</span>-->
+<!--            <el-input v-model="editForm.schoolList" auto-complete="off" :disabled="editable"></el-input>-->
+<!--          </el-col>-->
         </el-form-item>
 
         <el-form-item>
@@ -125,17 +147,17 @@
         </el-form-item>
 
         <el-form-item>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">机构类型</span>
-            <el-select v-model="addForm.type" placeholder="请选择">
-              <el-option
-                      v-for="item in options"
-                      :key="parseInt(item.value)"
-                      :label="item.label"
-                      :value="parseInt(item.value)">
-              </el-option>
-            </el-select>
-          </el-col>
+<!--          <el-col :span="12">-->
+<!--            <span style="margin-right: 1rem;">机构类型</span>-->
+<!--            <el-select v-model="addForm.type" placeholder="请选择">-->
+<!--              <el-option-->
+<!--                      v-for="item in options"-->
+<!--                      :key="parseInt(item.value)"-->
+<!--                      :label="item.label"-->
+<!--                      :value="parseInt(item.value)">-->
+<!--              </el-option>-->
+<!--            </el-select>-->
+<!--          </el-col>-->
           <el-col :span="12">
             <span style="margin-right: 1rem;">负责人</span>
             <el-input v-model="addForm.principal" auto-complete="off"></el-input>
@@ -275,7 +297,7 @@
           mobile: "",
           principal: "",
           province: "",
-          type: ""
+          type: 1
         }
 
       }

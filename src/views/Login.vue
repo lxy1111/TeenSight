@@ -29,7 +29,9 @@
           <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
         </el-form-item>
         <el-form-item>
-            <el-link style="color: #787FFA;margin-top: -3rem !important;" :underline="false" @click="showregister">还没有账号？注册一个吧！</el-link>
+            <el-link style="color: #787FFA;margin-top: 0rem !important;"  @click="showregisterSchool">注册学校</el-link>
+            &nbsp &nbsp
+            <el-link style="color: #787FFA;margin-top: 0rem !important;"  @click="showregisterSelectInstitute">注册筛查机构</el-link>
         </el-form-item>
   </el-form>
 </template>
@@ -64,9 +66,27 @@
       handleReset2() {
         this.$refs.ruleForm2.resetFields();
       },
-      showregister(){
-        this.$router.push({ path: '/register' });
+      showregisterSchool(){
+          let type=0;
+        this.$router.push(
+            {
+                path: '/register',
+                query: {
+                    type:type
+                }
+            });
       },
+        showregisterSelectInstitute(){
+            let type=1;
+            this.$router.push(
+                {
+                    path: '/register',
+                    query: {
+                        type:type
+                    }
+                });
+
+        },
       login(ev){
 
         var _this = this;

@@ -21,6 +21,9 @@
         <el-form-item prop="schoolPhone">
             <el-input class="login-input" type="text" v-model="ruleForm.schoolPhone" auto-complete="off" placeholder="请输入手机号"></el-input>
         </el-form-item>
+        <el-form-item prop="principal">
+            <el-input class="login-input" type="text" v-model="ruleForm.principal" auto-complete="off" placeholder="请输入负责人"></el-input>
+        </el-form-item>
         <el-form-item style="width:100%;">
             <el-button type="primary" style="width:100%;
                       background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
@@ -34,7 +37,7 @@
             <el-link style="color: #787FFA;" @click="showlogin" >快捷登录</el-link>
         </el-form-item>
     </el-form>
-    <el-form v-else  style="border-radius: 1rem; margin-bottom: 0;
+    <el-form v-else-if="isSchool"  style="border-radius: 1rem; margin-bottom: 0;
                     position: absolute; top: 50%; margin-top: 0;
                     transform: translate(0,-50%); height: 65%;
                     margin-left: 0; left: 65%; width: 20%"
@@ -81,12 +84,77 @@
             <el-link style="color: #787FFA;" @click="showlogin" >快捷登录</el-link>
         </el-form-item>
     </el-form>
+    <el-form v-else  style="border-radius: 1rem; margin-bottom: 0;
+                    position: absolute; top: 50%; margin-top: 0;
+                    transform: translate(0,-50%); height: 65%;
+                    margin-left: 0; left: 65%; width: 20%"
+             :model="ruleForm" :rules="rules2" ref="ruleForm"
+             label-position="left" label-width="0px" class="demo-ruleForm login-container">
+        <el-tabs style="margin-bottom: 2rem;" v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="填写账户信息" disabled name="first"></el-tab-pane>
+            <el-tab-pane label="登记学校信息" disabled name="second"></el-tab-pane>
+        </el-tabs>
+        <el-form-item prop="schoolName">
+            <el-select
+                    v-model="ruleForm.schoolName"
+                    multiple
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请选择学校名称"
+                    :remote-method="remoteMethod"
+                    :loading="loading">
+                <el-option
+                        v-for="item in schools"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item prop="schoolType">
+            <el-select v-model="ruleForm.schoolType" placeholder= "选择学校类型">
+                <el-option
+                        v-for="item in options"
+                        :key="parseInt(item.value)"
+                        :label="item.label"
+                        :value="parseInt(item.value)">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item  prop="county">
+            <v-distpicker @selected="onSelected"></v-distpicker>
+        </el-form-item>
+        <el-form-item style="width:100%;" >
+            <el-button type="primary" style="width:100%;
+                      background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
+                      border-radius: 2rem; border: 0;box-shadow: 0 5px 10px #7980FA;"
+                       @click.native.prevent="register"
+                       :loading="logining" >完成</el-button>
+            <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
+        </el-form-item>
+        <el-form-item style="width:100%;" >
+            <el-button type="primary" style="width:100%;
+                      background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
+                      border-radius: 2rem; border: 0;box-shadow: 0 5px 10px #7980FA;"
+                       @click.native.prevent="lastStep"
+                       :loading="logining" >上一步</el-button>
+            <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
+        </el-form-item>
+        <el-form-item style="text-align: right; margin-top: -1.5rem;">
+            <el-link disabled style="color: #B8B8B8;">已有账号？</el-link>
+            <el-link style="color: #787FFA;" @click="showlogin" >快捷登录</el-link>
+        </el-form-item>
+    </el-form>
 </template>
 
 <script>
     import {requestLogin, requestRegister} from '../api/api';
     import VDistpicker from 'v-distpicker'
     //import NProgress from 'nprogress'
+    import {
+        getSchoolListPage
+    } from '../api/api';
     export default {
         name:"register",
         components:{
@@ -94,6 +162,10 @@
         },
         data() {
             return {
+                schools:[],
+                schoolist:[],
+                allschool:[],
+                isSchool:false,
                 firstdisable:true,
                 seconddisable:true,
                 clickNextStep:false,
@@ -108,7 +180,8 @@
                     province:'',
                     city:'',
                     county:'',
-                    schoolPhone:''
+                    schoolPhone:'',
+                    principal:''
                 },
                 options: [{
                     value: '0',
@@ -152,7 +225,48 @@
                 checked: true
             };
         },
+        mounted(){
+          let type=this.$route.query.type;
+          if(type==0){
+              this.isSchool=true;
+          }else if(type==1){
+              this.isSchool=false;
+              let para={
+                  page:1,
+                  pageSize:100000000
+              };
+              getSchoolListPage(para)
+                  .then(res => {
+                      console.log("login get success");
+                      console.log(res);
+                      this.allschool=res.data.result.items;
+                      //this.myInfo = successResponse.data.datas[0];
+                  })
+                  .catch(failResponse => {
+                      console.log("login get fail");
+                  });
+          }
+
+
+        },
         methods: {
+            remoteMethod(query) {
+
+
+                console.log(this.schoolist);
+                if (query !== '') {
+                    this.loading = true;
+                    setTimeout(() => {
+                        this.loading = false;
+                        this.schools = this.schoolist.filter(item => {
+                            return item.label.toLowerCase()
+                                .indexOf(query.toLowerCase()) > -1;
+                        });
+                    }, 200);
+                } else {
+                    this.schools = [];
+                }
+            },
             register(){
                 this.$refs.ruleForm.validate((valid) => {
                     if(valid){
@@ -184,7 +298,7 @@
             },
             nextStep(){
                 this.$refs.ruleForm.validate((valid) => {
-                    if(this.ruleForm.password!=this.ruleForm.repeatpassword){
+                    if(this.ruleForm.schoolPassword!=this.ruleForm.repeatPassword){
                         this.$message.error('两次输入密码不一致!');
                         return ;
                     }
@@ -192,7 +306,15 @@
                         this.clickNextStep=true;
                         this.activeName="second";
                         this.firstdisable=true;
+                        console.log(this.allschool)
 
+                        for(let i=0;i<this.allschool.length;i++){
+                            let school ={
+                                value:this.allschool[i].id,
+                                label:this.allschool[i].schoolName
+                            }
+                            this.schoolist.push(school);
+                        }
                     }
                 });
 

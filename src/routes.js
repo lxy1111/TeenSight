@@ -36,7 +36,7 @@ let routes = [
     {
         path: '/register',
         component: register,
-        name: 'register',
+        name: 'registerSchool',
         hidden: true
     },
 {

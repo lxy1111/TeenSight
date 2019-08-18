@@ -54,6 +54,15 @@
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
+                  prop="state"
+                  label="状态"
+                  show-overflow-tooltip align="center">
+            <el-tag type="success"
+                    effect="dark">
+                   已认证
+            </el-tag>
+          </el-table-column>
+          <el-table-column
                   prop="id"
                   label="操作"
                   show-overflow-tooltip align="center">
@@ -182,7 +191,11 @@
         ],
         gendervalue: '性别-全部',
         users: [],
-        schools:[],
+        schools:[
+          {
+            state:'已通过'
+          }
+        ],
         total: 0,
         page: 1,
         listLoading: false,
