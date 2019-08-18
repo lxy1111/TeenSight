@@ -9,55 +9,43 @@
         <!--工具条-->
         <div class="retrieval  criteria Style">
             <el-form style="margin-top: 2rem;" :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
-                <el-form-item>
-                    <el-col :span="8" label="姓名" prop="name">
-                        <span style="margin-right: 1rem">姓名</span>
-                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                    </el-col>
-                    <el-col :span="8" label="学号" prop="name">
-                        <span style="margin-right: 1rem">学号</span>
-                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                    </el-col>
-                    <el-col :span="8" label="性别">
-                        <span style="margin-right: 1rem">性别</span>
-                        <el-radio-group v-model="editForm.sex">
-                            <el-radio class="radio" :label="1">男</el-radio>
-                            <el-radio class="radio" :label="0">女</el-radio>
-                        </el-radio-group>
-                    </el-col>
+                <el-form-item label="姓名">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
                 </el-form-item>
 
-                <el-form-item>
-                    <el-col :span="8" label="年级-班级">
-                        <span style="margin-right: 1rem">年级-班级</span>
-                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                    </el-col>
-                    <el-col :span="8" label="身份证号">
-                        <span style="margin-right: 1rem">身份证号</span>
-                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                    </el-col>
+                <el-form-item label="学号">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
                 </el-form-item>
 
-                <el-form-item>
-                    <el-col :span="8" label="家长姓名">
-                        <span style="margin-right: 1rem">家长姓名</span>
-                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                    </el-col>
-                    <el-col :span="8" label="家长手机号">
-                        <span style="margin-right: 1rem">家长手机号</span>
-                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                    </el-col>
+                <el-form-item label="性别">
+                    <el-radio-group v-model="editForm.sex">
+                        <el-radio class="radio" :label="1">男</el-radio>
+                        <el-radio class="radio" :label="0">女</el-radio>
+                    </el-radio-group>
                 </el-form-item>
 
-                <el-form-item>
-                    <el-col :span="8" label="身高（厘米）">
-                        <span style="margin-right: 1rem">家长姓名</span>
-                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                    </el-col>
-                    <el-col :span="8" label="体重（kg）">
-                        <span style="margin-right: 1rem">体重（kg）</span>
-                        <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                    </el-col>
+                <el-form-item label="年级-班级">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="身份证号">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="家长姓名">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="家长手机号">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="身高（厘米）">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="体重（kg）">
+                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
                 </el-form-item>
 
             </el-form>

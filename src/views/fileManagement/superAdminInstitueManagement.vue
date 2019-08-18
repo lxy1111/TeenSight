@@ -92,44 +92,28 @@
     <!--编辑界面-->
     <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-        <el-form-item>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">机构名称</span>
+        <el-form-item label="机构名称">
             <el-input v-model="editForm.insName" auto-complete="off" :disabled="editable"></el-input>
-          </el-col>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">负责人</span>
-            <el-input v-model="editForm.principal" auto-complete="off" :disabled="editable"></el-input>
-          </el-col>
         </el-form-item>
 
-        <el-form-item>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">联系电话</span>
+        <el-form-item label="负责人">
+          <el-input v-model="editForm.principal" auto-complete="off" :disabled="editable"></el-input>
+        </el-form-item>
+
+        <el-form-item label="联系电话">
             <el-input v-model="editForm.mobile" auto-complete="off" :disabled="editable"></el-input>
-          </el-col>
-<!--          <el-col :span="12">-->
-<!--            <span style="margin-right: 1rem;">所含学校</span>-->
-<!--            <el-input v-model="editForm.schoolList" auto-complete="off" :disabled="editable"></el-input>-->
-<!--          </el-col>-->
         </el-form-item>
 
-        <el-form-item>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">所在位置</span>
+        <el-form-item label="所在位置">
             <el-input v-model="editForm.province+editForm.city+editForm.county" auto-complete="off" :disabled="editable"></el-input>
-          </el-col>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">登陆账号</span>
-            <el-input v-model="editForm.insAccount" auto-complete="off" :disabled="editable"></el-input>
-          </el-col>
         </el-form-item>
 
-        <el-form-item>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">登陆密码</span>
+        <el-form-item label="登陆账号">
+          <el-input v-model="editForm.insAccount" auto-complete="off" :disabled="editable"></el-input>
+        </el-form-item>
+
+        <el-form-item label="登陆密码">
             <el-input v-model="editForm.insPassword" auto-complete="off" :disabled="editable"></el-input>
-          </el-col>
         </el-form-item>
 
       </el-form>
@@ -142,43 +126,26 @@
     <!--新增界面-->
     <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-        <el-form-item style="margin-left: 4rem;" label="机构名称" prop="insName">
+        <el-form-item label="机构名称" prop="insName">
           <el-input v-model="addForm.insName" auto-complete="off"></el-input>
         </el-form-item>
 
-        <el-form-item>
-<!--          <el-col :span="12">-->
-<!--            <span style="margin-right: 1rem;">机构类型</span>-->
-<!--            <el-select v-model="addForm.type" placeholder="请选择">-->
-<!--              <el-option-->
-<!--                      v-for="item in options"-->
-<!--                      :key="parseInt(item.value)"-->
-<!--                      :label="item.label"-->
-<!--                      :value="parseInt(item.value)">-->
-<!--              </el-option>-->
-<!--            </el-select>-->
-<!--          </el-col>-->
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">负责人</span>
+        <el-form-item label="负责人">
             <el-input v-model="addForm.principal" auto-complete="off"></el-input>
-          </el-col>
         </el-form-item>
 
-        <el-form-item>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">登录账号</span>
+        <el-form-item label="登录账号">
             <el-input v-model="addForm.insAccount" auto-complete="off"></el-input>
-          </el-col>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">登录密码</span>
-            <el-input v-model="addForm.insPassword" auto-complete="off"></el-input>
-          </el-col>
         </el-form-item>
 
-        <el-form-item style="margin-left: 4rem;" label="联系电话">
+        <el-form-item label="登录密码">
+          <el-input v-model="addForm.insPassword" auto-complete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="联系电话">
           <el-input v-model="addForm.mobile" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item style="margin-left: 4rem;" label="所在地区">
+        <el-form-item label="所在地区">
           <v-distpicker @selected="onSelected"></v-distpicker>
         </el-form-item>
       </el-form>

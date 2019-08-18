@@ -1,11 +1,11 @@
 <template >
     <el-form v-if="!clickNextStep" style="border-radius: 1rem; margin-bottom: 0;
                     position: absolute; top: 50%; margin-top: 0;
-                    transform: translate(0,-50%); height: 65%;
-                    margin-left: 0; left: 65%; width: 20%"
+                    transform: translate(0,-50%); height: 26rem;
+                    margin-left: 0; left: 60%; width: 25%"
              :model="ruleForm" :rules="rules2" ref="ruleForm"
              label-position="left" label-width="0px" class="demo-ruleForm login-container">
-        <el-tabs style="margin-bottom: 2rem;" v-model="activeName" >
+        <el-tabs style="margin-bottom: 1rem;" v-model="activeName" >
             <el-tab-pane label="填写账户信息"  disabled name="first"></el-tab-pane>
             <el-tab-pane label="登记学校信息"  disabled name="second"></el-tab-pane>
         </el-tabs>
@@ -39,11 +39,11 @@
     </el-form>
     <el-form v-else-if="isSchool"  style="border-radius: 1rem; margin-bottom: 0;
                     position: absolute; top: 50%; margin-top: 0;
-                    transform: translate(0,-50%); height: 65%;
-                    margin-left: 0; left: 65%; width: 20%"
+                    transform: translate(0,-50%); height: 26rem;
+                    margin-left: 0; left: 60%; width: 25%"
              :model="ruleForm" :rules="rules2" ref="ruleForm"
              label-position="left" label-width="0px" class="demo-ruleForm login-container">
-        <el-tabs style="margin-bottom: 2rem;" v-model="activeName" @tab-click="handleClick">
+        <el-tabs style="margin-bottom: 1rem;" v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="填写账户信息" disabled name="first"></el-tab-pane>
             <el-tab-pane label="登记学校信息" disabled name="second"></el-tab-pane>
         </el-tabs>
@@ -87,10 +87,10 @@
     <el-form v-else  style="border-radius: 1rem; margin-bottom: 0;
                     position: absolute; top: 50%; margin-top: 0;
                     transform: translate(0,-50%); height: 65%;
-                    margin-left: 0; left: 65%; width: 20%"
+                    margin-left: 0; left: 60%; width: 25%"
              :model="ruleForm" :rules="rules2" ref="ruleForm"
              label-position="left" label-width="0px" class="demo-ruleForm login-container">
-        <el-tabs style="margin-bottom: 2rem;" v-model="activeName" @tab-click="handleClick">
+        <el-tabs style="margin-bottom: 1rem;" v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="填写账户信息" disabled name="first"></el-tab-pane>
             <el-tab-pane label="登记学校信息" disabled name="second"></el-tab-pane>
         </el-tabs>
@@ -501,5 +501,26 @@
     }
     .el-tabs el-tabs--top {
         margin-bottom: 5rem !important;
+    }
+
+    .distpicker-address-wrapper select {
+        padding: .5rem .75rem;
+        height: 40px;
+        width: 30%;
+        font-size: 0.8rem;
+        line-height: 1.25;
+        font-family: PingFang SC;
+        color: #464a4c;
+        background-color: #fff;
+        background-image: none;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 2rem;
+        -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
     }
 </style>

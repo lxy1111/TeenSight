@@ -1,18 +1,30 @@
-<template >
+<template>
     <el-form style="border-radius: 1rem; margin-bottom: 0;
                     position: absolute; top: 50%; margin-top: 0;
-                    transform: translate(0,-50%); height: 55%;
-                    margin-left: 0; left: 65%; width: 20%"
+                    transform: translate(0,-50%); height: 50%;
+                    margin-left: 0; left: 60%; width: 25%"
              :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left"
              label-width="0px" class="demo-ruleForm login-container">
         <h3 class="title">登录</h3>
         <el-form-item prop="account">
-          <el-input class="login-input" style="border-radius: 2rem !important;" prefix-icon="el-icon-user" type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="账号"></el-input>
+          <el-input class="login-input"
+                    style="border-radius: 2rem !important;height: 10%;"
+                    prefix-icon="el-icon-user"
+                    type="text"
+                    v-model="ruleForm2.account"
+                    auto-complete="off"
+                    placeholder="账号"></el-input>
         </el-form-item>
-        <el-form-item prop="checkPass">
-          <el-input class="login-input" prefix-icon="el-icon-lock" type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码"></el-input>
+        <el-form-item prop="checkPass" style="margin-bottom: 0rem !important;">
+          <el-input class="login-input"
+                    style="height: 8%;"
+                    prefix-icon="el-icon-lock"
+                    type="password"
+                    v-model="ruleForm2.checkPass"
+                    auto-complete="off"
+                    placeholder="密码"></el-input>
         </el-form-item>
-        <el-form-item style="height: 10%">
+        <el-form-item style="height: 5%">
             <el-col :span="12">
                 <el-checkbox v-model="checked" checked class="remember"><span >记住用户名</span></el-checkbox>
             </el-col>
@@ -20,8 +32,9 @@
                 <el-link style="color: #B8B8B8">忘记密码?</el-link>
             </el-col>
         </el-form-item>
-        <el-form-item style="width:100%;">
+        <el-form-item style="width:100%; margin-bottom: 0rem !important;">
           <el-button type="primary" style="width:100%;
+                          height: 10%;
                           background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
                           border-radius: 2rem; border: 0;box-shadow: 0 5px 10px #7980FA;"
                      @click.native.prevent="login"
@@ -33,7 +46,7 @@
             &nbsp &nbsp
             <el-link style="color: #787FFA;margin-top: 0rem !important;"  @click="showregisterSelectInstitute">注册筛查机构</el-link>
         </el-form-item>
-  </el-form>
+    </el-form>
 </template>
 
 <script>
@@ -219,7 +232,7 @@
     box-shadow: 0 0 25px #cac6c6;
 
     .title {
-      margin: 0px auto 1rem auto;
+      margin: 1rem auto 2rem auto !important;
       text-align: left;
       font-family: PingFang SC;
       font-weight: bolder;

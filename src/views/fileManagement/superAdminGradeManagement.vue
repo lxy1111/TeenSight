@@ -99,37 +99,28 @@
     <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
 
-        <el-form-item>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">学校名称</span>
+        <el-form-item label="学校名称">
             <el-input v-model="editForm.school" auto-complete="off"></el-input>
-          </el-col>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">年级班号</span>
-            <el-input v-model="editForm.classgradeNo" auto-complete="off"></el-input>
-          </el-col>
         </el-form-item>
 
-        <el-form-item>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">负责人</span>
+        <el-form-item label="年级班号">
+          <el-input v-model="editForm.classgradeNo" auto-complete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="负责人">
             <el-input v-model="editForm.teacher" auto-complete="off"></el-input>
-          </el-col>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">联系电话</span>
-            <el-input v-model="editForm.tel" auto-complete="off"></el-input>
-          </el-col>
         </el-form-item>
 
-        <el-form-item>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">登陆账号</span>
+        <el-form-item label="联系电话">
+          <el-input v-model="editForm.tel" auto-complete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="登陆账号">
             <el-input v-model="editForm.account" auto-complete="off"></el-input>
-          </el-col>
-          <el-col :span="12">
-            <span style="margin-right: 1rem;">登陆密码</span>
-            <el-input v-model="editForm.name" auto-complete="off"></el-input>
-          </el-col>
+        </el-form-item>
+
+        <el-form-item label="登陆密码">
+          <el-input v-model="editForm.name" auto-complete="off"></el-input>
         </el-form-item>
 
       </el-form>

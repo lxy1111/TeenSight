@@ -2,13 +2,13 @@
   <section>
     <!--工具条-->
     <div class="retrieval  criteria Style">
-    <el-button type="primary" round  @click="Search">新增内容展示</el-button>
+    <el-button style="margin-left: 2rem;" type="primary" round  @click="Search">新增内容展示</el-button>
     </div>
       <div class="retrieval  criteria Style">
       <el-table
               ref="multipleTable"
               :data="tableData3"
-              border
+              stripe
               tooltip-effect="dark"
               style="width: 100%"
               @selection-change="handleSelectionChange">
