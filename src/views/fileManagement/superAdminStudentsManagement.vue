@@ -71,14 +71,74 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button class="reset-student" type="primary" round @click="Search">
+          <el-button class="reset-student" type="primary" round @click="showBatchAdd">
             <span style="font-size: 0.9rem;font-family: PingFang SC;">
-              添加学生
+              批量导入
             </span>
           </el-button>
         </el-form-item>
 
       </el-form>
+
+      <el-dialog title="批量导入" :visible.sync="batchAddVisible" :close-on-click-modal="false">
+        <el-steps align-center  :space="200" :active.sync="finishstep" finish-status="success">
+          <el-step  title="下载模版"></el-step>
+          <el-step  title="上传文件"></el-step>
+          <el-step  title="审核数据"></el-step>
+          <el-step  title="完成"></el-step>
+        </el-steps>
+        <div v-if="firststep">
+        <el-row>
+     <img  style="position: relative; width: 10%; height: 10%; left: 45%" src="../../assets/img/file.jpeg">
+        </el-row>
+        <el-row>
+    <el-link  :href="require('../../assets/img/template.xlsx')" download="模版文件.xlsx"  style="left: 44%">
+      下载模版文件
+    </el-link>
+        </el-row>
+        <el-row >
+          <div align="center">
+          <el-button class="reset-student" type="primary" @click="turntoUpload" round>
+            下一步
+          </el-button>
+          </div>
+        </el-row>
+        </div>
+
+        <div v-if="secondstep">
+          <el-row>
+          <img  style="position: relative; width: 10%; height: 10%; left: 45%" src="../../assets/img/file.jpeg">
+          </el-row>
+          <el-row>
+            <el-link  :href="require('../../assets/img/template.xlsx')" download="模版文件.xlsx"  style="left: 44%">
+              上传文件
+            </el-link>
+          </el-row>
+          <el-row >
+            <div align="center">
+              <el-button class="reset-student" type="primary" @click="turntocheck" round>
+                下一步
+              </el-button>
+            </div>
+          </el-row>
+        </div>
+
+
+
+        <div v-if="thirdstep">
+          <el-row>
+            <div align="center">
+              <el-button class="reset-student" type="primary" @click="turntosuccess" round>
+                下一步
+              </el-button>
+            </div>
+          </el-row>
+        </div>
+
+        <div v-if="fourthstep">
+        </div>
+
+      </el-dialog>
 
       <div class="retrieval  criteria Style">
         <el-table
@@ -202,6 +262,12 @@
   export default {
     data() {
       return {
+        fourthstep:false,
+        firststep:true,
+        secondstep:false,
+        thirdstep:false,
+        finishstep:0,
+        batchAddVisible:false,
         path:'',
         hidedelete:false,
        students:[],
@@ -279,7 +345,34 @@
       }
     },
     methods: {
+
+      turntosuccess(){
+        this.finishstep=4;
+      this.thirdstep=false;
+        this.fourthstep=true;
+      },
+
+      turntocheck(){
+        this.finishstep=2;
+        this.secondstep=false;
+        this.thirdstep=true;
+      },
+
+      turntoUpload(){
+        this.finishstep=1;
+        this.firststep=false;
+        this.secondstep=true;
+      },
+      downloadTempalteFile(){
+
+        let url='../../assets/img/file.jpeg';
+
+        window.open(url);
+      },
       //性别显示转换
+      showBatchAdd(){
+        this.batchAddVisible=true;
+      },
       formatSex: function (row, column) {
         return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
       },

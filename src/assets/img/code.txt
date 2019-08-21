@@ -1,0 +1,47 @@
+<el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
+      <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
+        <el-form-item style="margin-left: 4rem;" label="机构名称" prop="insName">
+          <el-input v-model="addForm.insName" auto-complete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-col :span="12">
+            <span style="margin-right: 1rem;">机构类型</span>
+            <el-select v-model="addForm.type" placeholder="请选择">
+              <el-option
+                      v-for="item in options"
+                      :key="parseInt(item.value)"
+                      :label="item.label"
+                      :value="parseInt(item.value)">
+              </el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="12">
+            <span style="margin-right: 1rem;">负责人</span>
+            <el-input v-model="addForm.principal" auto-complete="off"></el-input>
+          </el-col>
+        </el-form-item>
+
+        <el-form-item>
+          <el-col :span="12">
+            <span style="margin-right: 1rem;">登录账号</span>
+            <el-input v-model="addForm.insAccount" auto-complete="off"></el-input>
+          </el-col>
+          <el-col :span="12">
+            <span style="margin-right: 1rem;">登录密码</span>
+            <el-input v-model="addForm.insPassword" auto-complete="off"></el-input>
+          </el-col>
+        </el-form-item>
+
+        <el-form-item style="margin-left: 4rem;" label="联系电话">
+          <el-input v-model="addForm.mobile" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item style="margin-left: 4rem;" label="所在地区">
+          <v-distpicker @selected="onSelected"></v-distpicker>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="addFormVisible = false">返回</el-button>
+        <el-button type="primary" @click.native="addSubmit" :loading="addLoading">保存</el-button>
+      </div>
+    </el-dialog>

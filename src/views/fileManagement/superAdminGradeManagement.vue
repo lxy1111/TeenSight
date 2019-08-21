@@ -46,6 +46,7 @@
 
         </el-form-item>
         <el-form-item><el-button type="primary" round @click="Search">重置</el-button></el-form-item>
+        <el-form-item><el-button type="primary" round @click="Search">批量导入</el-button></el-form-item>
       </el-form>
 
 
