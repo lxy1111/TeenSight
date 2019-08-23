@@ -288,7 +288,8 @@
       getInstitutionList(){
         let para = {
           page: this.page,
-          pageSize: 10
+          pageSize: 10,
+          type: 1
         };
         this.listLoading = true;
         console.log("hihihi");

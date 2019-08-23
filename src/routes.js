@@ -23,6 +23,7 @@ import superAdminMessageList from "./views/messageManagement/superAdminMessageLi
 import superAdminStudentDetail from "./views/fileManagement/superAdminStudentDetail";
 import register from "./views/register";
 import globalvariable from './global'
+import superAdminCheckInstitute from "./views/fileManagement/superAdminCheckInstitute";
 
 
 
@@ -53,6 +54,7 @@ let routes = [
     iconCls: 'el-icon-message',//图标样式class
     children: [
     { path: '/superAdmin/superAdminInstituteManagement', component: superAdminInstitueManagement, name: '政府机构信息' },
+        { path: '/superAdmin/superAdminCheckInstitute', component: superAdminCheckInstitute, name: '筛查机构信息' },
     { path: '/superAdmin/superAdminSchoolManagement', component: superAdminSchoolManagement, name: '学校信息' },
     { path: '/superAdmin/superAdminGradeManagement', component: superAdminGradeManagement, name: '年级信息' },
     { path: '/superAdmin/superAdminStudentsManagement', component: superAdminStudentsManagement, name: '学生信息' },

@@ -54,13 +54,15 @@
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="state"
+                  prop="audit"
                   label="状态"
                   show-overflow-tooltip align="center">
-            <el-tag type="success"
+            <template slot-scope="scope">
+            <el-tag    :type="scope.row.audit === 0 ? 'danger' : 'success'"
                     effect="dark">
-                   已认证
+              {{scope.row.audit==0 ? '未认证' : '已认证'}}
             </el-tag>
+            </template>
           </el-table-column>
           <el-table-column
                   prop="id"
@@ -87,7 +89,7 @@
         </el-form-item>
 
         <el-form-item label="负责人">
-            <el-input v-model="editForm.principal" auto-complete="off"></el-input>
+            <el-input v-model="editForm.schoolPrincipal" auto-complete="off"></el-input>
         </el-form-item>
 
         <el-form-item label="联系电话">
@@ -160,6 +162,7 @@
   export default {
     data() {
       return {
+        state:'',
         hidedelete: false,
         filters: {
           name: ''
@@ -184,9 +187,6 @@
         gendervalue: '性别-全部',
         users: [],
         schools:[
-          {
-            state:'已通过'
-          }
         ],
         total: 0,
         page: 1,
@@ -207,7 +207,7 @@
           schoolAccount:'',
           location:'',
           schoolPhone:'',
-          principal:'',
+          schoolPrincipal:'',
           id:'',
           schoolPassword:''
         },
@@ -269,6 +269,7 @@
                   let schoolslist=res.data.result.items;
                   this.total=res.data.result.items.length;
                   for(let i=0;i<this.total;i++){
+                    let state='';
                      let school={
                         schoolName: schoolslist[i].schoolName,
                         schoolType: schoolslist[i].schoolType,
@@ -276,7 +277,9 @@
                         location: schoolslist[i].province+schoolslist[i].city+schoolslist[i].county,
                         schoolPassword:schoolslist[i].schoolPassword,
                        schoolPhone: schoolslist[i].schoolPhone,
-                       id:schoolslist[i].id
+                       schoolPrincipal:schoolslist[i].schoolPrincipal,
+                       id:schoolslist[i].id,
+                       audit:schoolslist[i].audit
                      }
                      this.schools.push(school);
                   }

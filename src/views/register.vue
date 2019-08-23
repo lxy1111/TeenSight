@@ -1,5 +1,5 @@
 <template >
-    <el-form v-if="!clickNextStep" style="border-radius: 1rem; margin-bottom: 0;
+    <el-form v-if="!clickNextStep&&isSchool" style="border-radius: 1rem; margin-bottom: 0;
                     position: absolute; top: 50%; margin-top: 0;
                     transform: translate(0,-50%); height: 26rem;
                     margin-left: 0; left: 60%; width: 25%"
@@ -21,8 +21,8 @@
         <el-form-item prop="schoolPhone">
             <el-input class="login-input" type="text" v-model="ruleForm.schoolPhone" auto-complete="off" placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item prop="principal">
-            <el-input class="login-input" type="text" v-model="ruleForm.principal" auto-complete="off" placeholder="请输入负责人"></el-input>
+        <el-form-item prop="schoolPrincipal">
+            <el-input class="login-input" type="text" v-model="ruleForm.schoolPrincipal" auto-complete="off" placeholder="请输入负责人"></el-input>
         </el-form-item>
         <el-form-item style="width:100%;">
             <el-button type="primary" style="width:100%;
@@ -37,6 +37,46 @@
             <el-link style="color: #787FFA;" @click="showlogin" >快捷登录</el-link>
         </el-form-item>
     </el-form>
+
+    <el-form v-else-if="!clickNextStep" style="border-radius: 1rem; margin-bottom: 0;
+                    position: absolute; top: 50%; margin-top: 0;
+                    transform: translate(0,-50%); height: 26rem;
+                    margin-left: 0; left: 60%; width: 25%"
+             :model="ruleForm2" :rules="rules3" ref="ruleForm2"
+             label-position="left" label-width="0px" class="demo-ruleForm login-container">
+        <el-tabs style="margin-bottom: 1rem;" v-model="activeName" >
+            <el-tab-pane label="填写账户信息"  disabled name="first"></el-tab-pane>
+            <el-tab-pane label="登记筛查机构信息"  disabled name="second"></el-tab-pane>
+        </el-tabs>
+        <el-form-item prop="insAccount">
+            <el-input class="login-input" type="text" v-model="ruleForm2.insAccount" auto-complete="off" placeholder="设置您的用户名"></el-input>
+        </el-form-item>
+        <el-form-item prop="insPassword">
+            <el-input class="login-input" type="password" v-model="ruleForm2.insPassword" auto-complete="off" placeholder="设置您的登录密码"></el-input>
+        </el-form-item>
+        <el-form-item prop="repeatPassword">
+            <el-input class="login-input" type="password" v-model="ruleForm2.repeatPassword" auto-complete="off" placeholder="请再次输入您的登录密码"></el-input>
+        </el-form-item>
+        <el-form-item prop="mobile">
+            <el-input class="login-input" type="text" v-model="ruleForm2.mobile" auto-complete="off" placeholder="请输入手机号"></el-input>
+        </el-form-item>
+        <el-form-item prop="principal">
+            <el-input class="login-input" type="text" v-model="ruleForm2.principal" auto-complete="off" placeholder="请输入负责人"></el-input>
+        </el-form-item>
+        <el-form-item style="width:100%;">
+            <el-button type="primary" style="width:100%;
+                      background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
+                      border-radius: 2rem; border: 0;box-shadow: 0 5px 10px #7980FA;"
+                       @click.native.prevent="nextStep2"
+                       :loading="logining" >下一步</el-button>
+            <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
+        </el-form-item>
+        <el-form-item style="text-align: right; margin-top: -1.5rem;">
+            <el-link disabled style="color: #B8B8B8;">已有账号？</el-link>
+            <el-link style="color: #787FFA;" @click="showlogin" >快捷登录</el-link>
+        </el-form-item>
+    </el-form>
+
     <el-form v-else-if="isSchool"  style="border-radius: 1rem; margin-bottom: 0;
                     position: absolute; top: 50%; margin-top: 0;
                     transform: translate(0,-50%); height: 26rem;
@@ -67,7 +107,7 @@
             <el-button type="primary" style="width:100%;
                       background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
                       border-radius: 2rem; border: 0;box-shadow: 0 5px 10px #7980FA;"
-                       @click.native.prevent="register"
+                       @click.native.prevent="registerSchool"
                        :loading="logining" >完成</el-button>
             <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
         </el-form-item>
@@ -84,19 +124,24 @@
             <el-link style="color: #787FFA;" @click="showlogin" >快捷登录</el-link>
         </el-form-item>
     </el-form>
+
+
     <el-form v-else  style="border-radius: 1rem; margin-bottom: 0;
                     position: absolute; top: 50%; margin-top: 0;
                     transform: translate(0,-50%); height: 65%;
                     margin-left: 0; left: 60%; width: 25%"
-             :model="ruleForm" :rules="rules2" ref="ruleForm"
+             :model="ruleForm2" :rules="rules3" ref="ruleForm2"
              label-position="left" label-width="0px" class="demo-ruleForm login-container">
         <el-tabs style="margin-bottom: 1rem;" v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="填写账户信息" disabled name="first"></el-tab-pane>
-            <el-tab-pane label="登记学校信息" disabled name="second"></el-tab-pane>
+            <el-tab-pane label="登记筛查机构信息" disabled name="second"></el-tab-pane>
         </el-tabs>
-        <el-form-item prop="schoolName">
+        <el-form-item prop="insName">
+            <el-input class="login-input" v-model="ruleForm2.insName" type="text"  auto-complete="off" placeholder="机构名称"></el-input>
+        </el-form-item>
+        <el-form-item prop="schoolList">
             <el-select
-                    v-model="ruleForm.schoolName"
+                    v-model="ruleForm2.schoolList"
                     multiple
                     filterable
                     remote
@@ -112,24 +157,14 @@
                 </el-option>
             </el-select>
         </el-form-item>
-        <el-form-item prop="schoolType">
-            <el-select v-model="ruleForm.schoolType" placeholder= "选择学校类型">
-                <el-option
-                        v-for="item in options"
-                        :key="parseInt(item.value)"
-                        :label="item.label"
-                        :value="parseInt(item.value)">
-                </el-option>
-            </el-select>
-        </el-form-item>
         <el-form-item  prop="county">
-            <v-distpicker @selected="onSelected"></v-distpicker>
+            <v-distpicker @selected="onSelected2"></v-distpicker>
         </el-form-item>
         <el-form-item style="width:100%;" >
             <el-button type="primary" style="width:100%;
                       background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
                       border-radius: 2rem; border: 0;box-shadow: 0 5px 10px #7980FA;"
-                       @click.native.prevent="register"
+                       @click.native.prevent="registerInstitute"
                        :loading="logining" >完成</el-button>
             <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
         </el-form-item>
@@ -149,7 +184,7 @@
 </template>
 
 <script>
-    import {requestLogin, requestRegister} from '../api/api';
+    import {requestLogin, requestRegisterInstitute, requestRegisterSchool} from '../api/api';
     import VDistpicker from 'v-distpicker'
     //import NProgress from 'nprogress'
     import {
@@ -181,7 +216,20 @@
                     city:'',
                     county:'',
                     schoolPhone:'',
-                    principal:''
+                    schoolPrincipal:''
+                },
+                ruleForm2: {
+                    insName:'',
+                    insAccount: '',
+                    insPassword: '',
+                    repeatPassword:'',
+                    schoolList:'',
+                    province:'',
+                    city:'',
+                    county:'',
+                    mobile:'',
+                    principal:'',
+                    type:2
                 },
                 options: [{
                     value: '0',
@@ -220,6 +268,32 @@
                     ],
                     schoolPhone:[
                         {required: true, message: '请输入电话', trigger: 'blur'}
+                    ],
+                    schoolPrincipal:[
+                        {required: true, message: '请输入负责人', trigger: 'blur'}
+                    ]
+                },
+                rules3: {
+                    insAccount: [
+                        { required: true, message: '请输入账号', trigger: 'blur' },
+                        //{ validator: validaePass }
+                    ],
+                    insPassword: [
+                        { required: true, message: '请输入密码', trigger: 'blur' },
+                        //{ validator: validaePass2 }
+                    ],
+                    repeatPassword: [
+                        { required: true, message: '请输入密码', trigger: 'blur' },
+                        //{ validator: validaePass2 }
+                    ],
+                    county:[
+                        {required: true, message: '请选择地区', trigger: 'blur'}
+                    ],
+                    mobile:[
+                        {required: true, message: '请输入电话', trigger: 'blur'}
+                    ],
+                    principal:[
+                        {required: true, message: '请输入负责人', trigger: 'blur'}
                     ]
                 },
                 checked: true
@@ -267,21 +341,34 @@
                     this.schools = [];
                 }
             },
-            register(){
+            registerSchool(){
                 this.$refs.ruleForm.validate((valid) => {
                     if(valid){
-                       requestRegister(this.ruleForm).then(data=>{
+                       requestRegisterSchool(this.ruleForm).then(data=>{
                                console.log(data);
                            this.$message({
                                message: '注册成功!',
                                type: 'success'
                            });
                            this.$router.push({path: '/login'});
-
                            }
-                       ).catch(
-
                        )
+                    }
+                });
+            },
+
+            registerInstitute(){
+                this.$refs.ruleForm2.validate((valid) => {
+                    if(valid){
+                        requestRegisterInstitute(this.ruleForm2).then(data=>{
+                                console.log(data);
+                                this.$message({
+                                    message: '注册成功!',
+                                    type: 'success'
+                                });
+                                this.$router.push({path: '/login'});
+                            }
+                        )
                     }
                 });
             },
@@ -289,6 +376,12 @@
                 this.ruleForm.province=data.province.value;
                 this.ruleForm.city=data.city.value;
                 this.ruleForm.county=data.area.value;
+                console.log(data)
+            },
+            onSelected2(data) {
+                this.ruleForm2.province=data.province.value;
+                this.ruleForm2.city=data.city.value;
+                this.ruleForm2.county=data.area.value;
                 console.log(data)
             },
             lastStep(){
@@ -299,6 +392,30 @@
             nextStep(){
                 this.$refs.ruleForm.validate((valid) => {
                     if(this.ruleForm.schoolPassword!=this.ruleForm.repeatPassword){
+                        this.$message.error('两次输入密码不一致!');
+                        return ;
+                    }
+                    if(valid){
+                        this.clickNextStep=true;
+                        this.activeName="second";
+                        this.firstdisable=true;
+                        console.log(this.allschool)
+
+                        for(let i=0;i<this.allschool.length;i++){
+                            let school ={
+                                value:this.allschool[i].id,
+                                label:this.allschool[i].schoolName
+                            }
+                            this.schoolist.push(school);
+                        }
+                    }
+                });
+
+            },
+            nextStep2(){
+                this.schoolList=[];
+                this.$refs.ruleForm2.validate((valid) => {
+                    if(this.ruleForm2.insPassword!=this.ruleForm2.repeatPassword){
                         this.$message.error('两次输入密码不一致!');
                         return ;
                     }

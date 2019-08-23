@@ -13,7 +13,9 @@ export const removeSchool = params => { return axios.get(`/api/school/removeScho
 
 export const removeTeacher = params => { return axios.get(`/api/teacher/removeTeacher`, {params:params});};
 
-export const requestRegister = params => { return axios.post(`/api/user/schoolRegister`, params).then(res => res.data); };
+export const requestRegisterSchool = params => { return axios.post(`/api/user/schoolRegister`, params).then(res => res.data); };
+
+export const requestRegisterInstitute = params => { return axios.post(`/api/user/institutionRegister`, params).then(res => res.data); };
 
 export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
 

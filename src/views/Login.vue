@@ -166,7 +166,7 @@
                 sessionStorage.setItem('user', JSON.stringify(user));
                 this.$router.push({ path: '/superAdminInstituteManagement' });
               }
-            });
+            })
           } else {
             console.log('error submit!!');
             return false;
