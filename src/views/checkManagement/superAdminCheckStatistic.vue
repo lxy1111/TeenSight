@@ -4,14 +4,21 @@
     <div class="retrieval  criteria Style">
       <el-form :inline="true" :model="filters">
         <el-row type="flex" >
-          <el-form-item>
-            <el-input  size="small" v-model="input" placeholder="请输入内容">
+          <el-form-item label="学校">
+<!--            <el-input  size="small" v-model="input" placeholder="请选择学校名称">-->
 
-            </el-input>
+<!--            </el-input>-->
+            <el-select size="small" v-model="form.versionStatus" placeholder="请选择">
+              <el-option
+                      v-for="item in versionOptions"
+                      :label="item.label"
+                      :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item>
-         <img src="../../assets/img/search.png" @click="handlesearch">
-          </el-form-item>
+<!--          <el-form-item>-->
+<!--            <img src="../../assets/img/search.png" @click="handlesearch">-->
+<!--          </el-form-item>-->
             <el-form-item prop="planeOnlineDateSecond" label="年级">
               <el-select size="small" v-model="form.versionStatus" placeholder="请选择">
                 <el-option
@@ -30,7 +37,9 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item prop="planeOnlineDateSecond" label="普查时间范围">
+          <el-form-item><el-button type="primary" round @click="handlesearch">搜索</el-button></el-form-item>
+
+          <el-form-item prop="planeOnlineDateSecond" label="普查时间范围">
               <el-select size="small" v-model="form.versionStatus" placeholder="请选择">
                 <el-option
                         v-for="item in versionOptions"
@@ -679,7 +688,7 @@
 
 </script>
 
-<style scoped>
+<style>
   .Style{
     margin-left: 0px;
     padding: 20px;
@@ -729,5 +738,8 @@
     width: 400px;
     height: 400px;
   }
-
+  .el-form-item__label {
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+  }
 </style>

@@ -140,7 +140,8 @@
             <el-input class="login-input" v-model="ruleForm2.insName" type="text"  auto-complete="off" placeholder="机构名称"></el-input>
         </el-form-item>
         <el-form-item prop="schoolList">
-            <el-select
+            <el-select style="width: 100%;"
+                       class="select-school-name"
                     v-model="ruleForm2.schoolList"
                     multiple
                     filterable
@@ -639,5 +640,8 @@
         -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
         transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
         transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    }
+    .select-school-name .el-input {
+        width: 100%;
     }
 </style>

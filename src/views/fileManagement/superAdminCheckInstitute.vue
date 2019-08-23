@@ -600,7 +600,7 @@
     .login-input{
         position: relative;
         height: 2rem;
-        width: 60%;
+        width: 100%;
         border-radius: 2rem;
         border-top: 1px;
         border-left: 1px;
