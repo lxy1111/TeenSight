@@ -2,46 +2,17 @@
   <section>
     <!--工具条-->
     <div class="retrieval  criteria Style">
-      <el-form :inline="true" :model="filters">
+      <el-form :model="selectForm" :inline="true" >
         <el-form-item>
-          <el-select
-                  v-model="value"
-                  multiple
-                  filterable
-                  remote
-                  reserve-keyword
-                  placeholder="搜索机构名称"
-                  :remote-method="remoteMethod"
-                  :loading="loading">
-            <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
+          <el-input placeholder="请输入机构名称" v-model="selectForm.institutionName"></el-input>
         </el-form-item>
         <el-form-item>
-          <v-distpicker @selected="onSelected"></v-distpicker>
+         <v-distpicker @selected="onSelected"></v-distpicker>
         </el-form-item>
         <el-form-item>
-          <el-select
-                  v-model="value"
-                  multiple
-                  filterable
-                  remote
-                  reserve-keyword
-                  placeholder="搜索机构账号"
-                  :remote-method="remoteMethod"
-                  :loading="loading">
-            <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
+          <el-input placeholder="请输入机构账号" v-model="selectForm.institutionAccount"></el-input>
         </el-form-item>
+        <el-form-item><el-button type="primary" round @click="handleselect">查询</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="">重置</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="handleAdd">添加机构</el-button></el-form-item>
       </el-form>
@@ -66,17 +37,28 @@
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="mobile"
-                  label="联系电话"
-                  show-overflow-tooltip align="center">
-          </el-table-column>
+                prop="mobile"
+                label="联系电话"
+                show-overflow-tooltip align="center">
+        </el-table-column>
+          <el-table-column
+                prop="audit"
+                label="状态"
+                show-overflow-tooltip align="center">
+          <template slot-scope="scope">
+            <el-button  :disabled="scope.row.audit==0 ? false : true"  :type="scope.row.audit == 0 ? 'danger' : 'success'"
+                       effect="dark" @click="auditInstitute(scope.$index,scope.row)">
+              {{scope.row.audit==0 ? '未认证' : '已认证'}}
+            </el-button>
+          </template>
+        </el-table-column>
           <el-table-column
                   prop="id"
                   label="操作"
                   show-overflow-tooltip align="center">
             <template slot-scope="scope">
               <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleShow(scope.$index, scope.row)">详情</el-link>
-              <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleShow(scope.$index, scope.row)">修改</el-link>
+              <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-link>
               <el-link style="color: #7980FA; margin-right: 1rem;" size="small"  @click="handleDel(scope.$index, scope.row)">删除</el-link>
             </template>
           </el-table-column>
@@ -105,7 +87,7 @@
         </el-form-item>
 
         <el-form-item label="所在位置">
-            <el-input v-model="editForm.province+editForm.city+editForm.county" auto-complete="off" :disabled="editable"></el-input>
+          <v-distpicker :disabled="editable" :province="editForm.province" :city="editForm.city" :area="editForm.county" @selected="onSelected2"></v-distpicker>
         </el-form-item>
 
         <el-form-item label="登陆账号">
@@ -119,7 +101,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="editFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="editSubmit" :loading="editLoading">修改</el-button>
+        <el-button type="primary" v-if="!editable" @click.native="editSubmit" :loading="editLoading">修改</el-button>
       </div>
     </el-dialog>
 
@@ -167,7 +149,7 @@
     editUser,
     addUser,
     getInstitutionList,
-    addInstitutes, getInstituteDetail,removeInstitute
+    addInstitutes, getInstituteDetail, removeInstitute, editInstitutes
   } from '../../api/api';
   import VDistpicker from 'v-distpicker'
   export default {
@@ -176,6 +158,12 @@
     },
     data() {
       return {
+        selectForm:{
+          page:1,
+          pageSize:1000000,
+          institutionName:'',
+          type:1
+        },
         disabledelete:false,
         editable: true,
         options: [{
@@ -270,10 +258,26 @@
       }
     },
     methods: {
+      handleselect(){
+        if(this.selectForm.institutionName==''){
+          this.selectForm.institutionName=null;
+        }
+        getInstitutionList(this.selectForm).then((res)=>{
+          this.institutes=res.data.result.items;
+          this.total=res.data.result.totalNum;
+
+        })
+      },
       onSelected(data) {
-        this.addForm.province=data.province.value;
-        this.addForm.city=data.city.value;
-        this.addForm.county=data.area.value;
+        this.selectForm.province=data.province.value;
+        this.selectForm.city=data.city.value;
+        this.selectForm.county=data.area.value;
+        console.log(data)
+      },
+      onSelected2(data) {
+        this.editForm.province=data.province.value;
+        this.editForm.city=data.city.value;
+        this.editForm.county=data.area.value;
         console.log(data)
       },
       //性别显示转换
@@ -349,6 +353,36 @@
       handleEdit: function (index, row) {
         this.editFormVisible = true;
         this.editable=false;
+        let detail = Object.assign({}, row);
+        let id=detail.id;
+        let para={
+          id:id
+        }
+        getInstituteDetail(para)
+                .then(res => {
+                  console.log(res);
+                  this.editForm=res.data.result;
+                  //this.myInfo = successResponse.data.datas[0];
+                })
+                .catch(failResponse => {
+                  console.log("fail");
+                });
+
+      },
+      remoteMethod(query) {
+        console.log(this.schoolist);
+        if (query !== '') {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.schools = this.schoolist.filter(item => {
+              return item.label.toLowerCase()
+                      .indexOf(query.toLowerCase()) > -1;
+            });
+          }, 200);
+        } else {
+          this.schools = [];
+        }
       },
 
 
@@ -363,7 +397,7 @@
         getInstituteDetail(para)
                 .then(res => {
                   console.log(res);
-               this.editForm=res.data.result;
+                  this.editForm=res.data.result;
                   //this.myInfo = successResponse.data.datas[0];
                 })
                 .catch(failResponse => {
@@ -382,8 +416,7 @@
               this.editLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.editForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              editUser(para).then((res) => {
+              editInstitutes(para).then((res) => {
                 this.editLoading = false;
                 //NProgress.done();
                 this.$message({
@@ -392,7 +425,7 @@
                 });
                 this.$refs['editForm'].resetFields();
                 this.editFormVisible = false;
-                this.getUsers();
+                this.getInstitutionList();
               });
             });
           }
@@ -410,14 +443,23 @@
               // para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
               addInstitutes(req).then((res) => {
                 this.addLoading = false;
-                //NProgress.done();
-                this.$message({
-                  message: '提交成功',
-                  type: 'success'
-                });
-                this.$refs['addForm'].resetFields();
-                this.addFormVisible = false;
+                if(res.result==true) {
+                  //NProgress.done();
+                  this.$message({
+                    message: '提交成功',
+                    type: 'success'
+                  });
+                  this.$refs['addForm'].resetFields();
+                  this.addFormVisible = false;
+                }
+                else{
+                  this.$message({
+                    message:res.codeMessage,
+                    type:"error"
+                  })
+                }
                 this.getInstitutionList();
+                this.$refs['addForm'].resetFields();
               });
             });
           }

@@ -2,32 +2,18 @@
   <section>
     <!--工具条-->
     <div class="retrieval  criteria Style">
-      <el-form :inline="true" :model="filters">
+      <el-form :inline="true" :model="selectForm">
         <el-form-item>
-          <el-select
-                  v-model="value"
-                  multiple
-                  filterable
-                  remote
-                  reserve-keyword
-                  placeholder="请搜索学校名称"
-                  :remote-method="remoteMethod"
-                  :loading="loading">
-            <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
+         <el-input placeholder="请输入学校名称" v-model="selectForm.schoolName">
+         </el-input>
         </el-form-item>
+        <el-form-item><el-button type="primary" round @click="handleselect">搜索</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="Search">重置</el-button></el-form-item>
       </el-form>
-
       <div class="retrieval  criteria Style">
         <el-table
                 ref="multipleTable"
-                :data="schools"
+                :data="schoolsList"
                 stripe="true"
                 tooltip-effect="dark"
                 style="width: 100%"
@@ -41,7 +27,20 @@
           <el-table-column
                   prop="schoolType"
                   label="学校类型"
+            show-overflow-tooltip align="center">
+            <template slot-scope="scope">
+              {{scope.row.schoolType==0? '小学':scope.row.schoolType==1?'初中':'高中'}}
+            </template>
+
+          </el-table-column>
+          <el-table-column
+                  prop="county"
+                  label="位置"
                   show-overflow-tooltip align="center">
+            <template slot-scope="scope">
+              {{scope.row.province+scope.row.city+scope.row.county}}
+            </template>
+
           </el-table-column>
           <el-table-column
                   prop="schoolAccount"
@@ -49,27 +48,22 @@
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="location"
-                  label="学校位置"
-                  show-overflow-tooltip align="center">
-          </el-table-column>
-          <el-table-column
                   prop="audit"
                   label="状态"
                   show-overflow-tooltip align="center">
             <template slot-scope="scope">
-            <el-tag    :type="scope.row.audit === 0 ? 'danger' : 'success'"
-                    effect="dark">
+            <el-button  :disabled="scope.row.audit==0 ? false : true"  :type="scope.row.audit === 0 ? 'danger' : 'success'"
+                    effect="dark" @click="auditSchool(scope.$index,scope.row)">
               {{scope.row.audit==0 ? '未认证' : '已认证'}}
-            </el-tag>
+            </el-button>
             </template>
           </el-table-column>
-          <el-table-column
+          <el-table-column v-if="isSuperAdmin"
                   prop="id"
                   label="操作"
                   show-overflow-tooltip align="center">
             <template slot-scope="scope">
-          <el-link style="color: #7980FA; " size="small" @click="handleEdit(scope.row)">详情</el-link>
+          <el-link style="color: #7980FA; " size="small" @click="handleEdit(scope.row)">编辑</el-link>
           <el-link style="color: #7980FA; " size="small" v-if="!hidedelete" @click="handleDel(scope.$index, scope.row)">删除</el-link>
             </template>
           </el-table-column>
@@ -88,6 +82,16 @@
             <el-input v-model="editForm.schoolName" auto-complete="off"></el-input>
         </el-form-item>
 
+        <el-form-item label="学校类型">
+          <el-select v-model="editForm.schoolType" placeholder="请选择">
+            <el-option
+                    v-for="item in schooltype"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="负责人">
             <el-input v-model="editForm.schoolPrincipal" auto-complete="off"></el-input>
         </el-form-item>
@@ -97,7 +101,7 @@
         </el-form-item>
 
         <el-form-item label="所在位置">
-          <el-input v-model="editForm.location" auto-complete="off"></el-input>
+          <v-distpicker :disabled="editable" :province="editForm.province" :city="editForm.city" :area="editForm.county" @selected="onSelected"></v-distpicker>
         </el-form-item>
 
         <el-form-item label="登陆账号">
@@ -156,12 +160,19 @@
     editUser,
     addUser,
     getSchoolListPage,
-    removeSchool
+    removeSchool, modifySchool, editSchool
   } from '../../api/api';
 
   export default {
     data() {
       return {
+        isSuperAdmin:true,
+        selectForm:{
+          page:1,
+          pageSize:1000000,
+          schoolName:'',
+        },
+        schoolsList:[],
         state:'',
         hidedelete: false,
         filters: {
@@ -184,6 +195,16 @@
             value:'性别-全部'
           }
         ],
+        schooltype:[{
+          value:1,
+          label:'小学'
+        },{
+          value:2,
+          label:'初中'
+        },{
+          value:3,
+          label:'高中'
+        }],
         gendervalue: '性别-全部',
         users: [],
         schools:[
@@ -242,6 +263,51 @@
       }
     },
     methods: {
+      handleselect(){
+        if(this.selectForm.schoolName==''){
+          this.selectForm.schoolName=null;
+        }
+        getSchoolListPage(this.selectForm).then((res)=>{
+          this.schoolsList=res.data.result.items;
+          this.total=res.data.result.totalNum;
+        })
+      },
+      onSelected(data) {
+        this.editForm.province=data.province.value;
+        this.editForm.city=data.city.value;
+        this.editForm.county=data.area.value;
+        console.log(data)
+      },
+
+      auditSchool:function(index,row){
+        if(row.audit==0){
+          this.$confirm('确认要通过审核吗?', '提示', {
+            type: 'warning'
+          }).then(()=>{
+           let para=this.schoolsList[index];
+           para.audit=1;
+           modifySchool(para).then((res)=>{
+             console.log(res);
+             if(res.result==true) {
+               this.$message({
+                 message: '审核成功',
+                 type: 'success'
+               })
+               this.getSchoolsList();
+             }
+             else{
+               this.$message({
+                 message:'审核失败',
+                 type:'error'
+               })
+             }
+           })
+
+
+          })
+        }
+
+      },
       //性别显示转换
       formatSex: function (row, column) {
         return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
@@ -251,10 +317,24 @@
         this.getSchoolsList();
       },
       getSchoolsList(){
-        let para = {
-          page: this.page,
-          pageSize: 10
-        };
+        var user = sessionStorage.getItem('user');
+        user=JSON.parse(user);
+        var institute={};
+        let para={};
+        if(user.type==2||user.type==1) {
+          var institute = sessionStorage.getItem('institute');
+          institute = JSON.parse(institute);
+          para = {
+            page: this.page,
+            pageSize: 10,
+            institutionId:institute.insDetail.id
+          };
+        }else {
+          para = {
+            page: this.page,
+            pageSize: 10
+          };
+        }
         this.listLoading = true;
         console.log("hihihi");
         this.schools=[];
@@ -266,23 +346,24 @@
                 .then(res => {
                   console.log("login get success");
                   console.log(res);
-                  let schoolslist=res.data.result.items;
-                  this.total=res.data.result.items.length;
-                  for(let i=0;i<this.total;i++){
-                    let state='';
-                     let school={
-                        schoolName: schoolslist[i].schoolName,
-                        schoolType: schoolslist[i].schoolType,
-                        schoolAccount: schoolslist[i].schoolAccount,
-                        location: schoolslist[i].province+schoolslist[i].city+schoolslist[i].county,
-                        schoolPassword:schoolslist[i].schoolPassword,
-                       schoolPhone: schoolslist[i].schoolPhone,
-                       schoolPrincipal:schoolslist[i].schoolPrincipal,
-                       id:schoolslist[i].id,
-                       audit:schoolslist[i].audit
-                     }
-                     this.schools.push(school);
-                  }
+                  this.schoolsList=res.data.result.items;
+                  //let schoolslist=this.schoolsList;
+                  this.total=res.data.result.totalNum;
+                  // for(let i=0;i<this.total;i++){
+                  //   let state='';
+                  //    // let school={
+                  //    //    schoolName: schoolslist[i].schoolName,
+                  //    //    schoolType: schoolslist[i].schoolType,
+                  //    //    schoolAccount: schoolslist[i].schoolAccount,
+                  //    //    location: schoolslist[i].province+schoolslist[i].city+schoolslist[i].county,
+                  //    //    schoolPassword:schoolslist[i].schoolPassword,
+                  //    //   schoolPhone: schoolslist[i].schoolPhone,
+                  //    //   schoolPrincipal:schoolslist[i].schoolPrincipal,
+                  //    //   id:schoolslist[i].id,
+                  //    //   audit:schoolslist[i].audit
+                  //    // }
+                  //    this.schools.push(school);
+                  // }
                   console.log(this.schools[0].city);
                   //this.myInfo = successResponse.data.datas[0];
                 })
@@ -331,6 +412,7 @@
       handleEdit: function (row) {
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
+
       },
       //显示新增界面
       handleAdd: function () {
@@ -351,8 +433,7 @@
               this.editLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.editForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              editUser(para).then((res) => {
+              editSchool(para).then((res) => {
                 this.editLoading = false;
                 //NProgress.done();
                 this.$message({
@@ -361,7 +442,7 @@
                 });
                 this.$refs['editForm'].resetFields();
                 this.editFormVisible = false;
-                this.getUsers();
+                this.getSchoolsList();
               });
             });
           }
@@ -425,12 +506,20 @@
         user = JSON.parse(user);
         if(user.type==0){
           this.hidedelete=false;
+
+          this.isSuperAdmin=true;
         }
         else if(user.type==1){
           this.hidedelete=true;
+          this.isSuperAdmin=false;
+        }
+        else if(user.type==2){
+          this.hidedelete=true;
+          this.isSuperAdmin=false;
         }
         else if(user.type==3){
           this.hidedelete=true;
+          this.isSuperAdmin=fasle;
         }
       }
     }

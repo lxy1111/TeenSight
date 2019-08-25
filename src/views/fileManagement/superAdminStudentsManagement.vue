@@ -2,67 +2,26 @@
   <section>
     <!--工具条-->
     <div class="retrieval  criteria Style">
-      <el-form style="margin-left: 2rem;" :inline="true" :model="filters">
-        <el-form-item label="姓名"></el-form-item>
+      <el-form style="margin-left: 2rem;" :inline="true" :model="selectForm">
         <el-form-item>
-          <el-select
-                  v-model="value"
-                  multiple
-                  filterable
-                  remote
-                  reserve-keyword
-                  placeholder="搜索学生姓名"
-                  :remote-method="remoteMethod"
-                  :loading="loading">
-            <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
+          <el-input placeholder="请输入学生姓名" v-model="selectForm.studentName"></el-input>
         </el-form-item>
-        <el-form-item label="学校"></el-form-item>
         <el-form-item>
-          <el-select
-                  v-model="value"
-                  multiple
-                  filterable
-                  remote
-                  reserve-keyword
-                  placeholder="搜索学校名称"
-                  :remote-method="remoteMethod"
-                  :loading="loading">
-            <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
+         <el-input placeholder="请输入学校名称"></el-input>
         </el-form-item>
-        <el-form-item label="年级"></el-form-item>
         <el-form-item>
-          <el-select  size="small" v-model="form.versionStatus" placeholder="请选择">
-            <el-option
-                    v-for="item in versionOptions"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
+          <el-input placeholder="请输入年级"  v-model="selectForm.gradeNo"></el-input>
         </el-form-item>
-        <el-form-item label="班级"></el-form-item>
         <el-form-item>
-          <el-select  size="small" v-model="form.versionStatus" placeholder="请选择">
-            <el-option
-                    v-for="item in versionOptions"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
+          <el-input placeholder="请输入班级" v-model="selectForm.classNo"></el-input>
         </el-form-item>
 
         <el-form-item>
+          <el-button class="reset-student" type="primary" round @click="handleselect">
+            <span style="font-size: 0.9rem;font-family: PingFang SC;">
+              搜索
+            </span>
+          </el-button>
           <el-button class="reset-student" type="primary" round @click="Search">
             <span style="font-size: 0.9rem;font-family: PingFang SC;">
               重置
@@ -80,7 +39,7 @@
 
       </el-form>
 
-      <el-dialog title="批量导入" :visible.sync="batchAddVisible" :close-on-click-modal="false">
+      <el-dialog  title="批量导入" :visible.sync="batchAddVisible" @closed="handlebeforeclose" >
         <el-steps align-center  :space="200" :active.sync="finishstep" finish-status="success">
           <el-step  title="下载模版"></el-step>
           <el-step  title="上传文件"></el-step>
@@ -106,16 +65,9 @@
         </div>
 
         <div v-if="secondstep">
-          <el-row>
-          <img  style="position: relative; width: 10%; height: 10%; left: 45%" src="../../assets/img/file.jpeg">
-          </el-row>
-          <el-row>
-            <el-link  :href="require('../../assets/img/template.xlsx')" download="模版文件.xlsx"  style="left: 44%">
-              上传文件
-            </el-link>
-          </el-row>
           <el-row >
             <div align="center">
+              <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload"/>
               <el-button class="reset-student" type="primary" @click="turntocheck" round>
                 下一步
               </el-button>
@@ -128,6 +80,9 @@
         <div v-if="thirdstep">
           <el-row>
             <div align="center">
+              <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
+                <el-table-column v-for="item of tableHeader" :prop="item" :label="item" :key="item"/>
+              </el-table>
               <el-button class="reset-student" type="primary" @click="turntosuccess" round>
                 下一步
               </el-button>
@@ -149,6 +104,25 @@
                 tooltip-effect="dark"
                 @selection-change="handleSelectionChange">
           <el-table-column
+                  type="selection"
+                  >
+          </el-table-column>
+          <el-table-column
+                  prop="schoolName"
+                  label="所在学校"
+                  show-overflow-tooltip align="center">
+          </el-table-column>
+          <el-table-column
+                  prop="gradeNo"
+                  label="年级"
+                  show-overflow-tooltip align="center">
+          </el-table-column>
+          <el-table-column
+                  prop="classNo"
+                  label="班级"
+                  show-overflow-tooltip align="center">
+          </el-table-column>
+          <el-table-column
                   prop="stuName"
                   label="姓名"
                   show-overflow-tooltip
@@ -163,22 +137,12 @@
                   prop="sex"
                   label="性别"
                   show-overflow-tooltip align="center">
+            <template slot-scope="scope">
+              {{scope.row.sex==0?'男':'女'}}
+            </template>
           </el-table-column>
-          <el-table-column
-                  prop="gradeNo"
-                  label="年级"
-                  show-overflow-tooltip align="center">
-          </el-table-column>
-          <el-table-column
-                  prop="classNo"
-                  label="班级"
-                  show-overflow-tooltip align="center">
-          </el-table-column>
-          <el-table-column
-                  prop="schoolName"
-                  label="所在学校"
-                  show-overflow-tooltip align="center">
-          </el-table-column>
+
+
           <el-table-column
                   prop="id"
                   label="操作"
@@ -189,12 +153,29 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-button @click.native="generateStudentCode">生成学生二维码</el-button>
+        <el-button type="primary" @click.native="" >生成普查二维码</el-button>
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
         </el-pagination>
       </div>
     </div>
 
     <!--工具条-->
+
+     <el-dialog title="学生信息二维码"  style="border: 0;" :visible.sync="qrcodevisible" :close-on-click-modal="false">
+      <el-row  v-for="item in studentInfoCodeList">
+        <span >学生姓名:{{item.req.stuName}} 身份证号:{{item.req.idCard}}</span>
+        <el-image
+                style="width: 100px; height: 100px;left:20%"
+                :src="item.url">
+        </el-image>
+      </el-row>
+
+
+
+
+
+     </el-dialog>
 
     <!--编辑界面-->
     <el-dialog title="编辑" style="border: 0;" v-model="editFormVisible" :close-on-click-modal="false">
@@ -257,40 +238,69 @@
 <script>
   import util from '../../common/js/util'
   //import NProgress from 'nprogress'
-  import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser,getStudentsList } from '../../api/api';
+  import {
+    getUserListPage,
+    removeUser,
+    batchRemoveUser,
+    editUser,
+    addUser,
+    getStudentsList,
+    addStudents, removeStudent, getStudentCode
+  } from '../../api/api';
+
+
+  import UploadExcelComponent from './uploadExcel'
+
+  import XLSX from 'xlsx'
 
   export default {
+    components: { UploadExcelComponent },
     data() {
       return {
-        fourthstep:false,
-        firststep:true,
-        secondstep:false,
-        thirdstep:false,
-        finishstep:0,
-        batchAddVisible:false,
-        path:'',
-        hidedelete:false,
-       students:[],
+        myid:'',
+        selectForm:{
+          page:1,
+          pageSize:1000000
+        },
+        loading: false,
+        excelData: {
+          header: null,
+          results: null
+        },
+        tableData: [],
+        tableHeader: [],
+
+        fourthstep: false,
+        firststep: true,
+        secondstep: false,
+        thirdstep: false,
+        finishstep: 0,
+        batchAddVisible: false,
+        path: '',
+        hidedelete: false,
+        students: [],
         filters: {
           name: ''
         },
-        gender:[{
-          label:'男',
-          value:'男'
+        gender: [{
+          label: '男',
+          value: '男'
         },
           {
-            label:'女',
-            value:'女'
+            label: '女',
+            value: '女'
           },
           {
-            label:'未知',
-            value:'未知'
+            label: '未知',
+            value: '未知'
           },
           {
-            label:'性别-全部',
-            value:'性别-全部'
+            label: '性别-全部',
+            value: '性别-全部'
           }
         ],
+        studentInfoCodeList:[],
+        qrcodevisible:false,
         gendervalue: '性别-全部',
         users: [],
         total: 0,
@@ -302,35 +312,29 @@
         editLoading: false,
         editFormRules: {
           name: [
-            { required: true, message: '请输入姓名', trigger: 'blur' }
+            {required: true, message: '请输入姓名', trigger: 'blur'}
           ]
         },
         //编辑界面数据
         editForm: {
-          id: 0,
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
         },
 
-        form:{
-          classes:'',
+        form: {
+          classes: '',
           gender: '',
-          version:'',
-          versionStatus:'',
-          planeOnlineDateFirst:'',
-          planeOnlineDateSecond:'',
-          actualOnlineDateFirst:'',
-          actualOnlineDateSecond:'',
+          version: '',
+          versionStatus: '',
+          planeOnlineDateFirst: '',
+          planeOnlineDateSecond: '',
+          actualOnlineDateFirst: '',
+          actualOnlineDateSecond: '',
         },
 
         addFormVisible: false,//新增界面是否显示
         addLoading: false,
         addFormRules: {
           name: [
-            { required: true, message: '请输入姓名', trigger: 'blur' }
+            {required: true, message: '请输入姓名', trigger: 'blur'}
           ]
         },
         //新增界面数据
@@ -340,45 +344,154 @@
           age: 0,
           birth: '',
           addr: ''
-        }
+        },
+        multipleselection:[]
 
       }
     },
     methods: {
+      handleselect(){
+        if(this.selectForm.studentName==''){
+          this.selectForm.studentName=null;
+        }
+        if(this.selectForm.classNo==''){
+          this.selectForm.classNo=null;
+        }
+        if(this.selectForm.gradeNo==''){
+          this.selectForm.gradeNo=null;
+        }
+        getStudentsList(this.selectForm).then((res)=>{
+          this.students=res.data.result.items;
+          this.total=res.data.result.totalNum;
+        })
+      },
+      generateStudentCode(){
+        let codelist=[];
+          for(let i=0;i<this.multipleselection.length;i++){
+            let id=this.multipleselection[i].id;
+            codelist.push(id);
+          }
+          let para={
+            codeList:codelist
+          }
+          getStudentCode(para).then((res)=>{
 
-      turntosuccess(){
-        this.finishstep=4;
-      this.thirdstep=false;
-        this.fourthstep=true;
+            console.log(res);
+            this.$message({
+              message:'成功',
+              type:'success'
+            })
+            this.qrcodevisible=true;
+           this.studentInfoCodeList=res.result;
+
+          })
+
       },
 
-      turntocheck(){
-        this.finishstep=2;
+
+      handleSelectionChange(val){
+        this.multipleselection=val;
+      },
+      handlebeforeclose(){
+        this.finishstep=0;
+        this.firststep=true;
         this.secondstep=false;
-        this.thirdstep=true;
+        this.thirdstep=false;
+        this.fourthstep=false;
+
+      },
+      turntosuccess() {
+        this.finishstep = 4;
+        this.thirdstep = false;
+        this.fourthstep = true;
+        for(let i=0;i<this.tableData.length;i++) {
+          let student = {
+            classNo: this.tableData[i].班级,
+            gradeNo: this.tableData[i].年级,
+            height: this.tableData[i].身高,
+            idCard: this.tableData[i].身份证号,
+            number: this.tableData[i].学生学号,
+            parentName: this.tableData[i].家长姓名,
+            parentPhone: this.tableData[i].家长电话,
+            schoolId: this.myid,
+            sex: this.tableData[i].学生性别=='男'? 0:1,
+            stuAccount: this.tableData[i].学生账号,
+            stuName: this.tableData[i].学生姓名,
+            stuPassword: this.tableData[i].学生密码,
+            weight: this.tableData[i].体重,
+          }
+          addStudents(student).then((res) => {
+                    console.log(res);
+                   if(res.result!=true){
+                     this.$message({
+                       message:'出错',
+                       type:'error'
+                     })
+                   }
+
+
+            this.getStudentsList();
+                  }
+          )
+        }
+        this.$message({
+          message: '添加成功',
+          type: 'success'
+        })
+        this.getStudentsList();
       },
 
-      turntoUpload(){
-        this.finishstep=1;
-        this.firststep=false;
-        this.secondstep=true;
-      },
-      downloadTempalteFile(){
+      turntocheck() {
+        this.finishstep = 2;
+        this.secondstep = false;
+        this.thirdstep = true;
 
-        let url='../../assets/img/file.jpeg';
+      },
+
+      turntoUpload() {
+        this.finishstep = 1;
+        this.firststep = false;
+        this.secondstep = true;
+
+      },
+      beforeUpload(file) {
+        // 取文件大小，限制文件大小超过1mb
+        const isLt1M = file.size / 1024 / 1024 < 1
+        if (isLt1M) {
+          return true
+        }
+        this.$message({
+          message: '上传的Excel文件不能大于1mb.',
+          type: 'warning'
+        })
+        return false
+      },
+      // 文件读取后执行
+      handleSuccess({ results, header }) {
+        this.tableData = results
+        this.tableHeader = header
+        this.$message({
+          message:'上传成功，点击下一步预览数据',
+          type:'success'
+        })
+
+      },
+      downloadTempalteFile() {
+
+        let url = '../../assets/img/file.jpeg';
 
         window.open(url);
       },
       //性别显示转换
-      showBatchAdd(){
-        this.batchAddVisible=true;
+      showBatchAdd() {
+        this.batchAddVisible = true;
       },
       formatSex: function (row, column) {
         return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.getUsers();
+        this.getStudentsList();
       },
       //获取用户列表
       getUsers() {
@@ -395,11 +508,34 @@
           //NProgress.done();
         });
       },
-      getStudentsList(){
-        let para = {
-          page: this.page,
-          pageSize: 10
-        };
+      getStudentsList() {
+        var user = sessionStorage.getItem('user');
+        user=JSON.parse(user);
+        var institute={};
+        let para={};
+        if(user.type==2||user.type==1) {
+          var institute = sessionStorage.getItem('institute');
+          institute = JSON.parse(institute);
+          para = {
+            page: this.page,
+            pageSize: 10,
+            institutionId:institute.insDetail.id
+          };
+        }else if(user.type==0){
+         para = {
+           page: this.page,
+           pageSize: 10
+         }}
+         else{
+            var schoolinfo=sessionStorage.getItem('schoolinfo');
+            schoolinfo= JSON.parse(schoolinfo);
+            this.myid=schoolinfo.schoolId;
+            para={
+              page: this.page,
+              pageSize: 10,
+              schoolId:schoolinfo.schoolId
+            }
+          }
         this.listLoading = true;
         console.log("hihihi");
         // 发送请求:将数据返回到一个回到函数中
@@ -409,127 +545,137 @@
                 .then(res => {
                   console.log("login get success");
                   console.log(res);
-                  this.students=res.data.result.items;
-                  this.total=res.data.result.items.length;
+                  this.students = res.data.result.items;
+                  this.total = res.data.result.totalNum;
                   //this.myInfo = successResponse.data.datas[0];
                 })
                 .catch(failResponse => {
                   console.log("login get fail");
                 });
       },
-      //删除
-      handleDel: function (index, row) {
-        this.$confirm('确认删除该记录吗?', '提示', {
-          type: 'warning'
-        }).then(() => {
-          this.listLoading = true;
-          //NProgress.start();
-          let para = { id: row.id };
-          removeUser(para).then((res) => {
-            this.listLoading = false;
-            //NProgress.done();
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            });
-            this.getUsers();
-          });
-        }).catch(() => {
 
-        });
-      },
-      //显示编辑界面
-      handleEdit: function (index, row) {
-       // this.editFormVisible = true;
-      //  this.editForm = Object.assign({}, row);
-        this.$router.push({ path: '/'+this.path+'/'+this.path+'StudentDetail' });
-      },
-      //显示新增界面
-      handleAdd: function () {
-        this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
-        };
-      },
-      //编辑
-      editSubmit: function () {
-        this.$refs.editForm.validate((valid) => {
-          if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
-              this.editLoading = true;
-              //NProgress.start();
-              let para = Object.assign({}, this.editForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              editUser(para).then((res) => {
-                this.editLoading = false;
-                //NProgress.done();
-                this.$message({
-                  message: '提交成功',
-                  type: 'success'
-                });
-                this.$refs['editForm'].resetFields();
-                this.editFormVisible = false;
-                this.getUsers();
-              });
-            });
-          }
-        });
-      },
-      //新增
-      addSubmit: function () {
-        this.$refs.addForm.validate((valid) => {
-          if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
-              this.addLoading = true;
-              //NProgress.start();
-              let para = Object.assign({}, this.addForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              addUser(para).then((res) => {
-                this.addLoading = false;
-                //NProgress.done();
-                this.$message({
-                  message: '提交成功',
-                  type: 'success'
-                });
-                this.$refs['addForm'].resetFields();
-                this.addFormVisible = false;
-                this.getUsers();
-              });
-            });
-          }
-        });
-      },
-      selsChange: function (sels) {
-        this.sels = sels;
-      },
-      //批量删除
-      batchRemove: function () {
-        var ids = this.sels.map(item => item.id).toString();
-        this.$confirm('确认删除选中记录吗？', '提示', {
-          type: 'warning'
-        }).then(() => {
-          this.listLoading = true;
-          //NProgress.start();
-          let para = { ids: ids };
-          batchRemoveUser(para).then((res) => {
-            this.listLoading = false;
-            //NProgress.done();
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            });
-            this.getUsers();
-          });
-        }).catch(() => {
 
+
+
+    //删除
+    handleDel: function (index, row) {
+      this.$confirm('确认删除该记录吗?', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.listLoading = true;
+        //NProgress.start();
+        let para = {id: row.id};
+        removeStudent(para).then((res) => {
+          this.listLoading = false;
+          //NProgress.done();
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+          this.getStudentsList();
         });
-      }
+      }).catch(() => {
+
+      });
     },
-    mounted() {
+    //显示编辑界面
+    handleEdit: function (index, row) {
+      // this.editFormVisible = true;
+      //  this.editForm = Object.assign({}, row);
+      this.editForm = Object.assign({}, row);
+      this.$router.push({path: '/' + this.path + '/' + this.path + 'StudentDetail',
+        query:{
+        id:this.editForm.id
+        }
+      });
+    },
+    //显示新增界面
+    handleAdd: function () {
+      this.addFormVisible = true;
+      this.addForm = {
+        name: '',
+        sex: -1,
+        age: 0,
+        birth: '',
+        addr: ''
+      };
+    },
+    //编辑
+    editSubmit: function () {
+      this.$refs.editForm.validate((valid) => {
+        if (valid) {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.editLoading = true;
+            //NProgress.start();
+            let para = Object.assign({}, this.editForm);
+            para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
+            editUser(para).then((res) => {
+              this.editLoading = false;
+              //NProgress.done();
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              });
+              this.$refs['editForm'].resetFields();
+              this.editFormVisible = false;
+              this.getUsers();
+            });
+          });
+        }
+      });
+    },
+
+    //新增
+    addSubmit: function () {
+      this.$refs.addForm.validate((valid) => {
+        if (valid) {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.addLoading = true;
+            //NProgress.start();
+            let para = Object.assign({}, this.addForm);
+            para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
+            addUser(para).then((res) => {
+              this.addLoading = false;
+              //NProgress.done();
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              });
+              this.$refs['addForm'].resetFields();
+              this.addFormVisible = false;
+              this.getUsers();
+            });
+          });
+        }
+      });
+    },
+    selsChange: function (sels) {
+      this.sels = sels;
+    },
+    //批量删除
+    batchRemove: function () {
+      var ids = this.sels.map(item => item.id).toString();
+      this.$confirm('确认删除选中记录吗？', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.listLoading = true;
+        //NProgress.start();
+        let para = {ids: ids};
+        batchRemoveUser(para).then((res) => {
+          this.listLoading = false;
+          //NProgress.done();
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+          this.getUsers();
+        });
+      }).catch(() => {
+
+      });
+    }
+    },
+    mounted(){
      // this.getUsers();
       this.getStudentsList();
       var user = sessionStorage.getItem('user');
@@ -537,20 +683,19 @@
         user = JSON.parse(user);
         if(user.type==0){
           this.path='superAdmin';
-          this.hidedelete=false;
+          this.hidedelete=true;
         }
-        else if(user.type==1){
+        else if(user.type==1||user.type==2){
           this.path='institute';
           this.hidedelete=true;
         }
-        else if(user.type==2){
+        else {
           this.path='school';
-          this.hidedelete=true;
+          this.hidedelete=false;
         }
       }
     }
-  }
-
+}
 </script>
 
 <style>
@@ -669,6 +814,22 @@
     border-radius: 20px;
     background-color: #fff;
     overflow: hidden;
+  }
+  .excel-upload-input{
+    display: none;
+    z-index: -9999;
+  }
+  .drop{
+    border: 2px dashed #bbb;
+    width: 600px;
+    height: 160px;
+    line-height: 160px;
+    margin: 0 auto;
+    font-size: 24px;
+    border-radius: 5px;
+    text-align: center;
+    color: #bbb;
+    position: relative;
   }
 
 </style>

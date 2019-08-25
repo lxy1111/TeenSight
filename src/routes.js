@@ -24,6 +24,7 @@ import superAdminStudentDetail from "./views/fileManagement/superAdminStudentDet
 import register from "./views/register";
 import globalvariable from './global'
 import superAdminCheckInstitute from "./views/fileManagement/superAdminCheckInstitute";
+import myAccount from "./views/fileManagement/myAccount";
 
 
 
@@ -69,8 +70,8 @@ let routes = [
     name: '普查管理',
     iconCls: 'fa fa-id-card-o',
     children: [
-    { path: '/superAdmin/superAdminCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' }
-    // { path: '/superAdminCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
+    { path: '/superAdmin/superAdminCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' },
+    { path: '/superAdminCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
 ]
 },
 {
@@ -93,6 +94,24 @@ let routes = [
     { path: '/superAdmin/superAdminMessageList', component: superAdminMessageList, name: '消息列表' }
 ]
 },
+    {
+        path: '/institute',
+        component: Home,
+        name: '筛查机构',
+        children: [
+            { path: '/institute/myAccount', component: myAccount, name: '个人信息' }
+        ],
+        hidden:true
+},
+    {
+        path: '/school',
+        component: Home,
+        name: '学校',
+        children: [
+            { path: '/school/myAccount', component: myAccount, name: '个人信息' }
+        ],
+        hidden:true
+    },
     {
         path: '/institute',
         component: Home,
@@ -123,7 +142,6 @@ let routes = [
         name: '档案管理',
         iconCls: 'el-icon-message',//图标样式class
         children: [
-            { path: '/school/schoolSchoolManagement', component: superAdminSchoolManagement, name: '学校信息' },
             { path: '/school/schoolGradeManagement', component: superAdminGradeManagement, name: '年级信息' },
             { path: '/school/schoolStudentsManagement', component: superAdminStudentsManagement, name: '学生信息' },
             { path: '/school/schoolStudentDetail', component: superAdminStudentDetail,hidden:true,name:'个人信息'},
@@ -137,8 +155,8 @@ let routes = [
         name: '普查管理',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/school/schoolCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' }
-            // { path: '/superAdminCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
+            { path: '/school/schoolCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' },
+            { path: '/school/schoolCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
         ]
     },
     {

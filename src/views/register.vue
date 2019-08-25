@@ -391,6 +391,7 @@
               this.seconddisable=true;
             },
             nextStep(){
+                this.schoolist=[];
                 this.$refs.ruleForm.validate((valid) => {
                     if(this.ruleForm.schoolPassword!=this.ruleForm.repeatPassword){
                         this.$message.error('两次输入密码不一致!');
@@ -414,7 +415,7 @@
 
             },
             nextStep2(){
-                this.schoolList=[];
+                this.schoolist=[];
                 this.$refs.ruleForm2.validate((valid) => {
                     if(this.ruleForm2.insPassword!=this.ruleForm2.repeatPassword){
                         this.$message.error('两次输入密码不一致!');

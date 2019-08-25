@@ -7,25 +7,25 @@
       <div class="retrieval  criteria Style">
       <el-table
               ref="multipleTable"
-              :data="tableData3"
+              :data="circlebroadcast"
               stripe
               tooltip-effect="dark"
               style="width: 100%"
               @selection-change="handleSelectionChange">
         <el-table-column
-                prop="name"
-                label="名称"
+                prop="id"
+                label="序号"
                 show-overflow-tooltip
                 align="center">
         </el-table-column>
         <el-table-column
-                prop="address"
-                label="排序次序"
+                prop="url"
+                label="图片"
                 show-overflow-tooltip align="center">
         </el-table-column>
         <el-table-column
-                prop="address"
-                label="备注"
+                prop="modifyTime"
+                label="修改时间"
                 show-overflow-tooltip align="center">
         </el-table-column>
         <el-table-column
@@ -109,40 +109,12 @@
 <script>
   import util from '../../common/js/util'
   //import NProgress from 'nprogress'
-  import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser } from '../../api/api';
+  import {getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getCircleBroadcastList} from '../../api/api';
 
   export default {
     data() {
       return {
-        tableData3: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
+        circlebroadcast:[],
         filters: {
           name: ''
         },
@@ -237,6 +209,21 @@
           this.total = res.data.total;
           this.users = res.data.users;
           this.listLoading = false;
+          //NProgress.done();
+        });
+      },
+      getCircleBroadcastList() {
+        let para = {
+          page: this.page,
+          pageSize:10
+        };
+        this.listLoading = true;
+        //NProgress.start();
+        getCircleBroadcastList(para).then((res) => {
+          this.total = res.data.result.totalNum;
+          this.listLoading = false;
+          console.log(res);
+          this.circlebroadcast=res.data.result.items;
           //NProgress.done();
         });
       },
@@ -352,7 +339,8 @@
       }
     },
     mounted() {
-      this.getUsers();
+      this.getCircleBroadcastList();
+     // this.getUsers();
     }
   }
 

@@ -2,48 +2,18 @@
     <section>
         <!--工具条-->
         <div class="retrieval  criteria Style">
-            <el-form :inline="true" :model="filters">
+            <el-form :inline="true" :model="selectForm">
                 <el-form-item>
-                    <el-select
-                            v-model="value"
-                            multiple
-                            filterable
-                            remote
-                            reserve-keyword
-                            placeholder="搜索机构名称"
-                            :remote-method="remoteMethod"
-                            :loading="loading">
-                        <el-option
-                                v-for="item in options"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                        </el-option>
-                    </el-select>
+                    <el-input placeholder="请输入机构名称" v-model="selectForm.institutionName"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <v-distpicker @selected="onSelected"></v-distpicker>
                 </el-form-item>
                 <el-form-item>
-                    <el-select
-                            v-model="value"
-                            multiple
-                            filterable
-                            remote
-                            reserve-keyword
-                            placeholder="搜索机构账号"
-                            :remote-method="remoteMethod"
-                            :loading="loading">
-                        <el-option
-                                v-for="item in options"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                        </el-option>
-                    </el-select>
+                    <el-input placeholder="请输入机构账号" v-model="selectForm.institutionAccount"></el-input>
                 </el-form-item>
+                <el-form-item><el-button type="primary" round @click="handleselect">搜索</el-button></el-form-item>
                 <el-form-item><el-button type="primary" round @click="">重置</el-button></el-form-item>
-                <el-form-item><el-button type="primary" round @click="handleAdd">添加机构</el-button></el-form-item>
             </el-form>
 
             <div class="retrieval  criteria Style">
@@ -71,12 +41,23 @@
                             show-overflow-tooltip align="center">
                     </el-table-column>
                     <el-table-column
+                            prop="audit"
+                            label="状态"
+                            show-overflow-tooltip align="center">
+                        <template slot-scope="scope">
+                            <el-button  :disabled="scope.row.audit==0 ? false : true"  :type="scope.row.audit === 0 ? 'danger' : 'success'"
+                                       effect="dark" @click="auditInstitute(scope.$index,scope.row)">
+                                {{scope.row.audit==0 ? '未认证' : '已认证'}}
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
                             prop="id"
                             label="操作"
                             show-overflow-tooltip align="center">
                         <template slot-scope="scope">
                             <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleShow(scope.$index, scope.row)">详情</el-link>
-                            <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleShow(scope.$index, scope.row)">修改</el-link>
+                            <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-link>
                             <el-link style="color: #7980FA; margin-right: 1rem;" size="small"  @click="handleDel(scope.$index, scope.row)">删除</el-link>
                         </template>
                     </el-table-column>
@@ -105,12 +86,12 @@
                 </el-form-item>
 
                 <el-form-item label="所在位置">
-                    <el-input class="login-input" v-model="editForm.province+editForm.city+editForm.county" auto-complete="off" :disabled="editable"></el-input>
+                    <v-distpicker :disabled="editable" :province="editForm.province" :city="editForm.city" :area="editForm.county" @selected="onSelected2"></v-distpicker>
                 </el-form-item>
 
-                <el-form-item label="所含学校">
-                    <el-select style="width: 120%"
-                            v-model="editForm.schoolList"
+                <el-form-item label="所含学校" >
+                    <el-select :disabled="editable" style="width: 120%"
+                            v-model="schoolsNameList"
                             multiple
                             filterable
                             remote
@@ -138,7 +119,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="editFormVisible = false">取消</el-button>
-                <el-button type="primary" @click.native="editSubmit" :loading="editLoading">修改</el-button>
+                <el-button type="primary" v-if="!editable" @click.native="editSubmit" :loading="editLoading">修改</el-button>
             </div>
         </el-dialog>
 
@@ -186,7 +167,7 @@
         editUser,
         addUser,
         getInstitutionList,
-        addInstitutes, getInstituteDetail, removeInstitute, getSchoolListPage
+        addInstitutes, getInstituteDetail, removeInstitute, getSchoolListPage, editInstitutes
     } from '../../api/api';
     import VDistpicker from 'v-distpicker'
     export default {
@@ -195,6 +176,13 @@
         },
         data() {
             return {
+                selectForm:{
+                    page:1,
+                    pageSize:1000000,
+                    institutionName:'',
+                    type:2,
+                    institutionAccount:''
+                },
                 schoolist:[],
                 allschool:[],
                 schools:[],
@@ -229,6 +217,8 @@
                         value:'性别-全部'
                     }
                 ],
+                schoolsNameList:[],
+                schoolsIDList:[],
                 gendervalue: '性别-全部',
                 users: [],
                 total: 0,
@@ -255,6 +245,7 @@
                     province: "",
                     type: "",
                     schoolList:"",
+                    schoolNames:'',
                     id:''
                 },
 
@@ -292,6 +283,66 @@
             }
         },
         methods: {
+            handleselect(){
+                if(this.selectForm.institutionName==''){
+                    this.selectForm.institutionName=null;
+                }
+                getInstitutionList(this.selectForm).then((res)=>{
+                    this.institutes=res.data.result.items;
+                    this.total=res.data.result.totalNum;
+
+                })
+            },
+            auditInstitute:function(index,row){
+                if(row.audit==0){
+                    this.$confirm('确认要通过审核吗?', '提示', {
+                        type: 'warning'
+                    }).then(()=>{
+                        let detail = Object.assign({}, row);
+                        let id=detail.id;
+                        let para={
+                            id:id
+                        }
+                        getInstituteDetail(para)
+                            .then(res => {
+                                console.log(res);
+                                this.editForm=res.data.result;
+                                //  this.editForm.schooist=[];
+                                // for(let i=0;i<res.data.result.schoolList.length;i++){
+                                //     this.editForm.schoolList.push(res.data.result.schoolList[i].id);
+                                // }
+                                console.log(this.editForm);
+                                let school=this.editForm.schoolList;
+                                console.log(school);
+                                console.log(this.editForm)
+                                this.editForm.audit=1;
+                                editInstitutes(this.editForm).then((res)=>{
+                                    console.log(res);
+                                    if(res.result==true) {
+                                        this.$message({
+                                            message: '审核成功',
+                                            type: 'success'
+                                        })
+                                        this.getInstitutionList();
+                                    }
+                                    else{
+                                        this.$message({
+                                            message:'审核失败',
+                                            type:'error'
+                                        })
+                                    }
+                                })
+                                //this.myInfo = successResponse.data.datas[0];
+                            })
+                            .catch(failResponse => {
+                                console.log("fail");
+                            });
+
+
+
+                    })
+                }
+            },
             remoteMethod(query) {
                 console.log(this.schoolist);
                 if (query !== '') {
@@ -311,6 +362,12 @@
                 this.addForm.province=data.province.value;
                 this.addForm.city=data.city.value;
                 this.addForm.county=data.area.value;
+                console.log(data)
+            },
+            onSelected2(data) {
+                this.editForm.province=data.province.value;
+                this.editForm.city=data.city.value;
+                this.editForm.county=data.area.value;
                 console.log(data)
             },
             //性别显示转换
@@ -386,6 +443,54 @@
             handleEdit: function (index, row) {
                 this.editFormVisible = true;
                 this.editable=false;
+                this.schoolist=[];
+                for(let i=0;i<this.allschool.length;i++){
+                    let school ={
+                        value:this.allschool[i].id,
+                        label:this.allschool[i].schoolName
+                    }
+                    this.schoolist.push(school);
+                }
+
+
+                let detail = Object.assign({}, row);
+                let id=detail.id;
+                let para={
+                    id:id
+                }
+                getInstituteDetail(para)
+                    .then(res => {
+                        console.log(res);
+                        this.editForm=res.data.result;
+                        //  this.editForm.schooist=[];
+                        // for(let i=0;i<res.data.result.schoolList.length;i++){
+                        //     this.editForm.schoolList.push(res.data.result.schoolList[i].id);
+                        // }
+                        console.log(this.editForm);
+                        let school=this.editForm.schoolList;
+                        console.log(school);
+                        this.editForm.schoolList=[];
+                        let schoollist=[];
+                        this.schoolsNameList=[];
+                        this.schoolsIDList=[];
+                        for(let i=0;i<school.length;i++){
+                            let school2={
+                                id:school[i].id,
+                                schoolName:school[i].schoolName
+                            }
+                            schoollist.push(school2);
+                            this.schoolsNameList.push(school[i].schoolName);
+                            this.schoolsIDList.push(school[i].id);
+                        }
+
+                        this.editForm.schoolList=schoollist;
+                        console.log(this.editForm)
+
+                        //this.myInfo = successResponse.data.datas[0];
+                    })
+                    .catch(failResponse => {
+                        console.log("fail");
+                    });
             },
 
 
@@ -420,10 +525,14 @@
                         console.log(school);
                         this.editForm.schoolList=[];
                         let schoollist=[];
-                        for(let i=0;i<school.length;i++){
+                        let schoolnames=[];
+                        this.schoolsNameList=[];
+                        this.schoolsIDList=[];
+                        for(let i=0;i<school.length;i++) {
                             schoollist.push(school[i].schoolName);
+                            this.schoolsNameList.push(school[i].schoolName);
+                            this.schoolsIDList.push(school[i].id)
                         }
-                        this.editForm.schoolList=schoollist;
                         console.log(this.editForm)
 
                         //this.myInfo = successResponse.data.datas[0];
@@ -443,18 +552,33 @@
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.editLoading = true;
                             //NProgress.start();
+
+                            let schoollist=[];
+                            for(let i=0;i<this.schoolsNameList.length;i++){
+                                let school={
+                                    id:this.schoolsIDList[i]
+                                }
+                                schoollist.push(school);
+                            }
+                            this.editForm.schoolList= schoollist;
                             let para = Object.assign({}, this.editForm);
-                            para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-                            editUser(para).then((res) => {
+                            editInstitutes(para).then((res) => {
                                 this.editLoading = false;
                                 //NProgress.done();
-                                this.$message({
-                                    message: '提交成功',
-                                    type: 'success'
-                                });
-                                this.$refs['editForm'].resetFields();
-                                this.editFormVisible = false;
-                                this.getUsers();
+                                if(res.result==true) {
+                                    this.$message({
+                                        message: '修改成功',
+                                        type: 'success'
+                                    });
+                                    this.$refs['editForm'].resetFields();
+                                    this.editFormVisible = false;
+                                    this.getInstitutionList();
+                                }else{
+                                    this.$message({
+                                        message:res.codeMessage,
+                                        type:'error'
+                                    })
+                                }
                             });
                         });
                     }

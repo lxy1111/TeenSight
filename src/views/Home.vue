@@ -1,4 +1,6 @@
 <template>
+
+
 	<el-row class="container">
 		<el-col :span="24" class="header">
 			<el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
@@ -23,7 +25,7 @@
 				<el-dropdown trigger="hover">
 					<span style="color: black" class="el-dropdown-link userinfo-inner"><img src="../assets/user.png" /> {{sysUserName}}</span>
 					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item>我的消息</el-dropdown-item>
+						<el-dropdown-item @click.native="showMyAccount">我的信息</el-dropdown-item>
 						<el-dropdown-item>设置</el-dropdown-item>
 						<el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
 					</el-dropdown-menu>
@@ -87,6 +89,20 @@
 	export default {
 		data() {
 			return {
+				editFormVisible:false,
+				editForm: {
+					city: "",
+					county: "",
+					insAccount: "",
+					insName: "",
+					insPassword: "",
+					mobile: "",
+					principal: "",
+					province: "",
+					type: "",
+					schoolList:"",
+					id:''
+				},
 				role:'',
 				sysName:'VUEADMIN',
 				collapsed:false,
@@ -105,6 +121,17 @@
 			}
 		},
 		methods: {
+			showMyAccount(){
+				var user = sessionStorage.getItem('user');
+				user = JSON.parse(user);
+                if(user.type==2||user.type==1){
+					var institute = sessionStorage.getItem('institute');
+					this.$router.push({path: '/institute/myAccount'});
+				}
+                else if(user.type!=0){
+					this.$router.push({path: '/school/myAccount'});
+				}
+			},
 			onSubmit() {
 				console.log('submit!');
 			},
@@ -122,7 +149,8 @@
 				this.$confirm('确认退出吗?', '提示', {
 					//type: 'warning'
 				}).then(() => {
-					sessionStorage.removeItem('user');
+
+					sessionStorage.clear();
 					_this.$router.push('/login');
 				}).catch(() => {
 
@@ -147,7 +175,7 @@
 				if(user.type==0){
 					this.role='/superAdmin'
 				}
-				else if(user.type==1){
+				else if(user.type==1||user.type==2){
 					this.role='/institute'
 				}
 				else if(user.type==3){

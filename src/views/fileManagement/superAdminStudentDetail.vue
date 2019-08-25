@@ -6,46 +6,269 @@
             <el-tab-pane label="屈光档案" name="sightdata" ></el-tab-pane>
             <el-tab-pane label="历史记录" name="history"></el-tab-pane>
         </el-tabs>
+        <div v-if="showSight" class="retrieval  criteria Style">
+            <el-row type="flex" >
+                <el-form :inline="true" :model="filters">
+                    <el-form-item label="搜索学生姓名">
+                    </el-form-item>
+                    <el-form-item>
+                        <el-select
+                                v-model="value"
+                                multiple
+                                filterable
+                                remote
+                                reserve-keyword
+                                placeholder="输入学生姓名搜索"
+                                :remote-method="remoteMethod"
+                                :loading="loading">
+                            <el-option
+                                    v-for="item in options"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+            </el-row>
+            <el-row type="flex" >
+                <el-form :inline="true" :model="filters">
+                    <el-form-item label="采集日期">
+                    </el-form-item>
+                </el-form>
+            </el-row>
+            <el-row type="flex" >
+                <el-form :inline="true" :model="filters">
+                    <el-form-item label="第一次">
+                    </el-form-item>
+                    <el-form-item>
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="第二次">
+                    </el-form-item>
+                    <el-form-item>
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="第三次">
+                    </el-form-item>
+                    <el-form-item>
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item>
+                </el-form>
+            </el-row>
+
+            <el-breadcrumb separator=">" class="bread-title">
+                <el-breadcrumb-item>近视筛查</el-breadcrumb-item>
+            </el-breadcrumb>
+
+            <el-table
+                    ref="multipleTable"
+                    :data="tableData3"
+                    stripe
+                    tooltip-effect="dark"
+                    style="width: 100%"
+                    @selection-change="handleSelectionChange">
+                <el-table-column
+                        prop="eyes"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="address"
+                        label="裸眼视力"
+                        show-overflow-tooltip align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="address"
+                        label="戴镜远视力"
+                        show-overflow-tooltip align="center">
+                    <el-table-column
+                            label="戴镜类型"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="视力"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                </el-table-column>
+
+                <el-table-column
+                        prop="address"
+                        label="电脑验光(小瞳)"
+                        show-overflow-tooltip align="center">
+                    <el-table-column
+                            label="球镜"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="柱镜"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="轴向"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                </el-table-column>
+            </el-table>
+
+
+            <br>
+
+            <el-breadcrumb separator=">" class="bread-title">
+                <el-breadcrumb-item>屈光筛查</el-breadcrumb-item>
+            </el-breadcrumb>
+            <el-table
+                    ref="multipleTable"
+                    :data="tableData3"
+                    stripe
+                    tooltip-effect="dark"
+                    style="width: 100%"
+                    @selection-change="handleSelectionChange">
+                <el-table-column
+                        prop="eyes"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="address"
+                        label="睫状肌麻痹后电脑验光"
+                        show-overflow-tooltip align="center">
+
+
+                    <el-table-column
+                            label="球镜"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="柱镜"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="轴向"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                </el-table-column>
+                <el-table-column
+                        prop="address"
+                        label="睫状肌麻痹验光(人工检影)"
+                        show-overflow-tooltip align="center">
+                    <el-table-column
+                            label="球镜"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="柱镜"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="轴向"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="矫正视力"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                </el-table-column>
+            </el-table>
+            <br>
+            <el-table
+                    ref="multipleTable"
+                    :data="tableData3"
+                    border
+                    tooltip-effect="dark"
+                    style="width: 100%"
+                    @selection-change="handleSelectionChange">
+                <el-table-column
+                        prop="eyes"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="address"
+                        label="眼轴"
+                        show-overflow-tooltip align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="address"
+                        label="眼压"
+                        show-overflow-tooltip align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="address"
+                        label="角膜曲率"
+                        show-overflow-tooltip align="center">
+                    <el-table-column
+                            label="曲率（K1）"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="轴向（K1）"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="曲率（K2）"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                    <el-table-column
+                            label="轴向（K2）"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+                </el-table-column>
+            </el-table>
+        </div>
         <!--工具条-->
-        <div class="retrieval  criteria Style">
+        <div v-if="showDetail" class="retrieval  criteria Style">
             <el-form style="margin-top: 2rem;" :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
                 <el-form-item label="姓名">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    <el-input v-model="editForm.stuName" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="学号">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    <el-input v-model="editForm.number" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="性别">
                     <el-radio-group v-model="editForm.sex">
-                        <el-radio class="radio" :label="1">男</el-radio>
-                        <el-radio class="radio" :label="0">女</el-radio>
+                        <el-radio class="radio" :label="0">男</el-radio>
+                        <el-radio class="radio" :label="1">女</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
                 <el-form-item label="年级-班级">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    <el-input v-model="editForm.gradeNo+'-'+editForm.classNo" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="身份证号">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    <el-input v-model="editForm.idCard" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="家长姓名">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    <el-input v-model="editForm.parentName" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="家长手机号">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    <el-input v-model="editForm.parentPhone" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="身高（厘米）">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    <el-input v-model="editForm.height" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="体重（kg）">
-                    <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                    <el-input v-model="editForm.weight" auto-complete="off"></el-input>
                 </el-form-item>
 
             </el-form>
@@ -61,11 +284,13 @@
 <script>
     import util from '../../common/js/util'
     //import NProgress from 'nprogress'
-    import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser } from '../../api/api';
+    import {getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getStudentDetail} from '../../api/api';
 
     export default {
         data() {
             return {
+                showSight:false,
+                showDetail:true,
                 path:'',
                 hideedit:false,
                 activeName: 'stuinfo',
@@ -165,6 +390,14 @@
                     this.hideedit=true;
                 }
             }
+            let id=this.$route.query.id;
+           let para={
+               id:id
+           }
+            getStudentDetail(para).then((res)=>{
+                this.editForm=res.data.result;
+            })
+
 
         },
         methods: {
@@ -172,10 +405,13 @@
 
             handleClick(tab, event) {
                 if(tab.name=='stuinfo'){
-
+                    this.showDetail=true;
+                    this.showSight=false;
                 }
                 if(tab.name=='sightdata'){
-                    this.$router.push({ path: '/'+this.path+'/'+this.path+'SightData' });
+                    this.showDetail=false;
+                    this.showSight=true;
+                    // this.$router.push({ path: '/'+this.path+'/'+this.path+'SightData' });
                 }
                 if(tab.name=='history'){
 

@@ -28,9 +28,6 @@
             <el-col :span="12">
                 <el-checkbox v-model="checked" checked class="remember"><span >记住用户名</span></el-checkbox>
             </el-col>
-            <el-col style="text-align: right" :span="12">
-                <el-link style="color: #B8B8B8">忘记密码?</el-link>
-            </el-col>
         </el-form-item>
         <el-form-item style="width:100%; margin-bottom: 0rem !important;">
           <el-button type="primary" style="width:100%;
@@ -50,7 +47,7 @@
 </template>
 
 <script>
-  import { requestLogin } from '../api/api';
+    import {getInstituteDetail, requestLogin} from '../api/api';
   import globalvariable from '../global'
   //import NProgress from 'nprogress'
   export default {
@@ -115,7 +112,7 @@
              console.log(data);
               if (!data.succeed) {
                 this.$message({
-                  message: data.message,
+                  message: data.codeMessage,
                   type: 'error'
                 });
               } else {
@@ -130,12 +127,37 @@
                 if(type==0) {
                     globalvariable.setHideSuperAdmin(true);
                     console.log(globalvariable.hideSuperAdmin);
+
                     this.$router.push({path: '/superAdmin/superAdminInstituteManagement'});
-                }else if(type==1){
-                    this.$router.push({path: '/institute/instituteSchoolManagement'});
                 }
-                else if(type==3){
-                    this.$router.push({path: '/school/schoolSchoolManagement'});
+                else if(type==1||type==2){
+
+                    let institutionid=data.result.institutionId;
+                    let para={
+                        id:institutionid
+                    }
+                    let schoolList=[];
+                    getInstituteDetail(para).then(res=>{
+                         schoolList=res.data.result.schoolList;
+                         let schoollist={
+                             schools : schoolList
+                         }
+                        let institutiondetail={
+                            insDetail:res.data.result
+                        }
+                        sessionStorage.setItem('institute', JSON.stringify(institutiondetail));
+                        sessionStorage.setItem('schools', JSON.stringify(schoollist));
+                        this.$router.push({path: '/institute/instituteSchoolManagement'});
+                    })
+
+                }
+                else {
+                    let schoolid=data.result.schoolId;
+                    let schooinfo={
+                        schoolId:schoolid
+                    }
+                    sessionStorage.setItem('schoolinfo', JSON.stringify(schooinfo));
+                    this.$router.push({path: '/school/schoolGradeManagement'});
                 }
               }
             });

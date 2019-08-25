@@ -2,83 +2,58 @@
   <section>
     <!--工具条-->
     <div class="retrieval  criteria Style">
-      <el-form :inline="true" :model="filters">
+      <el-form :inline="true" :model="selectForm">
         <el-form-item>
-          <el-select
-                  v-model="value"
-                  multiple
-                  filterable
-                  remote
-                  reserve-keyword
-                  placeholder="请搜索班主任姓名/学校名"
-                  :remote-method="remoteMethod"
-                  :loading="loading">
-            <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="年级">
+         <el-input placeholder="请输入班主任名字" v-model="selectForm.teacherName">
+         </el-input>
         </el-form-item>
         <el-form-item>
-          <el-select  size="small" v-model="form.versionStatus" placeholder="请选择">
-            <el-option
-                    v-for="item in versionOptions"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
-
-        </el-form-item>
-        <el-form-item label="班级">
+         <el-input placeholder="请输入年级号" v-model="selectForm.gradeNo">
+         </el-input>
         </el-form-item>
         <el-form-item>
-          <el-select  size="small" v-model="form.versionStatus" placeholder="请选择">
-            <el-option
-                    v-for="item in versionOptions"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
-
+        <el-input placeholder="请输入班级号" v-model="selectForm.classNo"></el-input>
         </el-form-item>
+        <el-form-item><el-button type="primary" round @click="handleselect">搜索</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="Search">重置</el-button></el-form-item>
-        <el-form-item><el-button type="primary" round @click="Search">批量导入</el-button></el-form-item>
+        <el-form-item><el-button type="primary" round @click="showBatchAdd">批量导入</el-button></el-form-item>
       </el-form>
 
 
       <div class="retrieval  criteria Style">
         <el-table
                 ref="multipleTable"
-                :data="teachers"
+                :data="teachersList"
                 stripe="true"
                 tooltip-effect="dark"
                 style="width: 100%"
                 @selection-change="">
           <el-table-column
-                  prop="classgradeNo"
-                  label="年级-班号"
-                  show-overflow-tooltip align="center">
-          </el-table-column>
-          <el-table-column
-                  prop="school"
+                  prop="schoolName"
                   label="所在学校"
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="teacher"
+                  prop="gradeNo"
+                  label="年级"
+                  show-overflow-tooltip align="center">
+          </el-table-column>
+          <el-table-column
+                  prop="classNo"
+                  label="班级"
+                  show-overflow-tooltip align="center">
+          </el-table-column>
+          <el-table-column
+                  prop="teacherName"
                   label="负责人"
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="tel"
+                  prop="teacherPhone"
                   label="联系电话"
                   show-overflow-tooltip align="center">
           </el-table-column>
-          <el-table-column
+          <el-table-column v-if="!hidedelete"
                   prop="id"
                   label="操作"
                   show-overflow-tooltip align="center">
@@ -95,33 +70,84 @@
 
     <!--工具条-->
 
+    <el-dialog  title="批量导入" :visible.sync="batchAddVisible" @closed="handlebeforeclose">
+      <el-steps align-center  :space="200" :active.sync="finishstep" finish-status="success">
+        <el-step  title="下载模版"></el-step>
+        <el-step  title="上传文件"></el-step>
+        <el-step  title="审核数据"></el-step>
+        <el-step  title="完成"></el-step>
+      </el-steps>
+      <div v-if="firststep">
+        <el-row>
+          <img  style="position: relative; width: 10%; height: 10%; left: 45%" src="../../assets/img/file.jpeg">
+        </el-row>
+        <el-row>
+          <el-link  :href="require('../../assets/img/template2.xlsx')" download="模版文件.xlsx"  style="left: 44%">
+            下载模版文件
+          </el-link>
+        </el-row>
+        <el-row >
+          <div align="center">
+            <el-button class="reset-student" type="primary" @click="turntoUpload" round>
+              下一步
+            </el-button>
+          </div>
+        </el-row>
+      </div>
+
+      <div v-if="secondstep">
+        <el-row >
+          <div align="center">
+            <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload"/>
+            <el-button class="reset-student" type="primary" @click="turntocheck" round>
+              下一步
+            </el-button>
+          </div>
+        </el-row>
+      </div>
+
+
+
+      <div v-if="thirdstep">
+        <el-row>
+          <div align="center">
+            <el-table :data="tableData" border highlight-current-row style="width: 100%;margin-top:20px;">
+              <el-table-column v-for="item of tableHeader" :prop="item" :label="item" :key="item"/>
+            </el-table>
+            <el-button class="reset-student" type="primary" @click="turntosuccess" round>
+              下一步
+            </el-button>
+          </div>
+        </el-row>
+      </div>
+
+      <div v-if="fourthstep">
+      </div>
+
+    </el-dialog>
+
 
     <!--编辑界面-->
     <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
 
-        <el-form-item label="学校名称">
-            <el-input v-model="editForm.school" auto-complete="off"></el-input>
+        <el-form-item label="年级">
+          <el-input v-model="editForm.gradeNo" auto-complete="off"></el-input>
         </el-form-item>
-
-        <el-form-item label="年级班号">
-          <el-input v-model="editForm.classgradeNo" auto-complete="off"></el-input>
+        <el-form-item label="班级">
+          <el-input v-model="editForm.classNo" auto-complete="off"></el-input>
         </el-form-item>
 
         <el-form-item label="负责人">
-            <el-input v-model="editForm.teacher" auto-complete="off"></el-input>
+            <el-input v-model="editForm.teacherName" auto-complete="off"></el-input>
         </el-form-item>
 
         <el-form-item label="联系电话">
-          <el-input v-model="editForm.tel" auto-complete="off"></el-input>
+          <el-input v-model="editForm.teacherPhone" auto-complete="off"></el-input>
         </el-form-item>
 
         <el-form-item label="登陆账号">
-            <el-input v-model="editForm.account" auto-complete="off"></el-input>
-        </el-form-item>
-
-        <el-form-item label="登陆密码">
-          <el-input v-model="editForm.name" auto-complete="off"></el-input>
+            <el-input v-model="editForm.teacherAccount" auto-complete="off"></el-input>
         </el-form-item>
 
       </el-form>
@@ -171,17 +197,25 @@
     batchRemoveUser,
     editUser,
     addUser,
-    removeTeacher
+    removeTeacher, addGrades, editGrades
   } from '../../api/api';
-
+  import UploadExcelComponent from './uploadExcel'
   export default {
+    components: { UploadExcelComponent },
     data() {
       return {
+        selectForm:{
+           page:1,
+          pageSize:1000000,
+          classNo:'',
+          gradeNo:''
+        },
         hidedelete:true,
         teachers:[],
         filters: {
           name: ''
         },
+        teachersList:[],
         gender:[{
           label:'男',
           value:'男'
@@ -199,6 +233,12 @@
             value:'性别-全部'
           }
         ],
+        fourthstep: false,
+        firststep: true,
+        secondstep: false,
+        thirdstep: false,
+        finishstep: 0,
+        batchAddVisible:false,
         gendervalue: '性别-全部',
         users: [],
         total: 0,
@@ -222,7 +262,7 @@
            account:'',
           id:''
         },
-
+       myid:'',
         form:{
           classes:'',
           gender: '',
@@ -253,19 +293,144 @@
       }
     },
     methods: {
+      handleselect(){
+        if(this.selectForm.gradeNo==''){
+          this.selectForm.gradeNo=null;
+        }
+        if(this.selectForm.classNo==''){
+          this.selectForm.classNo=null;
+        }
+        getTeachersList(this.selectForm).then((res)=>{
+          let reslist=res.data.result.items;
+          this.teachersList=reslist;
+          this.total=res.data.result.totalNum;
+          // this.teachers=[];
+          // for(let i=0;i<this.teachersList.length;i++){
+          //   let teacher={
+          //     classgradeNo:reslist[i].gradeNo+"-"+reslist[i].classNo,
+          //     school:reslist[i].schoolName,
+          //     teacher:reslist[i].teacherName,
+          //     account:reslist[i].teacherAccount,
+          //     tel:reslist[i].teacherPhone,
+          //     id:reslist[i].id
+          //   }
+          //   this.teachers.push(teacher);
+          // }
+        })
+      },
+      beforeUpload(file) {
+        // 取文件大小，限制文件大小超过1mb
+        const isLt1M = file.size / 1024 / 1024 < 1
+        if (isLt1M) {
+          return true
+        }
+        this.$message({
+          message: '上传的Excel文件不能大于1mb.',
+          type: 'warning'
+        })
+        return false
+      },
+      handleSuccess({ results, header }) {
+        this.tableData = results
+        this.tableHeader = header
+        this.$message({
+          message:'上传成功，点击下一步预览数据',
+          type:'success'
+        })
+
+      },
+      handlebeforeclose(){
+        this.finishstep=0;
+        this.firststep=true;
+        this.secondstep=false;
+        this.thirdstep=false;
+        this.fourthstep=false;
+      },
+      turntosuccess() {
+        this.finishstep = 4;
+        this.thirdstep = false;
+         this.fourthstep = true;
+        for(let i=0;i<this.tableData.length;i++) {
+          let teacher = {
+            classNo: this.tableData[i].班级,
+            gradeNo: this.tableData[i].年级,
+            schoolId: this.myid,
+            teacherAccount: this.tableData[i].教师账号,
+            teacherName: this.tableData[i].教师姓名,
+            teacherPassword: this.tableData[i].教师密码,
+            teacherPhone: this.tableData[i].教师手机号,
+          }
+          addGrades(teacher).then((res) => {
+                    console.log(res);
+                    if(res.result!=true){
+                      this.$message({
+                        message:'出错',
+                        type:'error'
+                      })
+                    }
+
+                  }
+          )
+        }
+        this.$message({
+          message: '添加成功',
+          type: 'success'
+        })
+        this.getTeachersList();
+
+      },
+
+      turntocheck() {
+        this.finishstep = 2;
+        this.secondstep = false;
+        this.thirdstep = true;
+      },
+
+      turntoUpload() {
+        this.finishstep = 1;
+        this.firststep = false;
+        this.secondstep = true;
+      },
+      showBatchAdd() {
+        this.batchAddVisible = true;
+      },
       //性别显示转换
       formatSex: function (row, column) {
         return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.getUsers();
+        this.getTeachersList();
       },
       getTeachersList(){
-        let para = {
-          page: this.page,
-          pageSize: 10
-        };
+        var user = sessionStorage.getItem('user');
+        user=JSON.parse(user);
+        var institute={};
+        let para={};
+        if(user.type==2||user.type==1) {
+          var institute = sessionStorage.getItem('institute');
+          institute = JSON.parse(institute);
+
+          para = {
+            page: this.page,
+            pageSize: 10,
+            institutionId:institute.insDetail.id
+          };
+        }else if(user.type==0) {
+          para = {
+            page: this.page,
+            pageSize: 10
+          };
+        }else{
+          var schoolinfo=sessionStorage.getItem('schoolinfo');
+          schoolinfo= JSON.parse(schoolinfo);
+          this.myid=schoolinfo.schoolId;
+          para={
+            page: this.page,
+            pageSize: 10,
+            schoolId:schoolinfo.schoolId
+          }
+        }
         this.listLoading = true;
         console.log("hihihi");
         // 发送请求:将数据返回到一个回到函数中
@@ -277,18 +442,18 @@
                   console.log("login get success");
                   console.log(res);
                   let reslist=res.data.result.items;
-                  this.total=res.data.result.items.length;
-                  for(let i=0;i<this.total;i++){
-                    let teacher={
-                      classgradeNo:reslist[i].gradeNo+"-"+reslist[i].classNo,
-                      school:reslist[i].schoolName,
-                      teacher:reslist[i].teacherName,
-                      account:reslist[i].teacherAccount,
-                      tel:reslist[i].teacherPhone,
-                      id:reslist[i].id
-                    }
-                    this.teachers.push(teacher);
-                  }
+                  this.teachersList=reslist;
+                  this.total=res.data.result.totalNum;
+                  // for(let i=0;i<this.teachersList.length;i++){
+                  //   let teacher={
+                  //     classgradeNo:reslist[i].gradeNo+"-"+reslist[i].classNo,
+                  //     school:reslist[i].schoolName,
+                  //     teacher:reslist[i].teacherName,
+                  //     account:reslist[i].teacherAccount,
+                  //     tel:reslist[i].teacherPhone,
+                  //     id:reslist[i].id
+                  //   }
+                  //   this.teachers.push(teacher);
                   console.log(this.teachers);
                 })
                 .catch(failResponse => {
@@ -355,17 +520,16 @@
               this.editLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.editForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              editUser(para).then((res) => {
+              editGrades(para).then((res) => {
                 this.editLoading = false;
                 //NProgress.done();
                 this.$message({
-                  message: '提交成功',
+                  message: '修改成功',
                   type: 'success'
                 });
                 this.$refs['editForm'].resetFields();
                 this.editFormVisible = false;
-                this.getUsers();
+                this.getTeachersList();
               });
             });
           }
@@ -428,13 +592,13 @@
       if (user) {
         user = JSON.parse(user);
         if(user.type==0){
+          this.hidedelete=true;
+        }
+        else if(user.type==1||user.type==2){
+          this.hidedelete=true;
+        }
+        else{
           this.hidedelete=false;
-        }
-        else if(user.type==1){
-          this.hidedelete=true;
-        }
-        else if(user.type==2){
-          this.hidedelete=true;
         }
       }
     }
