@@ -23,7 +23,7 @@
 			</el-col>
 			<el-col :span="4" class="userinfo">
 				<el-dropdown trigger="hover">
-					<span style="color: black" class="el-dropdown-link userinfo-inner"><img src="../assets/user.png" /> {{sysUserName}}</span>
+					<span style="color: black" class="el-dropdown-link userinfo-inner"><img src="../assets/img/head.png" /> {{sysUserName}}</span>
 					<el-dropdown-menu slot="dropdown">
 						<el-dropdown-item @click.native="showMyAccount">我的信息</el-dropdown-item>
 						<el-dropdown-item>设置</el-dropdown-item>
@@ -278,7 +278,7 @@
 						cursor: pointer;
 						color:#fff;
 						img {
-							width: 40px;
+							width: 60px;
 							height: 40px;
 							border-radius: 20px;
 							margin: 10px 0px 10px 10px;

@@ -41,6 +41,14 @@
                             show-overflow-tooltip align="center">
                     </el-table-column>
                     <el-table-column
+                            prop="county"
+                            label="位置"
+                            show-overflow-tooltip align="center">
+                        <template slot-scope="scope">
+                            {{scope.row.province+scope.row.city+scope.row.county}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column
                             prop="audit"
                             label="状态"
                             show-overflow-tooltip align="center">

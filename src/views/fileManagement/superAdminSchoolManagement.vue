@@ -7,6 +7,19 @@
          <el-input placeholder="请输入学校名称" v-model="selectForm.schoolName">
          </el-input>
         </el-form-item>
+        <el-form-item>
+          <v-distpicker @selected="onSelected"></v-distpicker>
+        </el-form-item>
+        <el-form-item>
+          <el-select  placeholder="请选择">
+            <el-option
+                    v-for="item in schooltype"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item><el-button type="primary" round @click="handleselect">搜索</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="Search">重置</el-button></el-form-item>
       </el-form>
@@ -29,7 +42,7 @@
                   label="学校类型"
             show-overflow-tooltip align="center">
             <template slot-scope="scope">
-              {{scope.row.schoolType==0? '小学':scope.row.schoolType==1?'初中':'高中'}}
+              {{scope.row.schoolType==1? '小学':scope.row.schoolType==2?'初中':'高中'}}
             </template>
 
           </el-table-column>
@@ -48,9 +61,19 @@
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
+                  prop="schoolPrincipal"
+                  label="负责人"
+                  show-overflow-tooltip align="center">
+          </el-table-column>
+          <el-table-column
+                  prop="schoolPhone"
+                  label="联系电话"
+                  show-overflow-tooltip align="center">
+          </el-table-column>
+          <el-table-column
                   prop="audit"
                   label="状态"
-                  show-overflow-tooltip align="center">
+                  show-overflow-tooltip v-if="isSuperAdmin" align="center">
             <template slot-scope="scope">
             <el-button  :disabled="scope.row.audit==0 ? false : true"  :type="scope.row.audit === 0 ? 'danger' : 'success'"
                     effect="dark" @click="auditSchool(scope.$index,scope.row)">
