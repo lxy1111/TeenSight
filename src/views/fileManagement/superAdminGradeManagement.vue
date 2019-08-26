@@ -15,7 +15,7 @@
         <el-input placeholder="请输入班级号" v-model="selectForm.classNo"></el-input>
         </el-form-item>
         <el-form-item><el-button type="primary" round @click="handleselect">搜索</el-button></el-form-item>
-        <el-form-item><el-button type="primary" round @click="Search">重置</el-button></el-form-item>
+        <el-form-item><el-button type="primary" round @click="handleReset">重置</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="showBatchAdd">批量导入</el-button></el-form-item>
       </el-form>
 
@@ -24,7 +24,7 @@
         <el-table
                 ref="multipleTable"
                 :data="teachersList"
-                stripe="true"
+                stripe
                 tooltip-effect="dark"
                 style="width: 100%"
                 @selection-change="">
@@ -205,8 +205,9 @@
     data() {
       return {
         selectForm:{
-           page:1,
+          page:1,
           pageSize:1000000,
+          teacherName:'',
           classNo:'',
           gradeNo:''
         },
@@ -293,6 +294,14 @@
       }
     },
     methods: {
+      handleReset(){
+        this.getTeachersList();
+        this.selectForm = {
+          teacherName:'',
+          classNo:'',
+          gradeNo:''
+        };
+      },
       handleselect(){
         if(this.selectForm.gradeNo==''){
           this.selectForm.gradeNo=null;

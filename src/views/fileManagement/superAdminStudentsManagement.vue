@@ -4,10 +4,10 @@
     <div class="retrieval  criteria Style">
       <el-form style="margin-left: 2rem;" :inline="true" :model="selectForm">
         <el-form-item>
-          <el-input placeholder="请输入学生姓名" v-model="selectForm.studentName"></el-input>
+          <el-input placeholder="请输入学生姓名" v-model="selectForm.stuName"></el-input>
         </el-form-item>
         <el-form-item>
-         <el-input placeholder="请输入学校名称"></el-input>
+         <el-input placeholder="请输入学校名称" v-model="selectForm.schoolName"></el-input>
         </el-form-item>
         <el-form-item>
           <el-input placeholder="请输入年级"  v-model="selectForm.gradeNo"></el-input>
@@ -22,7 +22,7 @@
               搜索
             </span>
           </el-button>
-          <el-button class="reset-student" type="primary" round @click="Search">
+          <el-button class="reset-student" type="primary" round @click="handleReset">
             <span style="font-size: 0.9rem;font-family: PingFang SC;">
               重置
             </span>
@@ -99,13 +99,12 @@
         <el-table
                 ref="multipleTable"
                 :data="students"
-                stripe="true"
-                highlight-current-row="true"
+                stripe
+                highlight-current-row
                 tooltip-effect="dark"
                 @selection-change="handleSelectionChange">
-          <el-table-column
-                  type="selection"
-                  >
+          <el-table-column width="30"
+                  type="selection">
           </el-table-column>
           <el-table-column
                   prop="schoolName"
@@ -153,8 +152,8 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button @click.native="generateStudentCode">生成学生二维码</el-button>
-        <el-button type="primary" @click.native="" >生成普查二维码</el-button>
+        <el-button style="margin-left: 2rem; margin-top: 1rem;" @click.native="generateStudentCode">生成学生二维码</el-button>
+        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" @click.native="" >生成普查二维码</el-button>
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
         </el-pagination>
       </div>
@@ -171,8 +170,6 @@
         <br>
         <span >学生姓名:{{item.req.stuName}}</span>
       </el-row>
-
-
 
 
 
@@ -261,7 +258,11 @@
         myid:'',
         selectForm:{
           page:1,
-          pageSize:1000000
+          pageSize:10,
+          stuName: "",
+          schoolName: "",
+          gradeNo: "",
+          classNo: ""
         },
         loading: false,
         excelData: {
@@ -352,8 +353,11 @@
     },
     methods: {
       handleselect(){
-        if(this.selectForm.studentName==''){
-          this.selectForm.studentName=null;
+        if(this.selectForm.stuName==''){
+          this.selectForm.stuName=null;
+        }
+        if(this.selectForm.schoolName==''){
+          this.selectForm.schoolName=null;
         }
         if(this.selectForm.classNo==''){
           this.selectForm.classNo=null;
@@ -392,6 +396,17 @@
 
       handleSelectionChange(val){
         this.multipleselection=val;
+      },
+      handleReset(){
+        this.getStudentsList();
+        this.selectForm = {
+          page:1,
+          pageSize:10,
+          stuName: "",
+          schoolName: "",
+          gradeNo: "",
+          classNo: ""
+        };
       },
       handlebeforeclose(){
         this.finishstep=0;
@@ -548,11 +563,11 @@
                   console.log(res);
                   this.students = res.data.result.items;
                   this.total = res.data.result.totalNum;
-                  //this.myInfo = successResponse.data.datas[0];
                 })
                 .catch(failResponse => {
                   console.log("login get fail");
                 });
+
       },
 
 

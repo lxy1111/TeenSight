@@ -2,7 +2,7 @@
   <section>
     <!--工具条-->
     <div class="retrieval  criteria Style">
-      <el-button style="margin-left: 2rem;" type="primary" round  @click="Search">添加通知</el-button>
+      <el-button style="margin-left: 2rem;" type="primary" round  @click="">添加通知</el-button>
     </div>
     <div class="retrieval  criteria Style">
       <el-table
@@ -10,8 +10,7 @@
               :data="broadcastContent"
               stripe
               tooltip-effect="dark"
-              style="width: 100%"
-              @selection-change="handleSelectionChange">
+              style="width: 100%">
         <el-table-column
                 prop="id"
                 label="序号"

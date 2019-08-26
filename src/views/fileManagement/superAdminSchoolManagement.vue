@@ -8,12 +8,12 @@
          </el-input>
         </el-form-item>
         <el-form-item>
-          <v-distpicker @selected="onSelected"></v-distpicker>
+          <v-distpicker @selected="onSelected_search" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county"></v-distpicker>
         </el-form-item>
         <el-form-item>
-          <el-select  placeholder="请选择">
+          <el-select v-model="selectForm.schoolType" placeholder="请选择">
             <el-option
-                    v-for="item in schooltype"
+                    v-for="item in schoolType"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -21,13 +21,13 @@
           </el-select>
         </el-form-item>
         <el-form-item><el-button type="primary" round @click="handleselect">搜索</el-button></el-form-item>
-        <el-form-item><el-button type="primary" round @click="Search">重置</el-button></el-form-item>
+        <el-form-item><el-button type="primary" round @click="handleReset">重置</el-button></el-form-item>
       </el-form>
       <div class="retrieval  criteria Style">
         <el-table
                 ref="multipleTable"
                 :data="schoolsList"
-                stripe="true"
+                stripe
                 tooltip-effect="dark"
                 style="width: 100%"
                 @selection-change="">
@@ -108,7 +108,7 @@
         <el-form-item label="学校类型">
           <el-select v-model="editForm.schoolType" placeholder="请选择">
             <el-option
-                    v-for="item in schooltype"
+                    v-for="item in schoolType"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -124,7 +124,7 @@
         </el-form-item>
 
         <el-form-item label="所在位置">
-          <v-distpicker :disabled="editable" :province="editForm.province" :city="editForm.city" :area="editForm.county" @selected="onSelected"></v-distpicker>
+          <v-distpicker :province="editForm.province" :city="editForm.city" :area="editForm.county" @selected="onSelected"></v-distpicker>
         </el-form-item>
 
         <el-form-item label="登陆账号">
@@ -194,6 +194,10 @@
           page:1,
           pageSize:1000000,
           schoolName:'',
+          schoolType:'',
+          province:'',
+          city:'',
+          county: ''
         },
         schoolsList:[],
         state:'',
@@ -218,7 +222,7 @@
             value:'性别-全部'
           }
         ],
-        schooltype:[{
+        schoolType:[{
           value:1,
           label:'小学'
         },{
@@ -286,14 +290,44 @@
       }
     },
     methods: {
+      handleReset(){
+        this.getSchoolsList();
+        this.selectForm = {
+          page:1,
+          pageSize:1000000,
+          schoolName:'',
+          schoolType:'',
+          province:'',
+          city:'',
+          county: ''
+        };
+      },
       handleselect(){
         if(this.selectForm.schoolName==''){
           this.selectForm.schoolName=null;
+        }
+        if(this.selectForm.schoolType==''){
+          this.selectForm.schoolType=null;
+        }
+        if(this.selectForm.province==''){
+          this.selectForm.province=null;
+        }
+        if(this.selectForm.city==''){
+          this.selectForm.city=null;
+        }
+        if(this.selectForm.county==''){
+          this.selectForm.county=null;
         }
         getSchoolListPage(this.selectForm).then((res)=>{
           this.schoolsList=res.data.result.items;
           this.total=res.data.result.totalNum;
         })
+      },
+      onSelected_search(data) {
+        this.selectForm.province=data.province.value;
+        this.selectForm.city=data.city.value;
+        this.selectForm.county=data.area.value;
+        console.log(data);
       },
       onSelected(data) {
         this.editForm.province=data.province.value;
@@ -301,7 +335,6 @@
         this.editForm.county=data.area.value;
         console.log(data)
       },
-
       auditSchool:function(index,row){
         if(row.audit==0){
           this.$confirm('确认要通过审核吗?', '提示', {
@@ -542,7 +575,7 @@
         }
         else if(user.type==3){
           this.hidedelete=true;
-          this.isSuperAdmin=fasle;
+          this.isSuperAdmin=false;
         }
       }
     }

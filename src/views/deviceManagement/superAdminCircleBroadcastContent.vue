@@ -10,8 +10,7 @@
               :data="circlebroadcast"
               stripe
               tooltip-effect="dark"
-              style="width: 100%"
-              @selection-change="handleSelectionChange">
+              style="width: 100%">
         <el-table-column
                 prop="id"
                 label="序号"
@@ -207,6 +206,7 @@
               type: 'success'
             })
           }
+          this.addFormVisible = false;
           this.getCircleBroadcastList();
         })
 

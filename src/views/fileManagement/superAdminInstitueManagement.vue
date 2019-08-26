@@ -7,13 +7,10 @@
           <el-input placeholder="请输入机构名称" v-model="selectForm.institutionName"></el-input>
         </el-form-item>
         <el-form-item>
-         <v-distpicker @selected="onSelected"></v-distpicker>
-        </el-form-item>
-        <el-form-item>
-          <el-input placeholder="请输入机构账号" v-model="selectForm.institutionAccount"></el-input>
+         <v-distpicker @selected="onSelected" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county"></v-distpicker>
         </el-form-item>
         <el-form-item><el-button type="primary" round @click="handleselect">查询</el-button></el-form-item>
-        <el-form-item><el-button type="primary" round @click="">重置</el-button></el-form-item>
+        <el-form-item><el-button type="primary" round @click="handleReset">重置</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="handleAdd">添加机构</el-button></el-form-item>
       </el-form>
 
@@ -21,7 +18,7 @@
         <el-table
                 ref="multipleTable"
                 :data="institutes"
-                stripe="true"
+                stripe
                 tooltip-effect="dark"
                 style="width: 100%"
                 @selection-change="">
@@ -136,7 +133,7 @@
           <el-input v-model="addForm.mobile" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="所在地区">
-          <v-distpicker @selected="onSelected"></v-distpicker>
+          <v-distpicker @selected="onSelected1"></v-distpicker>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -170,7 +167,10 @@
           page:1,
           pageSize:1000000,
           institutionName:'',
-          type:1
+          type:1,
+          province:'',
+          city:'',
+          county:''
         },
         disabledelete:false,
         editable: true,
@@ -266,6 +266,18 @@
       }
     },
     methods: {
+      handleReset(){
+        this.getInstitutionList();
+        this.selectForm = {
+          page:1,
+          pageSize:1000000,
+          institutionName:'',
+          type:1,
+          province:'',
+          city:'',
+          county:''
+        };
+      },
       handleselect(){
         if(this.selectForm.institutionName==''){
           this.selectForm.institutionName=null;
@@ -273,13 +285,18 @@
         getInstitutionList(this.selectForm).then((res)=>{
           this.institutes=res.data.result.items;
           this.total=res.data.result.totalNum;
-
         })
       },
       onSelected(data) {
         this.selectForm.province=data.province.value;
         this.selectForm.city=data.city.value;
         this.selectForm.county=data.area.value;
+        console.log(data)
+      },
+      onSelected1(data) {
+        this.addForm.province=data.province.value;
+        this.addForm.city=data.city.value;
+        this.addForm.county=data.area.value;
         console.log(data)
       },
       onSelected2(data) {
@@ -571,5 +588,9 @@
     overflow: hidden;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+  }
+  .el-input__inner {
+    border-radius: 2rem;
+    font-family: PingFang SC;
   }
 </style>
