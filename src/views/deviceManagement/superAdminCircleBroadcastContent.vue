@@ -207,8 +207,9 @@
               type: 'success'
             })
           }
+          this.getCircleBroadcastList();
         })
-        this.getCircleBroadcastList();
+
       },
       //性别显示转换
       uploadfile(){
