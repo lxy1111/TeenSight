@@ -4,26 +4,23 @@
     <div class="retrieval  criteria Style">
 
       <el-form :inline="true" :model="filters">
-        <el-form-item label="消息类型">
-          <el-select  size="small" v-model="form.versionStatus" placeholder="请选择">
-            <el-option
-                    v-for="item in versionOptions"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
+        <el-form-item label="">
+          <el-input size="small" v-model="searchDeviceID" placeholder="按设备ID搜索"></el-input>
         </el-form-item>
-        <el-form-item label="是否已读">
-          <el-select  size="small" v-model="form.versionStatus" placeholder="请选择">
-            <el-option
-                    v-for="item in versionOptions"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
-
+        <el-form-item label="">
+          <el-button type="primary" round
+                     style="margin-right: 2rem;"
+                     @click="searchById">搜索</el-button>
         </el-form-item>
-        <el-form-item><el-button type="primary" round @click="Search">添加通知</el-button></el-form-item>
+        <el-form-item label="">
+          <el-input size="small" v-model="searchDeviceName" placeholder="按设备名称搜索"></el-input>
+        </el-form-item>
+        <el-form-item label="">
+          <el-button type="primary" round
+                     style="margin-right: 2rem;"
+                     @click="searchByName">搜索</el-button>
+        </el-form-item>
+        <el-form-item><el-button type="primary" round @click="handleAdd">添加通知</el-button></el-form-item>
       </el-form>
     </div>
 
@@ -36,8 +33,7 @@
                 :data="messageList"
                 stripe
                 tooltip-effect="dark"
-                style="width: 100%"
-                @selection-change="handleSelectionChange">
+                style="width: 100%">
           <el-table-column
                   prop="name"
                   label="设备ID"
@@ -82,25 +78,19 @@
 <!--    </el-col>-->
 
     <!--编辑界面-->
-    <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
+    <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="editForm.name" auto-complete="off"></el-input>
+        <el-form-item label="设备ID">
+          <el-input :disabled="true" v-model="editForm.deviceId"></el-input>
         </el-form-item>
-        <el-form-item label="性别">
-          <el-radio-group v-model="editForm.sex">
-            <el-radio class="radio" :label="1">男</el-radio>
-            <el-radio class="radio" :label="0">女</el-radio>
-          </el-radio-group>
+        <el-form-item label="设备名称">
+          <el-input :disabled="true" v-model="editForm.deviceName"></el-input>
         </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="editForm.age" :min="0" :max="200"></el-input-number>
+        <el-form-item label="故障原因">
+          <el-input :disabled="true" v-model="editForm.faultCause"></el-input>
         </el-form-item>
-        <el-form-item label="生日">
-          <el-date-picker type="date" placeholder="选择日期" v-model="editForm.birth"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="地址">
-          <el-input type="textarea" v-model="editForm.addr"></el-input>
+        <el-form-item label="发送时间">
+          <el-input :disabled="true" v-model="editForm.sendTime"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -110,25 +100,19 @@
     </el-dialog>
 
     <!--新增界面-->
-    <el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
+    <el-dialog title="添加通知" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="addForm.name" auto-complete="off"></el-input>
+        <el-form-item label="设备ID">
+          <el-input v-model="addForm.deviceId"></el-input>
         </el-form-item>
-        <el-form-item label="性别">
-          <el-radio-group v-model="addForm.sex">
-            <el-radio class="radio" :label="1">男</el-radio>
-            <el-radio class="radio" :label="0">女</el-radio>
-          </el-radio-group>
+        <el-form-item label="设备名称">
+          <el-input v-model="addForm.deviceName"></el-input>
         </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="addForm.age" :min="0" :max="200"></el-input-number>
+        <el-form-item label="故障原因">
+          <el-input v-model="addForm.faultCause"></el-input>
         </el-form-item>
-        <el-form-item label="生日">
-          <el-date-picker type="date" placeholder="选择日期" v-model="addForm.birth"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="地址">
-          <el-input type="textarea" v-model="addForm.addr"></el-input>
+        <el-form-item label="发送时间">
+          <el-input v-model="addForm.sendTime"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -147,6 +131,8 @@
   export default {
     data() {
       return {
+        searchDeviceID:"",                //第一个搜索框里绑定的设备ID
+        searchDeviceName:"",              //第二个搜索框里绑定的设备名称
         messageList:[],
         filters: {
           name: ''
@@ -184,12 +170,10 @@
         },
         //编辑界面数据
         editForm: {
-          id: 0,
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
+          deviceId: "",
+          deviceName: "",
+          faultCause: "",
+          sendTime: ""
         },
 
         form:{
@@ -203,7 +187,7 @@
           actualOnlineDateSecond:'',
         },
 
-        addFormVisible: false,//新增界面是否显示
+        addFormVisible: false,                      //新增界面是否显示
         addLoading: false,
         addFormRules: {
           name: [
@@ -212,16 +196,25 @@
         },
         //新增界面数据
         addForm: {
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
+          deviceId: "",
+          deviceName: "",
+          faultCause: "",
+          sendTime: ""
         }
 
       }
     },
     methods: {
+      searchById(){
+                                                      //获取搜索设备ID接口信息
+
+
+      },
+      searchByName(){
+                                                      //获取搜索设备名称接口信息
+
+
+      },
       //性别显示转换
       formatSex: function (row, column) {
         return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
@@ -274,7 +267,7 @@
               message: '删除成功',
               type: 'success'
             });
-            this.getUsers();
+            this.getMessageList();
           });
         }).catch(() => {
 
@@ -289,11 +282,10 @@
       handleAdd: function () {
         this.addFormVisible = true;
         this.addForm = {
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
+          deviceId: "",
+          deviceName: "",
+          faultCause: "",
+          sendTime: ""
         };
       },
       //编辑
@@ -304,8 +296,7 @@
               this.editLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.editForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              editUser(para).then((res) => {
+              editMessage(para).then((res) => {
                 this.editLoading = false;
                 //NProgress.done();
                 this.$message({
@@ -314,7 +305,7 @@
                 });
                 this.$refs['editForm'].resetFields();
                 this.editFormVisible = false;
-                this.getUsers();
+                this.getMessageList();
               });
             });
           }
@@ -328,8 +319,7 @@
               this.addLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.addForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              addUser(para).then((res) => {
+              addMessage(para).then((res) => {                  //////////////这里需要改成正确的添加消息接口
                 this.addLoading = false;
                 //NProgress.done();
                 this.$message({
@@ -338,7 +328,7 @@
                 });
                 this.$refs['addForm'].resetFields();
                 this.addFormVisible = false;
-                this.getUsers();
+                this.getMessageList();
               });
             });
           }
@@ -371,7 +361,7 @@
       }
     },
     mounted() {
-      this.getUsers();
+      this.getMessageList();
     }
   }
 
