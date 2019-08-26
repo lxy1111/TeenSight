@@ -164,11 +164,12 @@
 
      <el-dialog title="学生信息二维码"  style="border: 0;" :visible.sync="qrcodevisible" :close-on-click-modal="false">
       <el-row  v-for="item in studentInfoCodeList">
-        <span >学生姓名:{{item.req.stuName}} 身份证号:{{item.req.idCard}}</span>
         <el-image
-                style="width: 100px; height: 100px;left:20%"
+                style="width: 100px; height: 100px;left:40%"
                 :src="item.url">
         </el-image>
+        <br>
+        <span >学生姓名:{{item.req.stuName}}</span>
       </el-row>
 
 

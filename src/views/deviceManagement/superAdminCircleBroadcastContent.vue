@@ -22,6 +22,10 @@
                 prop="url"
                 label="图片"
                 show-overflow-tooltip align="center">
+        <template slot-scope="scope">
+          <el-image :src="baseurl+scope.row.url">
+          </el-image>
+        </template>
         </el-table-column>
         <el-table-column
                 prop="modifyTime"
@@ -33,7 +37,7 @@
                 label="操作"
                 show-overflow-tooltip align="center">
           <template slot-scope="scope">
-            <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+            <el-link @click="handleDel(scope.$index, scope.row)">删除</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -79,29 +83,22 @@
     <!--新增界面-->
     <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="addForm.name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="性别">
-          <el-radio-group v-model="addForm.sex">
-            <el-radio class="radio" :label="1">男</el-radio>
-            <el-radio class="radio" :label="0">女</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="addForm.age" :min="0" :max="200"></el-input-number>
-        </el-form-item>
-        <el-form-item label="生日">
-          <el-date-picker type="date" placeholder="选择日期" v-model="addForm.birth"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="地址">
-          <el-input type="textarea" v-model="addForm.addr"></el-input>
-        </el-form-item>
+        <el-upload
+                class="upload-demo"
+                :action="uploadurl"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                :before-upload="beforeUpload"
+                multiple
+                list-type="picture"
+                :limit="3"
+                :on-exceed="handleExceed"
+                :file-list="fileList">
+          <el-button size="small" type="primary">点击上传</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
-      </div>
     </el-dialog>
   </section>
 </template>
@@ -109,11 +106,21 @@
 <script>
   import util from '../../common/js/util'
   //import NProgress from 'nprogress'
-  import {getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getCircleBroadcastList} from '../../api/api';
+  import {
+    getUserListPage,
+    removeUser,
+    batchRemoveUser,
+    editUser,
+    addUser,
+    getCircleBroadcastList,
+    addCharts, removeChart
+  } from '../../api/api';
 
   export default {
     data() {
       return {
+        baseurl:"http://112.124.10.207:8080",
+        uploadurl:'/api/common/createChart',
         circlebroadcast:[],
         filters: {
           name: ''
@@ -140,6 +147,7 @@
         total: 0,
         page: 1,
         listLoading: false,
+        fileList:[],
         sels: [],//列表选中列
 
         editFormVisible: false,//编辑界面是否显示
@@ -189,7 +197,35 @@
       }
     },
     methods: {
+      beforeUpload(file){
+        let fd = new FormData();
+        fd.append('originFile',file);//传文件
+        addCharts(fd).then(res=>{
+          if(res.succeed==true) {
+            this.$message({
+              message: '上传成功!',
+              type: 'success'
+            })
+          }
+        })
+        this.getCircleBroadcastList();
+      },
       //性别显示转换
+      uploadfile(){
+
+      },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleExceed(files, fileList) {
+        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      beforeRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${ file.name }？`);
+      },
       formatSex: function (row, column) {
         return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
       },
@@ -212,7 +248,7 @@
           //NProgress.done();
         });
       },
-      getCircleBroadcastList() {
+      getCircleBroadcastList(){
         let para = {
           page: this.page,
           pageSize:10
@@ -227,22 +263,26 @@
           //NProgress.done();
         });
       },
+
+
       //删除
-      handleDel: function (index, row) {
+      handleDel: function (index, row){
         this.$confirm('确认删除该记录吗?', '提示', {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
           //NProgress.start();
-          let para = { id: row.id };
-          removeUser(para).then((res) => {
+          let idlist=[];
+          idlist.push(row.id);
+          let para = { codeList: idlist };
+          removeChart(para).then((res) => {
             this.listLoading = false;
             //NProgress.done();
             this.$message({
               message: '删除成功',
               type: 'success'
             });
-            this.getUsers();
+            this.getCircleBroadcastList();
           });
         }).catch(() => {
 
@@ -256,13 +296,6 @@
       //显示新增界面
       handleAdd: function () {
         this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
-        };
       },
       //编辑
       editSubmit: function () {

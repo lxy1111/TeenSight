@@ -9,7 +9,7 @@ export const requestLogin = params => { return axios.post(`/api/user/login`, par
 
 export const removeInstitute = params => { return axios.post(`/api/institution/removeInstitution`, params).then(res => res.data); };
 
-export const removeSchool = params => { return axios.get(`/api/school/removeSchool`, {params:params});};
+export const removeChart = params => { return axios.post(`/api/common/deleteChart`, params).then(res=>res.data)};
 
 export const modifySchool = params => { return axios.post(`/api/school/modifySchool`, params).then(res => res.data);};
 
@@ -55,6 +55,7 @@ export const addUser = params => { return axios.get(`${base}/user/add`, { params
 
 export const addStudents = params => { return axios.post(`/api/student/createStudent`, params).then(res => res.data); };
 
+export const addCharts = params => { return axios.post(`/api/common/createChart`, params).then(res => res.data); };
 
 export const addGrades = params => { return axios.post(`/api/teacher/createTeacher`, params).then(res => res.data); };
 

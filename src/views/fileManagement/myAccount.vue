@@ -19,6 +19,18 @@
                     <el-input v-model="editForm.province+editForm.city+editForm.county" auto-complete="off"></el-input>
                 </el-form-item>
 
+                <el-form-item label="所含学校" v-if="ischeckins">
+                <el-select disabled
+                           v-model="schoolNameList"
+                           multiple
+                           filterable
+                           remote
+                           reserve-keyword
+                           placeholder="请选择学校名称"
+                           :remote-method="remoteMethod"
+                           :loading="loading">
+                </el-select>
+                </el-form-item>
                 <el-form-item label="登录账号">
                     <el-input v-model="editForm.insAccount" auto-complete="off"></el-input>
                 </el-form-item>
@@ -107,6 +119,8 @@
                         value:'性别-全部'
                     }
                 ],
+                ischeckins:false,
+                schoolNameList:[],
                 gendervalue: '性别-全部',
                 users: [],
                 total: 0,
@@ -170,6 +184,9 @@
             var user = sessionStorage.getItem('user');
             if (user) {
                 user = JSON.parse(user);
+                if(user.type==2){
+                    this.ischeckins=true;
+                }
                 if(user.type==0){
                     this.path='superAdmin';
                     this.hideedit=false;
@@ -188,6 +205,9 @@
                         .then(res => {
                             console.log(res);
                             this.editForm=res.data.result;
+                            for(let i=0;i<this.editForm.schoolList.length;i++){
+                                this.schoolNameList.push(this.editForm.schoolList[i].schoolName);
+                            }
                             //this.myInfo = successResponse.data.datas[0];
                         })
                         .catch(failResponse => {
