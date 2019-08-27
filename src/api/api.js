@@ -13,6 +13,8 @@ export const removeDevice = params => { return axios.post( `api/device/removeDev
 
 export const removeChart = params => { return axios.post(`/api/common/deleteChart`, params).then(res=>res.data)};
 
+export const removeNotice = params => { return axios.post(`/api/common/deleteNotice`, params).then(res=>res.data)};
+
 export const modifySchool = params => { return axios.post(`/api/school/modifySchool`, params).then(res => res.data);};
 
 export const removeTeacher = params => { return axios.get(`/api/teacher/removeTeacher`, {params:params});};
@@ -69,6 +71,8 @@ export const addGrades = params => { return axios.post(`/api/teacher/createTeach
 export const addDevice = params => { return axios.post( `/api/device/createDevice`, params ).then(res => res.data); };
 
 export const addInstitutes = params => { return axios.post(`/api/institution/createInstitution`, params).then(res => res.data); };
+
+export const addNotice = params => { return axios.post(`/api/common/createNotice`, params).then(res => res.data); };
 
 export const editInstitutes = params => { return axios.post(`/api/institution/modifyInstitution`, params).then(res => res.data); };
 
