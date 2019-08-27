@@ -309,6 +309,9 @@
         if(this.selectForm.classNo==''){
           this.selectForm.classNo=null;
         }
+        if(this.selectForm.teacherName==''){
+          this.selectForm.teacherName=null;
+        }
         getTeachersList(this.selectForm).then((res)=>{
           let reslist=res.data.result.items;
           this.teachersList=reslist;
