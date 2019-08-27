@@ -282,6 +282,15 @@
         if(this.selectForm.institutionName==''){
           this.selectForm.institutionName=null;
         }
+        if(this.selectForm.province==''){
+          this.selectForm.province=null;
+        }
+        if(this.selectForm.city==''){
+          this.selectForm.city=null;
+        }
+        if(this.selectForm.county==''){
+          this.selectForm.county=null;
+        }
         getInstitutionList(this.selectForm).then((res)=>{
           this.institutes=res.data.result.items;
           this.total=res.data.result.totalNum;

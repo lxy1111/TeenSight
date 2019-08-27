@@ -32,7 +32,7 @@
                 label="操作"
                 show-overflow-tooltip align="center">
           <template slot-scope="scope">
-            <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+            <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-link>
           </template>
         </el-table-column>
       </el-table>

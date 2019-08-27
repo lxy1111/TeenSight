@@ -9,6 +9,8 @@ export const requestLogin = params => { return axios.post(`/api/user/login`, par
 
 export const removeInstitute = params => { return axios.post(`/api/institution/removeInstitution`, params).then(res => res.data); };
 
+export const removeDevice = params => { return axios.post( `api/device/removeDevice`, params).then( res => res.data); };
+
 export const removeChart = params => { return axios.post(`/api/common/deleteChart`, params).then(res=>res.data)};
 
 export const modifySchool = params => { return axios.post(`/api/school/modifySchool`, params).then(res => res.data);};
@@ -45,6 +47,8 @@ export const getInstituteDetail = params => { return axios.get(`/api/institution
 
 export const getStudentDetail = params => { return axios.get(`/api/student/getStudentDetail`, { params: params }); };
 
+export const getDeviceList = params => { return axios.get(`/api/device/getDeviceList`, { params: params }); };
+
 export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }); };
 
 export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }); };
@@ -59,6 +63,7 @@ export const addCharts = params => { return axios.post(`/api/common/createChart`
 
 export const addGrades = params => { return axios.post(`/api/teacher/createTeacher`, params).then(res => res.data); };
 
+export const addDevice = params => { return axios.post( `/api/device/createDevice`, params ).then(res => res.data); };
 
 export const addInstitutes = params => { return axios.post(`/api/institution/createInstitution`, params).then(res => res.data); };
 
@@ -67,3 +72,5 @@ export const editInstitutes = params => { return axios.post(`/api/institution/mo
 export const editGrades = params => { return axios.post(`/api/teacher/modifyTeacher`, params).then(res => res.data); };
 
 export const editSchool = params => { return axios.post(`/api/school/modifySchool`, params).then(res => res.data); };
+
+export const editDevice = params => { return axios.post(`/api/device/modifyDevice`, params).then(res => res.data); };

@@ -3,31 +3,53 @@
     <!--工具条-->
 
     <div class="retrieval  criteria Style">
+
+      <el-form :inline="true" :model="selectForm">
+        <el-form-item label="">
+          <el-input size="small" v-model="selectForm.deviceId" placeholder="按设备ID搜索"></el-input>
+        </el-form-item>
+        <el-form-item label="">
+          <el-input size="small" v-model="selectForm.deviceName" placeholder="按设备名称搜索"></el-input>
+        </el-form-item>
+        <el-form-item label="">
+          <el-button type="primary" round
+                     style="margin-right: 0rem;"
+                     @click="handleselect">搜索</el-button>
+        </el-form-item>
+        <el-form-item label="">
+          <el-button type="primary" round
+                     style="margin-right: 2rem;"
+                     @click="handleReset">重置</el-button>
+        </el-form-item>
+        <el-form-item><el-button type="primary" round @click="handleAdd">添加通知</el-button></el-form-item>
+      </el-form>
+    </div>
+
+    <div class="retrieval  criteria Style">
       <el-table
               ref="multipleTable"
-              :data="tableData3"
+              :data="devices"
               stripe
               tooltip-effect="dark"
-              style="width: 100%"
-              @selection-change="handleSelectionChange">
+              style="width: 100%">
         <el-table-column
-                prop="name"
-                label="名称"
+                prop="deviceName"
+                label="设备名称"
                 show-overflow-tooltip
                 align="center">
         </el-table-column>
         <el-table-column
-                prop="address"
+                prop="deviceId"
                 label="设备ID"
                 show-overflow-tooltip align="center">
         </el-table-column>
         <el-table-column
-                prop="address"
+                prop=""
                 label="是否为本机构设备"
                 show-overflow-tooltip align="center">
         </el-table-column>
         <el-table-column
-                prop="address"
+                prop=""
                 label="是否共享"
                 show-overflow-tooltip align="center">
         </el-table-column>
@@ -41,7 +63,8 @@
                 label="操作"
                 show-overflow-tooltip align="center">
           <template slot-scope="scope">
-            <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+            <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-link>
+            <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -57,25 +80,16 @@
 <!--    </el-col>-->
 
     <!--编辑界面-->
-    <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
+    <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="editForm.name" auto-complete="off"></el-input>
+        <el-form-item label="设备ID">
+          <el-input v-model="editForm.deviceId" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="性别">
-          <el-radio-group v-model="editForm.sex">
-            <el-radio class="radio" :label="1">男</el-radio>
-            <el-radio class="radio" :label="0">女</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="editForm.age" :min="0" :max="200"></el-input-number>
-        </el-form-item>
-        <el-form-item label="生日">
-          <el-date-picker type="date" placeholder="选择日期" v-model="editForm.birth"></el-date-picker>
+        <el-form-item label="设备名称">
+          <el-input v-model="editForm.deviceName" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="地址">
-          <el-input type="textarea" v-model="editForm.addr"></el-input>
+          <el-input type="textarea" v-model="editForm.address"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -85,25 +99,16 @@
     </el-dialog>
 
     <!--新增界面-->
-    <el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
+    <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="addForm.name" auto-complete="off"></el-input>
+        <el-form-item label="设备ID">
+          <el-input v-model="addForm.deviceId" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="性别">
-          <el-radio-group v-model="addForm.sex">
-            <el-radio class="radio" :label="1">男</el-radio>
-            <el-radio class="radio" :label="0">女</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="addForm.age" :min="0" :max="200"></el-input-number>
-        </el-form-item>
-        <el-form-item label="生日">
-          <el-date-picker type="date" placeholder="选择日期" v-model="addForm.birth"></el-date-picker>
+        <el-form-item label="设备名称">
+          <el-input v-model="addForm.deviceName" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="地址">
-          <el-input type="textarea" v-model="addForm.addr"></el-input>
+          <el-input type="textarea" v-model="addForm.address"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -117,11 +122,20 @@
 <script>
   import util from '../../common/js/util'
   //import NProgress from 'nprogress'
-  import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser } from '../../api/api';
+  import { getUserListPage, removeUser, editDevice, removeDevice, batchRemoveUser, editUser, addUser ,getDeviceList, addDevice } from '../../api/api';
 
   export default {
     data() {
       return {
+        devices:[],
+        selectForm:{
+          page: 1,
+          pageSize: 10,
+          address: "",
+          deviceId: "",
+          deviceName: "",
+          schoolId: ""
+        },
         tableData3: [{
           date: '2016-05-03',
           name: '王小虎',
@@ -187,12 +201,10 @@
         },
         //编辑界面数据
         editForm: {
-          id: 0,
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
+          address: "",
+          deviceId: "",
+          deviceName: "",
+          schoolId: ""
         },
 
         form:{
@@ -215,16 +227,44 @@
         },
         //新增界面数据
         addForm: {
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
+          address: "",
+          deviceId: "",
+          deviceName: "",
+          schoolId: ""
         }
 
       }
     },
     methods: {
+      handleReset(){
+        this.getDevices();
+        this.selectForm = {
+          page: 1,
+          pageSize: 10,
+          address: "",
+          deviceId: "",
+          deviceName: "",
+          schoolId: ""
+        };
+      },
+      handleselect() {
+        if(this.selectForm.deviceName==''){
+          this.selectForm.deviceName=null;
+        }
+        if(this.selectForm.deviceId==''){
+          this.selectForm.deviceId=null;
+        }
+        if(this.selectForm.address==''){
+          this.selectForm.address=null;
+        }
+        if(this.selectForm.schoolId==''){
+          this.selectForm.schoolId=null;
+        }
+        getDeviceList(this.selectForm).then((res)=>{
+          this.devices=res.data.result.items;
+          this.total=res.data.result.totalNum;
+        })
+      },
       //性别显示转换
       formatSex: function (row, column) {
         return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
@@ -233,7 +273,20 @@
         this.page = val;
         this.getUsers();
       },
-      //获取用户列表
+      getDevices() {                         /////////////////////获取所有设备列表
+
+        let para = {
+          page: this.page,
+          pageSize: 10
+        };
+        this.listLoading = true;
+        getDeviceList(para).then((res) => {
+          this.total = res.data.result.totalNum;
+          this.devices = res.data.result.items;
+          this.listLoading = false;
+        });
+
+      },
       getUsers() {
         let para = {
           page: this.page,
@@ -255,15 +308,15 @@
         }).then(() => {
           this.listLoading = true;
           //NProgress.start();
-          let para = { id: row.id };
-          removeUser(para).then((res) => {
+          let para = { codeList: [row.id] };
+          removeDevice(para).then((res) => {
             this.listLoading = false;
             //NProgress.done();
             this.$message({
               message: '删除成功',
               type: 'success'
             });
-            this.getUsers();
+            this.getDevices();
           });
         }).catch(() => {
 
@@ -293,8 +346,7 @@
               this.editLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.editForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              editUser(para).then((res) => {
+              editDevice(para).then((res) => {
                 this.editLoading = false;
                 //NProgress.done();
                 this.$message({
@@ -303,7 +355,7 @@
                 });
                 this.$refs['editForm'].resetFields();
                 this.editFormVisible = false;
-                this.getUsers();
+                this.getDevices();
               });
             });
           }
@@ -317,8 +369,8 @@
               this.addLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.addForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              addUser(para).then((res) => {
+              console.log(para);
+              addDevice(para).then((res) => {
                 this.addLoading = false;
                 //NProgress.done();
                 this.$message({
@@ -327,7 +379,7 @@
                 });
                 this.$refs['addForm'].resetFields();
                 this.addFormVisible = false;
-                this.getUsers();
+                this.getDevices();
               });
             });
           }
@@ -360,7 +412,8 @@
       }
     },
     mounted() {
-      this.getUsers();
+      this.getDevices();
+      console.log("1111111111111111111111111")
     }
   }
 
