@@ -91,7 +91,7 @@ let routes = [
     name: '消息管理',
     iconCls: 'fa fa-bar-chart',
     children: [
-    { path: '/superAdmin/superAdminMessageList', component: superAdminMessageList, name: '消息列表' }
+    { path: '/superAdmin/superAdminMessageList', component: superAdminMessageList, name: '系统消息' }
 ]
 },
     {

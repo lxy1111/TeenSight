@@ -192,12 +192,7 @@
         isSuperAdmin:true,
         selectForm:{
           page:1,
-          pageSize:1000000,
-          schoolName:'',
-          schoolType:'',
-          province:'',
-          city:'',
-          county: ''
+          pageSize:10
         },
         schoolsList:[],
         state:'',
@@ -370,7 +365,10 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.getSchoolsList();
+        this.selectForm.page=this.page
+        getSchoolListPage(this.selectForm).then((res)=>{
+          this.schoolsList=res.data.result.items;
+        })
       },
       getSchoolsList(){
         var user = sessionStorage.getItem('user');

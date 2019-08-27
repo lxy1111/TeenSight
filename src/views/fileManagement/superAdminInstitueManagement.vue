@@ -47,16 +47,21 @@
             </template>
           </el-table-column>
           <el-table-column
-                prop="audit"
-                label="状态"
-                show-overflow-tooltip align="center">
-          <template slot-scope="scope">
-            <el-button  :disabled="scope.row.audit==0 ? false : true"  :type="scope.row.audit == 0 ? 'danger' : 'success'"
-                       effect="dark" @click="auditInstitute(scope.$index,scope.row)">
-              {{scope.row.audit==0 ? '未认证' : '已认证'}}
-            </el-button>
-          </template>
-        </el-table-column>
+                  prop="institutionAccount"
+                  label="机构账号"
+                  show-overflow-tooltip align="center">
+          </el-table-column>
+<!--          <el-table-column-->
+<!--                prop="audit"-->
+<!--                label="状态"-->
+<!--                show-overflow-tooltip align="center">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button  :disabled="scope.row.audit==0 ? false : true"  :type="scope.row.audit == 0 ? 'danger' : 'success'"-->
+<!--                       effect="dark" @click="auditInstitute(scope.$index,scope.row)">-->
+<!--              {{scope.row.audit==0 ? '未认证' : '已认证'}}-->
+<!--            </el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
           <el-table-column
                   prop="id"
                   label="操作"
@@ -165,12 +170,8 @@
       return {
         selectForm:{
           page:1,
-          pageSize:1000000,
-          institutionName:'',
-          type:1,
-          province:'',
-          city:'',
-          county:''
+          pageSize:10,
+          type:1
         },
         disabledelete:false,
         editable: true,
@@ -320,7 +321,10 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.getInstitutionList();
+        this.selectForm=this.page;
+        getInstitutionList(this.selectForm).then((res)=>{
+          this.institutes=res.data.result.items;
+        })
       },
 
       getInstitutionList(){

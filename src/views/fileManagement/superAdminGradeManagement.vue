@@ -206,10 +206,7 @@
       return {
         selectForm:{
           page:1,
-          pageSize:1000000,
-          teacherName:'',
-          classNo:'',
-          gradeNo:''
+          pageSize:10,
         },
         hidedelete:true,
         teachers:[],
@@ -380,6 +377,7 @@
                         type:'error'
                       })
                     }
+            this.getTeachersList();
 
                   }
           )
@@ -388,7 +386,7 @@
           message: '添加成功',
           type: 'success'
         })
-        this.getTeachersList();
+
 
       },
 
@@ -412,7 +410,11 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.getTeachersList();
+        this.selectForm.page=this.page;
+        getTeachersList(this.selectForm).then((res)=> {
+          let reslist = res.data.result.items;
+          this.teachersList = reslist;
+        })
       },
       getTeachersList(){
         var user = sessionStorage.getItem('user');

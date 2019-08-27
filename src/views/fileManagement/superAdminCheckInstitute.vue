@@ -183,12 +183,8 @@
             return {
                 selectForm:{
                     page:1,
-                    pageSize:1000000,
+                    pageSize:10,
                     type:2,
-                    institutionName:'',
-                    province:'',
-                    city:'',
-                    county:''
                 },
                 schoolist:[],
                 allschool:[],
@@ -410,7 +406,10 @@
             },
             handleCurrentChange(val) {
                 this.page = val;
-                this.getInstitutionList();
+                this.selectForm.page=this.page;
+                getInstitutionList(this.selectForm).then((res)=>{
+                    this.institutes=res.data.result.items;
+                })
             },
 
             getInstitutionList(){

@@ -9,30 +9,6 @@
         <div v-if="showSight" class="retrieval  criteria Style">
             <el-row type="flex" >
                 <el-form :inline="true" :model="filters">
-                    <el-form-item label="搜索学生姓名">
-                    </el-form-item>
-                    <el-form-item>
-                        <el-select
-                                v-model="value"
-                                multiple
-                                filterable
-                                remote
-                                reserve-keyword
-                                placeholder="输入学生姓名搜索"
-                                :remote-method="remoteMethod"
-                                :loading="loading">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-            </el-row>
-            <el-row type="flex" >
-                <el-form :inline="true" :model="filters">
                     <el-form-item label="采集日期">
                     </el-form-item>
                 </el-form>
@@ -284,11 +260,20 @@
 <script>
     import util from '../../common/js/util'
     //import NProgress from 'nprogress'
-    import {getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getStudentDetail} from '../../api/api';
+    import {
+        getUserListPage,
+        removeUser,
+        batchRemoveUser,
+        editUser,
+        addUser,
+        getStudentDetail,
+        getRecordList
+    } from '../../api/api';
 
     export default {
         data() {
             return {
+                recordList:[],
                 showSight:false,
                 showDetail:true,
                 path:'',
@@ -394,10 +379,15 @@
            let para={
                id:id
            }
+           let para2={
+               studentId:id
+           }
             getStudentDetail(para).then((res)=>{
                 this.editForm=res.data.result;
             })
-
+            getRecordList(para2).then((res)=>{
+                this.recordList=res.data.result;
+            })
 
         },
         methods: {

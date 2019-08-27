@@ -21,10 +21,33 @@
                      style="margin-right: 2rem;"
                      @click="handleReset">重置</el-button>
         </el-form-item>
-        <el-form-item><el-button type="primary" round @click="handleAdd">添加通知</el-button></el-form-item>
+        <el-form-item><el-button type="primary" round @click="handleAdd">添加设备</el-button></el-form-item>
       </el-form>
     </div>
-
+    <el-dialog title="绑定" :visible.sync="showSchool" :close-on-click-modal="false">
+      <el-form>
+      <el-form-item >
+        <el-select style="width: 100%;"
+                   class="select-school-name"
+                   multiple
+                   v-model="schoollist"
+                   filterable
+                   remote
+                   reserve-keyword
+                   placeholder="请选择学校名称"
+                   :remote-method="remoteMethod"
+                   :loading="loading">
+          <el-option
+                  v-for="item in schools"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+        <el-form-item><el-button type="primary" round @click="binddevice">确定</el-button></el-form-item>
+      </el-form>
+    </el-dialog>
     <div class="retrieval  criteria Style">
       <el-table
               ref="multipleTable"
@@ -43,16 +66,16 @@
                 label="设备ID"
                 show-overflow-tooltip align="center">
         </el-table-column>
-        <el-table-column
-                prop=""
-                label="是否为本机构设备"
-                show-overflow-tooltip align="center">
-        </el-table-column>
-        <el-table-column
-                prop=""
-                label="是否共享"
-                show-overflow-tooltip align="center">
-        </el-table-column>
+<!--        <el-table-column-->
+<!--                prop=""-->
+<!--                label="是否为本机构设备"-->
+<!--                show-overflow-tooltip align="center">-->
+<!--        </el-table-column>-->
+<!--        <el-table-column-->
+<!--                prop=""-->
+<!--                label="是否共享"-->
+<!--                show-overflow-tooltip align="center">-->
+<!--        </el-table-column>-->
         <el-table-column
                 prop="address"
                 label="位置"
@@ -63,6 +86,7 @@
                 label="操作"
                 show-overflow-tooltip align="center">
           <template slot-scope="scope">
+            <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleBind(scope.$index, scope.row)">绑定学校</el-link>
             <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-link>
             <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-link>
           </template>
@@ -122,12 +146,24 @@
 <script>
   import util from '../../common/js/util'
   //import NProgress from 'nprogress'
-  import { getUserListPage, removeUser, editDevice, removeDevice, batchRemoveUser, editUser, addUser ,getDeviceList, addDevice } from '../../api/api';
+  import {
+    getUserListPage,
+    removeUser,
+    editDevice,
+    removeDevice,
+    batchRemoveUser,
+    editUser,
+    addUser,
+    getDeviceList,
+    addDevice,
+    getSchoolListPage, bindDevice
+  } from '../../api/api';
 
   export default {
     data() {
       return {
         devices:[],
+        schoollist:[],
         selectForm:{
           page: 1,
           pageSize: 10,
@@ -185,13 +221,16 @@
             value:'性别-全部'
           }
         ],
+        deviceId:'',
+        allschool:[],
+        showSchool:false,
         gendervalue: '性别-全部',
         users: [],
         total: 0,
         page: 1,
         listLoading: false,
         sels: [],//列表选中列
-
+        schools:[],
         editFormVisible: false,//编辑界面是否显示
         editLoading: false,
         editFormRules: {
@@ -206,6 +245,7 @@
           deviceName: "",
           schoolId: ""
         },
+        schoolist:[],
 
         form:{
           classes:'',
@@ -236,6 +276,7 @@
       }
     },
     methods: {
+
       handleReset(){
         this.getDevices();
         this.selectForm = {
@@ -246,6 +287,21 @@
           deviceName: "",
           schoolId: ""
         };
+      },
+      binddevice(){
+        for(let i=0;i<this.schoollist.length;i++){
+          let para={
+            deviceId:this.deviceId,
+            isBind:"true",
+            schoolId:this.schoollist[i]
+          }
+          bindDevice(para).then(res=>{
+          })
+        }
+        this.$message({
+          type:'success',
+          message:'绑定成功'
+        })
       },
       handleselect() {
         if(this.selectForm.deviceName==''){
@@ -264,6 +320,21 @@
           this.devices=res.data.result.items;
           this.total=res.data.result.totalNum;
         })
+      },
+      remoteMethod(query) {
+        console.log(this.schoolist);
+        if (query !== '') {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.schools = this.schoolist.filter(item => {
+              return item.label.toLowerCase()
+                      .indexOf(query.toLowerCase()) > -1;
+            });
+          }, 200);
+        } else {
+          this.schools = [];
+        }
       },
       //性别显示转换
       formatSex: function (row, column) {
@@ -300,6 +371,18 @@
           this.listLoading = false;
           //NProgress.done();
         });
+      },
+      handleBind:function (index, row){
+         this.showSchool=true;
+         this.deviceId=row.id;
+         this.schoolist=[];
+        for(let i=0;i<this.allschool.length;i++){
+          let school ={
+            value:this.allschool[i].id,
+            label:this.allschool[i].schoolName
+          }
+          this.schoolist.push(school);
+        }
       },
       //删除
       handleDel: function (index, row) {
@@ -414,6 +497,20 @@
     mounted() {
       this.getDevices();
       console.log("1111111111111111111111111")
+      let para={
+        page:1,
+        pageSize:100000000
+      };
+      getSchoolListPage(para)
+              .then(res => {
+                console.log("login get success");
+                console.log(res);
+                this.allschool=res.data.result.items;
+                //this.myInfo = successResponse.data.datas[0];
+              })
+              .catch(failResponse => {
+                console.log("login get fail");
+              });
     }
   }
 

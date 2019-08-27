@@ -4,6 +4,14 @@
     <div class="retrieval  criteria Style">
       <el-button style="margin-left: 2rem;" type="primary" round  @click="">添加通知</el-button>
     </div>
+    <div v-for="item in broadcastContent">
+      <el-col span="12">
+        {{item.title}}
+      </el-col>
+      <el-col span="12">
+        {{item.description}}
+      </el-col>
+    </div>
     <div class="retrieval  criteria Style">
       <el-table
               ref="multipleTable"

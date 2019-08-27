@@ -47,6 +47,8 @@ export const getInstituteDetail = params => { return axios.get(`/api/institution
 
 export const getStudentDetail = params => { return axios.get(`/api/student/getStudentDetail`, { params: params }); };
 
+export const getRecordList = params => { return axios.get(`/api/record/getRecordList`, { params: params }); };
+
 export const getDeviceList = params => { return axios.get(`/api/device/getDeviceList`, { params: params }); };
 
 export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }); };
@@ -57,6 +59,7 @@ export const editUser = params => { return axios.get(`${base}/user/edit`, { para
 
 export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
 
+export const bindDevice = params => { return axios.get(`/api/device/bindDevice`, { params: params }); };
 export const addStudents = params => { return axios.post(`/api/student/createStudent`, params).then(res => res.data); };
 
 export const addCharts = params => { return axios.post(`/api/common/createChart`, params).then(res => res.data); };

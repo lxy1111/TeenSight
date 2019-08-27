@@ -259,10 +259,6 @@
         selectForm:{
           page:1,
           pageSize:10,
-          stuName: "",
-          schoolName: "",
-          gradeNo: "",
-          classNo: ""
         },
         loading: false,
         excelData: {
@@ -507,7 +503,10 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.getStudentsList();
+        this.selectForm.page=this.page;
+        getStudentsList(this.selectForm).then((res)=>{
+          this.students=res.data.result.items;
+        })
       },
       //获取用户列表
       getUsers() {
