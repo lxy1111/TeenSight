@@ -2,15 +2,18 @@
   <section>
     <!--工具条-->
     <div class="retrieval  criteria Style">
-      <el-form :inline="true" :model="filters">
+      <el-form :inline="true" :model="selectForm">
         <el-row type="flex" >
           <el-form-item label="学校">
-<!--            <el-input  size="small" v-model="input" placeholder="请选择学校名称">-->
-
-<!--            </el-input>-->
-            <el-select size="small" v-model="form.versionStatus" placeholder="请选择">
+            <el-select  style="width: 120%"
+                       v-model="selectForm.schoolId"
+                       filterable
+                        @change="handleChange"
+                       placeholder="请选择学校名称"
+                       :loading="loading">
               <el-option
-                      v-for="item in versionOptions"
+                      v-for="item in schoolist"
+                      :key="item.value"
                       :label="item.label"
                       :value="item.value">
               </el-option>
@@ -20,9 +23,10 @@
 <!--            <img src="../../assets/img/search.png" @click="handlesearch">-->
 <!--          </el-form-item>-->
             <el-form-item prop="planeOnlineDateSecond" label="年级">
-              <el-select size="small" v-model="form.versionStatus" placeholder="请选择">
+              <el-select size="small" v-model="selectForm.gradeNo" filterable placeholder="请选择">
                 <el-option
-                        v-for="item in versionOptions"
+                        v-for="item in gradelist"
+                        :key="item.value"
                         :label="item.label"
                         :value="item.value">
                 </el-option>
@@ -122,24 +126,24 @@
         <el-breadcrumb-item style="font-size: xx-large" >学校统计总览</el-breadcrumb-item>
       </el-breadcrumb>
       <el-form :model="form" label-width="160px">
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="12" align="left">
-            <span style="font-size: x-large">全球视力变化趋势</span>
-          </el-col>
-          <el-col :span="12">
-            <span style="font-size: x-large">最后一次普查</span>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="5" align="left">
-            <span style="font-size: large">视力不良率，近视率</span>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <div class="retrieval  criteria Style">
-            <div id="globalsight"></div>
-          </div>
-        </el-row>
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="12" align="left">-->
+<!--            <span style="font-size: x-large">全球视力变化趋势</span>-->
+<!--          </el-col>-->
+<!--          <el-col :span="12">-->
+<!--            <span style="font-size: x-large">最后一次普查</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="5" align="left">-->
+<!--            <span style="font-size: large">视力不良率，近视率</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <div class="retrieval  criteria Style">-->
+<!--            <div id="globalsight"></div>-->
+<!--          </div>-->
+<!--        </el-row>-->
 
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12" align="left">
@@ -386,11 +390,20 @@
   import util from '../../common/js/util'
   import echarts from 'echarts'
   //import NProgress from 'nprogress'
-  import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser } from '../../api/api';
+  import {
+    getUserListPage,
+    removeUser,
+    batchRemoveUser,
+    editUser,
+    addUser,
+    getSchoolListPage,
+    getSchoolDetail
+  } from '../../api/api';
 
   export default {
     data() {
       return {
+        schoolsNameList:[],
         ishidden:true,
         filters: {
           name: ''
@@ -425,6 +438,9 @@
             value:'性别-全部'
           }
         ],
+        selectForm:{
+          schoolId:''
+        },
         gendervalue: '性别-全部',
         users: [],
         total: 0,
@@ -459,7 +475,7 @@
           actualOnlineDateFirst:'',
           actualOnlineDateSecond:'',
         },
-
+        gradelist:[],
         addFormVisible: false,//新增界面是否显示
         addLoading: false,
         addFormRules: {
@@ -474,11 +490,42 @@
           age: 0,
           birth: '',
           addr: ''
-        }
+        },
+        schools:[],
+        schoolist:[],
+        allschool:[]
 
       }
     },
     methods: {
+      handleChange(val){
+        console.log(val);
+        let para={
+           id:val
+        }
+        getSchoolDetail(para).then(res=>{
+
+
+        })
+
+
+      },
+      remoteMethod(query) {
+        console.log(this.schoolist);
+        if (query !== '') {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.schools = this.schoolist.filter(item => {
+              return item.label.toLowerCase()
+                      .indexOf(query.toLowerCase()) > -1;
+            });
+          }, 200);
+        } else {
+          this.schools = [];
+        }
+      },
+
         drawColumnChart() {
             this.chartLine = echarts.init(document.getElementById('globalsight'));
             this.chartLine.setOption(this.chartLine.setOption({
@@ -544,6 +591,13 @@
         this.getUsers();
       },
       //获取用户列表
+
+      getStatistics(){
+
+
+
+
+      },
       getUsers() {
         let para = {
           page: this.page,
@@ -581,6 +635,10 @@
       },
       handlesearch(){
           this.ishidden=false;
+        if(this.selectForm.schoolId!=null){
+
+        }
+
       },
       //显示编辑界面
       handleEdit: function (index, row) {
@@ -674,7 +732,28 @@
     },
     mounted() {
       this.getUsers();
-      this.$chart.line1('globalsight');
+      let para={
+        page:1,
+        pageSize:100000000
+      };
+      getSchoolListPage(para)
+              .then(res => {
+                console.log("login get success");
+                console.log(res);
+                this.allschool=res.data.result.items;
+
+                for(let i=0;i<this.allschool.length;i++){
+                  let school ={
+                    value:this.allschool[i].id,
+                    label:this.allschool[i].schoolName
+                  }
+                  this.schoolist.push(school);
+                }
+                //this.myInfo = successResponse.data.datas[0];
+              })
+              .catch(failResponse => {
+                console.log("login get fail");
+              });
       this.$chart.line1('schoolsight');
       this.$chart.line1('warning');
       this.$chart.line1('gradestatistic');
@@ -683,6 +762,8 @@
       this.$chart.line1('trend');
       this.$chart.line1('gradewarning');
       this.$chart.line1('specificgradestatistic');
+
+
     }
   }
 

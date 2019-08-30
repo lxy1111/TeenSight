@@ -7,31 +7,17 @@
             <el-tab-pane label="历史记录" name="history"></el-tab-pane>
         </el-tabs>
         <div v-if="showSight" class="retrieval  criteria Style">
-            <el-row type="flex" >
-                <el-form :inline="true" :model="filters">
-                    <el-form-item label="采集日期">
+            <el-form :model="record" >
+                <el-tabs v-model="selectTime" type="card" @tab-click="handleClick2">
+                    <el-tab-pane label="第一次" name="first"></el-tab-pane>
+                    <el-tab-pane label="第二次" name="second" ></el-tab-pane>
+                    <el-tab-pane label="第三次" name="third"></el-tab-pane>
+                </el-tabs>
+
+                <el-form-item label="采集日期">
+                      {{record.inspectionDate}}
                     </el-form-item>
-                </el-form>
-            </el-row>
-            <el-row type="flex" >
-                <el-form :inline="true" :model="filters">
-                    <el-form-item label="第一次">
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="第二次">
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="第三次">
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input v-model="form.name"></el-input>
-                    </el-form-item>
-                </el-form>
-            </el-row>
+
 
             <el-breadcrumb separator=">" class="bread-title">
                 <el-breadcrumb-item>近视筛查</el-breadcrumb-item>
@@ -39,7 +25,7 @@
 
             <el-table
                     ref="multipleTable"
-                    :data="tableData3"
+                    :data="shortsight"
                     stripe
                     tooltip-effect="dark"
                     style="width: 100%"
@@ -49,41 +35,28 @@
                         align="center">
                 </el-table-column>
                 <el-table-column
-                        prop="address"
+                        prop="ucva"
                         label="裸眼视力"
                         show-overflow-tooltip align="center">
                 </el-table-column>
-                <el-table-column
-                        prop="address"
-                        label="戴镜远视力"
-                        show-overflow-tooltip align="center">
-                    <el-table-column
-                            label="戴镜类型"
-                            show-overflow-tooltip align="center"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            label="视力"
-                            show-overflow-tooltip align="center"
-                    >
-                    </el-table-column>
-                </el-table-column>
 
                 <el-table-column
-                        prop="address"
                         label="电脑验光(小瞳)"
                         show-overflow-tooltip align="center">
                     <el-table-column
+                            prop="pupilSphere"
                             label="球镜"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                     <el-table-column
+                            prop="pupilCylinder"
                             label="柱镜"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                     <el-table-column
+                            prop="pupilAxial"
                             label="轴向"
                             show-overflow-tooltip align="center"
                     >
@@ -99,7 +72,7 @@
             </el-breadcrumb>
             <el-table
                     ref="multipleTable"
-                    :data="tableData3"
+                    :data="lightcheck"
                     stripe
                     tooltip-effect="dark"
                     style="width: 100%"
@@ -109,48 +82,53 @@
                         align="center">
                 </el-table-column>
                 <el-table-column
-                        prop="address"
                         label="睫状肌麻痹后电脑验光"
                         show-overflow-tooltip align="center">
 
 
                     <el-table-column
+                            prop="computerSphere"
                             label="球镜"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                     <el-table-column
+                            prop="computerCylinder"
                             label="柱镜"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                     <el-table-column
+                            prop="computerAxial"
                             label="轴向"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                 </el-table-column>
                 <el-table-column
-                        prop="address"
                         label="睫状肌麻痹验光(人工检影)"
                         show-overflow-tooltip align="center">
                     <el-table-column
+                            prop="manualSphere"
                             label="球镜"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                     <el-table-column
+                            prop="manualCylinder"
                             label="柱镜"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                     <el-table-column
+                            prop="manualCva"
                             label="轴向"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                     <el-table-column
                             label="矫正视力"
+                            prop="manualAxial"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
@@ -159,7 +137,7 @@
             <br>
             <el-table
                     ref="multipleTable"
-                    :data="tableData3"
+                    :data="lightcheck2"
                     border
                     tooltip-effect="dark"
                     style="width: 100%"
@@ -169,88 +147,97 @@
                         align="center">
                 </el-table-column>
                 <el-table-column
-                        prop="address"
+                        prop="axial"
                         label="眼轴"
                         show-overflow-tooltip align="center">
                 </el-table-column>
                 <el-table-column
-                        prop="address"
+                        prop="pressure"
                         label="眼压"
                         show-overflow-tooltip align="center">
                 </el-table-column>
                 <el-table-column
-                        prop="address"
                         label="角膜曲率"
                         show-overflow-tooltip align="center">
                     <el-table-column
+                            prop="k1Axial"
                             label="曲率（K1）"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                     <el-table-column
+                            prop="k1Curvature"
                             label="轴向（K1）"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                     <el-table-column
+                            prop="k2Axial"
                             label="曲率（K2）"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                     <el-table-column
+                            prop="k2Curvature"
                             label="轴向（K2）"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                 </el-table-column>
             </el-table>
+            </el-form>
         </div>
         <!--工具条-->
         <div v-if="showDetail" class="retrieval  criteria Style">
             <el-form style="margin-top: 2rem;" :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
                 <el-form-item label="姓名">
-                    <el-input v-model="editForm.stuName" auto-complete="off"></el-input>
+                    <el-input :disabled="isAdmin" v-model="editForm.stuName" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="学号">
-                    <el-input v-model="editForm.number" auto-complete="off"></el-input>
+                    <el-input :disabled="isAdmin" v-model="editForm.number" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="性别">
-                    <el-radio-group v-model="editForm.sex">
+                    <el-radio-group :disabled="isAdmin" v-model="editForm.sex">
                         <el-radio class="radio" :label="0">男</el-radio>
                         <el-radio class="radio" :label="1">女</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item label="年级-班级">
-                    <el-input v-model="editForm.gradeNo+'-'+editForm.classNo" auto-complete="off"></el-input>
+                <el-form-item label="年级">
+                    <el-input :disabled="isAdmin" v-model="editForm.gradeNo" auto-complete="off"></el-input>
+                </el-form-item>
+
+
+                <el-form-item label="班级">
+                    <el-input :disabled="isAdmin" v-model="editForm.classNo" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="身份证号">
-                    <el-input v-model="editForm.idCard" auto-complete="off"></el-input>
+                    <el-input :disabled="isAdmin" v-model="editForm.idCard" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="家长姓名">
-                    <el-input v-model="editForm.parentName" auto-complete="off"></el-input>
+                    <el-input :disabled="isAdmin" v-model="editForm.parentName" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="家长手机号">
-                    <el-input v-model="editForm.parentPhone" auto-complete="off"></el-input>
+                    <el-input :disabled="isAdmin" v-model="editForm.parentPhone" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="身高（厘米）">
-                    <el-input v-model="editForm.height" auto-complete="off"></el-input>
+                    <el-input :disabled="isAdmin" v-model="editForm.height" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="体重（kg）">
-                    <el-input v-model="editForm.weight" auto-complete="off"></el-input>
+                    <el-input :disabled="isAdmin" v-model="editForm.weight" auto-complete="off"></el-input>
                 </el-form-item>
 
             </el-form>
             <div slot="footer" align="center" class="dialog-footer">
-                <el-button @click.native="editFormVisible = false">返回</el-button>
-                <el-button type="primary" v-if="!hideedit" @click.native="editSubmit" :loading="editLoading">保存</el-button>
+<!--                <el-button @click.native="editFormVisible = false">返回</el-button>-->
+                <el-button type="primary" v-if="!isAdmin" @click.native="editSubmit" :loading="editLoading">保存</el-button>
             </div>
 
         </div>
@@ -267,13 +254,14 @@
         editUser,
         addUser,
         getStudentDetail,
-        getRecordList
+        getRecordList, modifyStudents
     } from '../../api/api';
 
     export default {
         data() {
             return {
                 recordList:[],
+                selectTime:'first',
                 showSight:false,
                 showDetail:true,
                 path:'',
@@ -299,6 +287,8 @@
                         value:'性别-全部'
                     }
                 ],
+                sightInfo:[],
+                isAdmin:false,
                 gendervalue: '性别-全部',
                 users: [],
                 total: 0,
@@ -322,12 +312,41 @@
                     birth: '',
                     addr: ''
                 },
-                tableData3: [{
-                    eyes: '右眼',
-                    name: '王小虎',
-                }, {
+               shortsight : [{
                     eyes: '左眼',
-                    name: '王小虎',
+                   ucva:'',
+                   pupilSphere:'',
+                   pupilCylinder:'',
+                   pupilAxial:''
+
+                }, {
+                    eyes: '右眼',
+                   ucva:'',
+                   pupilSphere:'',
+                   pupilCylinder:'',
+                   pupilAxial:''
+
+               }],
+                lightcheck : [{
+                    eyes: '左眼',
+                    manualSphere:'',
+                    manualCylinder:'',
+                    manualCva:'',
+                    manualAxial:'',
+                    computerSphere:'',
+                    computerCylinder:'',
+                    computerAxial:''
+
+                }, {
+                    eyes: '右眼',
+                    manualSphere:'',
+                    manualCylinder:'',
+                    manualCva:'',
+                    manualAxial:'',
+                    computerSphere:'',
+                    computerCylinder:'',
+                    computerAxial:''
+
                 }],
                 form:{
                     classes:'',
@@ -347,6 +366,25 @@
                         { required: true, message: '请输入姓名', trigger: 'blur' }
                     ]
                 },
+
+                lightcheck2: [{
+                    eyes: '左眼',
+                    axial:'',
+                   pressure:'',
+                  k1Axial:'',
+                 k1Curvature:'',
+                k2Axial:'',
+                 k2Curvature:''
+
+                }, {
+                    eyes: '右眼',
+                    axial:'',
+                    pressure:'',
+                    k1Axial:'',
+                    k1Curvature:'',
+                    k2Axial:'',
+                    k2Curvature:''
+                }],
                 //新增界面数据
                 addForm: {
                     name: '',
@@ -354,6 +392,10 @@
                     age: 0,
                     birth: '',
                     addr: ''
+                },
+                inspectiondate:'',
+                record:{
+                    inspectionDate:''
                 }
 
             }
@@ -365,6 +407,7 @@
                 if(user.type==0){
                     this.path='superAdmin';
                     this.hideedit=false;
+                    this.isAdmin=true;
                 }
                 else if(user.type==1){
                     this.path='institute';
@@ -386,12 +429,60 @@
                 this.editForm=res.data.result;
             })
             getRecordList(para2).then((res)=>{
-                this.recordList=res.data.result;
+                if(res.data.result.length!=0) {
+                    this.recordList = res.data.result;
+                    this.record = this.recordList[0];
+                    this.importdata();
+                }
             })
 
         },
         methods: {
             //性别显示转换
+
+            importdata(){
+                this.shortsight[0].ucva=this.record.result[0].ucva;
+                this.shortsight[0].pupilAxial=this.record.result[0].pupilAxial;
+                this.shortsight[0].pupilCylinder=this.record.result[0].pupilCylinder;
+                this.shortsight[0].pupilSphere=this.record.result[0].pupilSphere;
+                this.shortsight[1].ucva=this.record.result[1].ucva;
+                this.shortsight[1].pupilAxial=this.record.result[1].pupilAxial;
+                this.shortsight[1].pupilCylinder=this.record.result[1].pupilCylinder;
+                this.shortsight[1].pupilSphere=this.record.result[1].pupilSphere;
+
+                this.lightcheck[0].manualSphere=this.record.result[0].manualSphere;
+                this.lightcheck[0].manualCylinder=this.record.result[0].manualCylinder;
+                this.lightcheck[0].manualCva=this.record.result[0].manualCva;
+                this.lightcheck[0].manualAxial=this.record.result[0].manualAxial;
+                this.lightcheck[0].computerSphere=this.record.result[0].computerSphere;
+                this.lightcheck[0].computerCylinder=this.record.result[0].computerCylinder;
+                this.lightcheck[0].computerAxial=this.record.result[0].computerAxial;
+                this.lightcheck[1].manualSphere=this.record.result[1].manualSphere;
+                this.lightcheck[1].manualCylinder=this.record.result[1].manualCylinder;
+                this.lightcheck[1].manualCva=this.record.result[1].manualCva;
+                this.lightcheck[1].manualAxial=this.record.result[1].manualAxial;
+                this.lightcheck[1].computerSphere=this.record.result[1].computerSphere;
+                this.lightcheck[1].computerCylinder=this.record.result[1].computerCylinder;
+                this.lightcheck[1].computerAxial=this.record.result[1].computerAxial;
+
+
+                this.lightcheck2[0].axial=this.record.result[0].axial;
+                this.lightcheck2[0].pressure=this.record.result[0].pressure;
+                this.lightcheck2[0].k1Axial=this.record.result[0].k1Axial;
+                this.lightcheck2[0].k1Curvature=this.record.result[0].k1Curvature;
+                this.lightcheck2[0].k2Axial=this.record.result[0].k2Axial;
+                this.lightcheck2[0].k2Curvature=this.record.result[0].k2Curvature;
+
+
+                this.lightcheck2[1].axial=this.record.result[1].axial;
+                this.lightcheck2[1].pressure=this.record.result[1].pressure;
+                this.lightcheck2[1].k1Axial=this.record.result[1].k1Axial;
+                this.lightcheck2[1].k1Curvature=this.record.result[1].k1Curvature;
+                this.lightcheck2[1].k2Axial=this.record.result[1].k2Axial;
+                this.lightcheck2[1].k2Curvature=this.record.result[1].k2Curvature;
+
+
+            },
 
             handleClick(tab, event) {
                 if(tab.name=='stuinfo'){
@@ -406,6 +497,18 @@
                 if(tab.name=='history'){
 
                 }
+            },
+            handleClick2(tab, event) {
+                if(tab.name=='first'){
+                 this.record=this.recordList[0];
+                }
+                if(tab.name=='second'){
+                    this.record=this.recordList[1];
+                }
+                if(tab.name=='third'){
+                    this.record=this.recordList[2];
+                }
+                this.importdata();
             },
             formatSex: function (row, column) {
                 return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
@@ -474,8 +577,7 @@
                             this.editLoading = true;
                             //NProgress.start();
                             let para = Object.assign({}, this.editForm);
-                            para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-                            editUser(para).then((res) => {
+                            modifyStudents(para).then((res) => {
                                 this.editLoading = false;
                                 //NProgress.done();
                                 this.$message({

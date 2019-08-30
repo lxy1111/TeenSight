@@ -4,10 +4,10 @@
         <div class="retrieval  criteria Style">
             <el-form :inline="true" :model="selectForm">
                 <el-form-item>
-                    <el-input placeholder="请输入机构名称" v-model="selectForm.institutionName"></el-input>
+                    <el-input placeholder="请输入机构名称" v-model.trim="selectForm.institutionName"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <v-distpicker @selected="onSelected" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county"></v-distpicker>
+                    <v-distpicker @selected="onSelected" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county"  @province="selectProvince" @city="selectCity" @area="selectArea" ></v-distpicker>
                 </el-form-item>
                 <el-form-item><el-button type="primary" round @click="handleselect">搜索</el-button></el-form-item>
                 <el-form-item><el-button type="primary" round @click="handleReset">重置</el-button></el-form-item>
@@ -46,6 +46,11 @@
                         </template>
                     </el-table-column>
                     <el-table-column
+                            prop="account"
+                            label="机构账号"
+                            show-overflow-tooltip align="center">
+                    </el-table-column>
+                    <el-table-column
                             prop="audit"
                             label="状态"
                             show-overflow-tooltip align="center">
@@ -79,46 +84,43 @@
         <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
             <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
                 <el-form-item label="机构名称">
-                    <el-input class="login-input"  v-model="editForm.insName" auto-complete="off" :disabled="editable"></el-input>
+                    <el-input   v-model="editForm.insName" auto-complete="off" :disabled="editable"></el-input>
                 </el-form-item>
 
                 <el-form-item label="负责人">
-                    <el-input class="login-input" v-model="editForm.principal" auto-complete="off" :disabled="editable"></el-input>
+                    <el-input  v-model="editForm.principal" auto-complete="off" :disabled="editable"></el-input>
                 </el-form-item>
 
                 <el-form-item label="联系电话">
-                    <el-input class="login-input" v-model="editForm.mobile" auto-complete="off" :disabled="editable"></el-input>
+                    <el-input  v-model="editForm.mobile" auto-complete="off" :disabled="editable"></el-input>
                 </el-form-item>
 
                 <el-form-item label="所在位置">
-                    <v-distpicker :disabled="editable" :province="editForm.province" :city="editForm.city" :area="editForm.county" @selected="onSelected2"></v-distpicker>
+                    <v-distpicker :disabled="editable" @province="selectProvince2" @city="selectCity2" @area="selectArea2" :province="editForm.province" :city="editForm.city" :area="editForm.county" @selected="onSelected2"></v-distpicker>
                 </el-form-item>
 
                 <el-form-item label="所含学校" >
-                    <el-select :disabled="editable" style="width: 120%"
-                            v-model="schoolsNameList"
-                            multiple
-                            filterable
-                            remote
-                            reserve-keyword
-                            placeholder="请选择学校名称"
-                            :remote-method="remoteMethod"
-                            :loading="loading">
-                        <el-option
-                                v-for="item in schools"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                        </el-option>
-                    </el-select>
+                    <el-select :disabled="editable" style="width: 200%"
+                                            v-model="schoolsIDList"
+                                            multiple
+                                            filterable
+                                            placeholder="请选择学校名称"
+                                            :loading="loading">
+                    <el-option
+                            v-for="item in schoolist"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
                 </el-form-item>
 
                 <el-form-item label="登陆账号">
-                    <el-input class="login-input" v-model="editForm.insAccount" auto-complete="off" :disabled="editable"></el-input>
+                    <el-input  v-model="editForm.insAccount" auto-complete="off" :disabled="editable"></el-input>
                 </el-form-item>
 
                 <el-form-item label="登陆密码">
-                    <el-input class="login-input" v-model="editForm.insPassword" auto-complete="off" :disabled="editable"></el-input>
+                    <el-input v-model="editForm.insPassword" auto-complete="off" :disabled="editable"></el-input>
                 </el-form-item>
 
             </el-form>
@@ -185,6 +187,10 @@
                     page:1,
                     pageSize:10,
                     type:2,
+                    institutionName:null,
+                    county:null,
+                    city:null,
+                    province:null
                 },
                 schoolist:[],
                 allschool:[],
@@ -288,28 +294,22 @@
         },
         methods: {
             handleReset(){
-                this.getInstitutionList();
-                this.selectForm = {
-                    page:1,
-                    pageSize:1000000,
-                    type:2,
-                    institutionName:'',
-                    province:'',
-                    city:'',
-                    county:''
-                };
+                this.selectForm.institutionName=null;
+                this.selectForm.province=null;
+                this.selectForm.city=null;
+                this.selectForm.county=null;
             },
             handleselect(){
                 if(this.selectForm.institutionName==''){
                     this.selectForm.institutionName=null;
                 }
-                if(this.selectForm.province==''){
+                if(this.selectForm.province=='省'){
                     this.selectForm.province=null;
                 }
-                if(this.selectForm.city==''){
+                if(this.selectForm.city=='市'){
                     this.selectForm.city=null;
                 }
-                if(this.selectForm.county==''){
+                if(this.selectForm.county=='区'){
                     this.selectForm.county=null;
                 }
                 getInstitutionList(this.selectForm).then((res)=>{
@@ -366,6 +366,26 @@
 
                     })
                 }
+            },
+            selectProvince(data){
+                this.selectForm.province=data.value;
+                console.log(data);
+            },
+            selectCity(data){
+                this.selectForm.city=data.value;
+            },
+            selectArea(data){
+                this.selectForm.county=data.value;
+            },
+            selectProvince2(data){
+                this.editForm.province=data.value;
+                console.log(data);
+            },
+            selectCity2(data){
+                this.editForm.city=data.value;
+            },
+            selectArea2(data){
+                this.editForm.county=data.value;
             },
             remoteMethod(query) {
                 console.log(this.schoolist);
@@ -477,13 +497,28 @@
                 this.editFormVisible = true;
                 this.editable=false;
                 this.schoolist=[];
-                for(let i=0;i<this.allschool.length;i++){
-                    let school ={
-                        value:this.allschool[i].id,
-                        label:this.allschool[i].schoolName
-                    }
-                    this.schoolist.push(school);
-                }
+                let para1={
+                    page:1,
+                    pageSize:100000000
+                };
+                getSchoolListPage(para1)
+                    .then(res => {
+                        console.log("login get success");
+                        console.log(res);
+                        this.allschool=res.data.result.items;
+                        //this.myInfo = successResponse.data.datas[0];
+                        for(let i=0;i<this.allschool.length;i++){
+                            let school ={
+                                value:this.allschool[i].id,
+                                label:this.allschool[i].schoolName
+                            }
+                            this.schoolist.push(school);
+                        }
+                    })
+                    .catch(failResponse => {
+                        console.log("login get fail");
+                    });
+
 
 
                 let detail = Object.assign({}, row);
@@ -512,6 +547,10 @@
                                 schoolName:school[i].schoolName
                             }
                             schoollist.push(school2);
+                            let school3={
+                                value:school[i].id,
+                                label:school[i].schoolName
+                            }
                             this.schoolsNameList.push(school[i].schoolName);
                             this.schoolsIDList.push(school[i].id);
                         }
@@ -580,6 +619,15 @@
             },
             //编辑
             editSubmit: function () {
+                if(this.editForm.province=='省'){
+                    this.editForm.province=null;
+                }
+                if(this.editForm.city=='市'){
+                    this.editForm.city=null;
+                }
+                if(this.editForm.county=='区'){
+                    this.editForm.county=null;
+                }
                 this.$refs.editForm.validate((valid) => {
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
@@ -587,10 +635,10 @@
                             //NProgress.start();
 
                             let schoollist=[];
-                            for(let i=0;i<this.schoolsNameList.length;i++){
-                                let school={
-                                    id:this.schoolsIDList[i]
-                                }
+                            for(let i=0;i<this.schoolsIDList.length;i++){
+                                   let school={
+                                        id:this.schoolsIDList[i]
+                                    }
                                 schoollist.push(school);
                             }
                             this.editForm.schoolList= schoollist;

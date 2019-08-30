@@ -101,7 +101,7 @@
             </el-select>
         </el-form-item>
         <el-form-item  prop="county">
-            <v-distpicker @selected="onSelected"></v-distpicker>
+            <v-distpicker @selected="onSelected" @province="selectProvince" @city="selectCity" @area="selectArea"></v-distpicker>
         </el-form-item>
         <el-form-item style="width:100%;" >
             <el-button type="primary" style="width:100%;
@@ -145,21 +145,18 @@
                     v-model="ruleForm2.schoolList"
                     multiple
                     filterable
-                    remote
-                    reserve-keyword
                     placeholder="请选择学校名称"
-                    :remote-method="remoteMethod"
                     :loading="loading">
                 <el-option
-                        v-for="item in schools"
+                        v-for="item in schoolist"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
                 </el-option>
             </el-select>
         </el-form-item>
-        <el-form-item  prop="county">
-            <v-distpicker @selected="onSelected2"></v-distpicker>
+        <el-form-item  prop="province">
+            <v-distpicker @selected="onSelected2"  @province="selectProvince2" @city="selectCity2" @area="selectArea2" ></v-distpicker>
         </el-form-item>
         <el-form-item style="width:100%;" >
             <el-button type="primary" style="width:100%;
@@ -233,14 +230,14 @@
                     type:2
                 },
                 options: [{
-                    value: '0',
+                    value: '3',
                     label: '小学'
                 }, {
-                    value: '1',
+                    value: '4',
                     label: '初中'
                 },
                     {
-                        value:'2',
+                        value:'5',
                         label : '高中'
                     }],
                 rules2: {
@@ -287,8 +284,8 @@
                         { required: true, message: '请输入密码', trigger: 'blur' },
                         //{ validator: validaePass2 }
                     ],
-                    county:[
-                        {required: true, message: '请选择地区', trigger: 'blur'}
+                    province:[
+                        {required: true, message: '请选择省份', trigger: 'blur'}
                     ],
                     mobile:[
                         {required: true, message: '请输入电话', trigger: 'blur'}
@@ -325,6 +322,26 @@
 
         },
         methods: {
+            selectProvince(data){
+                this.ruleForm.province=data.value;
+                console.log(data);
+            },
+            selectCity(data){
+                this.ruleForm.city=data.value;
+            },
+            selectArea(data){
+                this.ruleForm.county=data.value;
+            },
+            selectProvince2(data){
+                this.ruleForm2.province=data.value;
+                console.log(data);
+            },
+            selectCity2(data){
+                this.ruleForm2.city=data.value;
+            },
+            selectArea2(data){
+                this.ruleForm2.county=data.value;
+            },
             remoteMethod(query) {
 
 
@@ -345,13 +362,20 @@
             registerSchool(){
                 this.$refs.ruleForm.validate((valid) => {
                     if(valid){
-                       requestRegisterSchool(this.ruleForm).then(data=>{
+                       requestRegisterSchool(this.ruleForm).then(data=> {
                                console.log(data);
-                           this.$message({
-                               message: '注册成功!',
-                               type: 'success'
-                           });
-                           this.$router.push({path: '/login'});
+                               if (!data.succeed) {
+                                   this.$message({
+                                       message: data.codeMessage,
+                                       type: 'error'
+                                   });
+                               } else {
+                                   this.$message({
+                                       message: '注册成功!',
+                                       type: 'success'
+                                   });
+                                   this.$router.push({path: '/login'});
+                               }
                            }
                        )
                     }
@@ -359,15 +383,28 @@
             },
 
             registerInstitute(){
+                if(this.ruleForm2.city=='市'){
+                    this.ruleForm2.city=null;
+                }
+                if(this.ruleForm2.county=='区'){
+                    this.ruleForm2.county=null;
+                }
                 this.$refs.ruleForm2.validate((valid) => {
                     if(valid){
-                        requestRegisterInstitute(this.ruleForm2).then(data=>{
+                        requestRegisterInstitute(this.ruleForm2).then(data=> {
                                 console.log(data);
-                                this.$message({
-                                    message: '注册成功!',
-                                    type: 'success'
-                                });
-                                this.$router.push({path: '/login'});
+                                if (!data.succeed) {
+                                    this.$message({
+                                        message: data.codeMessage,
+                                        type: 'error'
+                                    });
+                                } else {
+                                    this.$message({
+                                        message: '注册成功!',
+                                        type: 'success'
+                                    });
+                                    this.$router.push({path: '/login'});
+                                }
                             }
                         )
                     }

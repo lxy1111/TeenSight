@@ -8,11 +8,6 @@
           <el-input size="small" v-model="searchDeviceID" placeholder="按设备ID搜索"></el-input>
         </el-form-item>
         <el-form-item label="">
-          <el-button type="primary" round
-                     style="margin-right: 2rem;"
-                     @click="searchById">搜索</el-button>
-        </el-form-item>
-        <el-form-item label="">
           <el-input size="small" v-model="searchDeviceName" placeholder="按设备名称搜索"></el-input>
         </el-form-item>
         <el-form-item label="">
@@ -20,7 +15,6 @@
                      style="margin-right: 2rem;"
                      @click="searchByName">搜索</el-button>
         </el-form-item>
-        <el-form-item><el-button type="primary" round @click="handleAdd">添加通知</el-button></el-form-item>
       </el-form>
     </div>
 
@@ -42,7 +36,7 @@
           </el-table-column>
           <el-table-column
                   prop="address"
-                  label="名称"
+                  label="设备名称"
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column

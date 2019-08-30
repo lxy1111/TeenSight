@@ -102,7 +102,16 @@ let routes = [
             { path: '/institute/myAccount', component: myAccount, name: '个人信息' }
         ],
         hidden:true
-},
+    },
+    {
+        path: '/superAdmin',
+        component: Home,
+        name: '管理员',
+        children: [
+            { path: '/superAdmin/myAccount', component: myAccount, name: '个人信息' }
+        ],
+        hidden:true
+    },
     {
         path: '/school',
         component: Home,
@@ -165,9 +174,7 @@ let routes = [
         name: '设备管理',
         iconCls: 'fa fa-bar-chart',
         children: [
-            { path: '/school/schoolAvailableDevices', component: superAdminAvailableDevices, name: '可用设备' },
-            { path: '/school/schoolCircleBroadcastContent', component: superAdminCircleBroadcastContent, name: '轮播内容' },
-            { path: '/school/schoolBroadcastContent', component: superAdminBroadcastContent, name: '公告内容' }
+            { path: '/school/schoolAvailableDevices', component: superAdminAvailableDevices, name: '可用设备' }
         ]
     }
 ];

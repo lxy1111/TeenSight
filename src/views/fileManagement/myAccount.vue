@@ -1,22 +1,39 @@
 <template>
     <section>
         <!--工具条-->
+
+        <div v-if="showAdmin" class="retrieval  criteria Style">
+            <el-form style="margin-top: 2rem;" :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
+                <el-form-item  label="登录账号">
+                    <el-input  v-model="editForm.account" auto-complete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="登录密码">
+                    <el-input  v-model="editForm.newPassword" auto-complete="off"></el-input>
+                </el-form-item>
+
+            </el-form>
+            <div slot="footer" align="center" class="dialog-footer">
+                <!--                <el-button @click.native="editFormVisible = false">返回</el-button>-->
+                <el-button type="primary"  @click.native="editSubmit3" :loading="editLoading">保存</el-button>
+            </div>
+        </div>
         <div v-if="showInstitute" class="retrieval  criteria Style">
             <el-form style="margin-top: 2rem;" :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
                 <el-form-item label="机构名称">
-                    <el-input v-model="editForm.insName" auto-complete="off"></el-input>
+                    <el-input disabled v-model="editForm.insName" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="负责人">
-                    <el-input v-model="editForm.principal" auto-complete="off"></el-input>
+                    <el-input disabled v-model="editForm.principal" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="联系电话">
-                    <el-input v-model="editForm.mobile" auto-complete="off"></el-input>
+                    <el-input disabled v-model="editForm.mobile" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="所在位置">
-                    <el-input v-model="editForm.province+editForm.city+editForm.county" auto-complete="off"></el-input>
+                    <el-input disabled v-model="editForm.province+editForm.city+editForm.county" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="所含学校" v-if="ischeckins">
@@ -31,18 +48,18 @@
                            :loading="loading">
                 </el-select>
                 </el-form-item>
-                <el-form-item label="登录账号">
-                    <el-input v-model="editForm.insAccount" auto-complete="off"></el-input>
+                <el-form-item  label="登录账号">
+                    <el-input disabled v-model="editForm.insAccount" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="登录密码">
-                    <el-input v-model="editForm.insPassword" auto-complete="off"></el-input>
+                    <el-input  v-model="editForm.insPassword" auto-complete="off"></el-input>
                 </el-form-item>
 
 
             </el-form>
             <div slot="footer" align="center" class="dialog-footer">
-                <el-button @click.native="editFormVisible = false">返回</el-button>
+<!--                <el-button @click.native="editFormVisible = false">返回</el-button>-->
                 <el-button type="primary"  @click.native="editSubmit" :loading="editLoading">保存</el-button>
             </div>
 
@@ -50,34 +67,35 @@
         <div v-if="showSchool" class="retrieval  criteria Style">
             <el-form style="margin-top: 2rem;" :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
                 <el-form-item label="学校名称">
-                    <el-input v-model="editForm.insName" auto-complete="off"></el-input>
+                    <el-input disabled v-model="editForm.schoolName" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="学校类型">
-                    <el-input v-model="editForm.principal" auto-complete="off"></el-input>
+                    <el-input disabled v-model="editForm.schoolType==3?'小学':editForm.schoolType==4?'初中':'高中'" auto-complete="off">
+                    </el-input>
                 </el-form-item>
 
                 <el-form-item label="负责人">
-                    <el-input v-model="editForm.mobile" auto-complete="off"></el-input>
+                    <el-input disabled v-model="editForm.schoolPrincipal" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="所在位置">
-                    <el-input v-model="editForm.province+editForm.city+editForm.county" auto-complete="off"></el-input>
+                    <el-input disabled v-model="editForm.province+editForm.city+editForm.county" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="登录账号">
-                    <el-input v-model="editForm.insAccount" auto-complete="off"></el-input>
+                    <el-input disabled v-model="editForm.schoolAccount" auto-complete="off"></el-input>
                 </el-form-item>
 
                 <el-form-item label="登录密码">
-                    <el-input v-model="editForm.insPassword" auto-complete="off"></el-input>
+                    <el-input  v-model="editForm.schoolPassword" auto-complete="off"></el-input>
                 </el-form-item>
 
 
             </el-form>
             <div slot="footer" align="center" class="dialog-footer">
-                <el-button @click.native="editFormVisible = false">返回</el-button>
-                <el-button type="primary"  @click.native="editSubmit" :loading="editLoading">保存</el-button>
+<!--                <el-button @click.native="editFormVisible = false">返回</el-button>-->
+                <el-button type="primary"  @click.native="editSubmit2" :loading="editLoading">保存</el-button>
             </div>
 
         </div>
@@ -86,12 +104,14 @@
 
 <script>
     import util from '../../common/js/util'
-    import {editInstitutes, getInstituteDetail} from "../../api/api";
+    import {editInstitutes, editSchool, getInstituteDetail, getSchoolDetail, modifyAdmin} from "../../api/api";
     //import NProgress from 'nprogress'
 
     export default {
         data() {
             return {
+                oldpassword:'',
+                showAdmin:false,
                 showInstitute:false,
                 showSchool:false,
                 showSight:false,
@@ -142,7 +162,9 @@
                     sex: -1,
                     age: 0,
                     birth: '',
-                    addr: ''
+                    addr: '',
+                    account:'',
+                    newPassword:''
                 },
                 tableData3: [{
                     eyes: '右眼',
@@ -190,6 +212,10 @@
                 if(user.type==0){
                     this.path='superAdmin';
                     this.hideedit=false;
+                    this.showAdmin=true;
+                    this.editForm.account=user.name;
+                    this.editForm.newPassword=user.avatar;
+                    this.oldpassword=user.avatar;
                 }
                 else if(user.type==1||user.type==2){
                     this.path='institute';
@@ -215,15 +241,25 @@
                         });
                 }else{
                     this.showSchool=true;
+                    var schoolinfo = sessionStorage.getItem('schoolinfo');
+                    schoolinfo=JSON.parse(schoolinfo);
+                    let para={
+                        id:schoolinfo.schoolId
+                    }
+                    getSchoolDetail(para).then(res=>{
+                        this.editForm=res.data.result;
+
+                    })
+
                 }
             }
-            let id=this.$route.query.id;
-            let para={
-                id:id
-            }
-            getStudentDetail(para).then((res)=>{
-                this.editForm=res.data.result;
-            })
+            // let id=this.$route.query.id;
+            // let para={
+            //     id:id
+            // }
+            // getStudentDetail(para).then((res)=>{
+            //     this.editForm=res.data.result;
+            // })
 
 
         },
@@ -326,6 +362,49 @@
                 });
             },
             //新增
+            editSubmit2: function () {
+                this.$refs.editForm.validate((valid) => {
+                    if (valid) {
+                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            this.editLoading = true;
+                            //NProgress.start();
+                            let para = Object.assign({}, this.editForm);
+                            editSchool(para).then((res) => {
+                                this.editLoading = false;
+                                //NProgress.done();
+                                this.$message({
+                                    message: '提交成功',
+                                    type: 'success'
+                                });
+                                this.$refs['editForm'].resetFields();
+                                this.editFormVisible = false;
+                            });
+                        });
+                    }
+                });
+            },
+            editSubmit3: function () {
+                this.$refs.editForm.validate((valid) => {
+                    if (valid) {
+                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            this.editLoading = true;
+                            //NProgress.start();
+                            this.editForm.oldPassword=this.oldpassword;
+                            let para = Object.assign({}, this.editForm);
+                            modifyAdmin(para).then((res) => {
+                                this.editLoading = false;
+                                //NProgress.done();
+                                this.$message({
+                                    message: '提交成功',
+                                    type: 'success'
+                                });
+                                this.$refs['editForm'].resetFields();
+                                this.editFormVisible = false;
+                            });
+                        });
+                    }
+                });
+            },
             addSubmit: function () {
                 this.$refs.addForm.validate((valid) => {
                     if (valid) {

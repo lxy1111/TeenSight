@@ -26,7 +26,6 @@
 					<span style="color: black" class="el-dropdown-link userinfo-inner"><img src="../assets/img/head.png" /> {{sysUserName}}</span>
 					<el-dropdown-menu slot="dropdown">
 						<el-dropdown-item @click.native="showMyAccount">我的信息</el-dropdown-item>
-						<el-dropdown-item>设置</el-dropdown-item>
 						<el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
 					</el-dropdown-menu>
 				</el-dropdown>
@@ -131,6 +130,9 @@
                 else if(user.type!=0){
 					this.$router.push({path: '/school/myAccount'});
 				}
+                else{
+					this.$router.push({path: '/superAdmin/myAccount'});
+				}
 			},
 			onSubmit() {
 				console.log('submit!');
@@ -178,7 +180,7 @@
 				else if(user.type==1||user.type==2){
 					this.role='/institute'
 				}
-				else if(user.type==3){
+				else if(user.type>=3){
 					this.role='/school'
 				}
 			}

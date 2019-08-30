@@ -2,38 +2,21 @@
   <section>
     <!--工具条-->
     <div class="retrieval  criteria Style">
-      <el-form :inline="true" :model="filters">
+      <el-form :inline="true" :model="selectForm">
         <el-form-item>
-          <el-select
-                  v-model="value"
-                  multiple
-                  filterable
-                  remote
-                  reserve-keyword
-                  placeholder="搜索普查名称"
-                  :remote-method="remoteMethod"
-                  :loading="loading">
-            <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="是否已经结束">
+          <el-input placeholder="搜索普查名称" v-model.trim="selectForm.surveyName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-select  size="small" v-model="form.versionStatus" placeholder="请选择">
-            <el-option
-                    v-for="item in versionOptions"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
+          <el-input placeholder="搜索学校名称" v-model.trim="selectForm.schoolName"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" round @click="handleselect">搜索</el-button>
+        </el-form-item>
+        <el-form-item>
+        <el-button type="primary" round @click="handleReset">重置</el-button>
+      </el-form-item>
 
-        </el-form-item>
-        <el-form-item><el-button type="primary" round @click="Search">新增普查</el-button></el-form-item>
+        <el-form-item v-if="!isAdimin"><el-button type="primary" round @click="handleAdd">新增普查</el-button></el-form-item>
       </el-form>
 
 
@@ -41,45 +24,50 @@
       <div class="retrieval  criteria Style">
         <el-table
                 ref="multipleTable"
-                :data="tableData3"
-                border
+                :data="surveys"
+                stripe
                 tooltip-effect="dark"
                 style="width: 100%"
-                @selection-change="handleSelectionChange">
+                @selection-change="">
           <el-table-column
-                  prop="name"
-                  label="名称"
+                  prop="schoolName"
+                  label="学校名称"
                   show-overflow-tooltip
                   align="center">
           </el-table-column>
           <el-table-column
-                  prop="address"
-                  label="普查类型"
-                  sortable
-                  show-overflow-tooltip align="center">
+                  prop="surveyName"
+                  label="普查名称"
+                  show-overflow-tooltip
+                  align="center">
           </el-table-column>
+
           <el-table-column
-                  prop="address"
+                  prop="finish"
                   label="是否结束"
-                  sortable
                   show-overflow-tooltip align="center">
+            <template slot-scope="scope">
+              {{scope.row.finish==true? "是":"否"}}
+            </template>
           </el-table-column>
           <el-table-column
-                  prop="address"
+                  prop="startDate"
                   label="预计开始时间"
-
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="address"
+                  prop="endDate"
                   label="预计结束时间"
-
                   show-overflow-tooltip align="center">
+
           </el-table-column>
-          <el-table-column
-                  prop="address"
+          <el-table-column v-if="!isAdimin"
+                  prop="id"
                   label="操作"
                   show-overflow-tooltip align="center">
+            <template slot-scope="scope">
+              <el-link style="color: #7980FA; " size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-link>
+            </template>
           </el-table-column>
         </el-table>
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
@@ -90,25 +78,39 @@
     <!--工具条-->
 
     <!--编辑界面-->
-    <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
+    <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="editForm.name" auto-complete="off"></el-input>
+        <el-form-item label="普查名称" prop="name">
+          <el-input v-model="editForm.surveyName" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="性别">
-          <el-radio-group v-model="editForm.sex">
-            <el-radio class="radio" :label="1">男</el-radio>
-            <el-radio class="radio" :label="0">女</el-radio>
-          </el-radio-group>
+        <el-form-item label="是否结束">
+          <el-select v-model="editForm.finish" placeholder="请选择">
+            <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="editForm.age" :min="0" :max="200"></el-input-number>
+        <el-form-item label="选择设备">
+          <el-select v-model="deviceidlist" multiple placeholder="请选择">
+            <el-option
+                    v-for="item in devices"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="生日">
-          <el-date-picker type="date" placeholder="选择日期" v-model="editForm.birth"></el-date-picker>
+        <el-form-item label="开始时间">
+          <el-date-picker type="date" placeholder="选择日期" v-model="editForm.startDate"></el-date-picker>
         </el-form-item>
-        <el-form-item label="地址">
-          <el-input type="textarea" v-model="editForm.addr"></el-input>
+        <el-form-item label="结束时间">
+          <el-date-picker type="date" placeholder="选择日期" v-model="editForm.endDate"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input type="textarea" v-model="editForm.remark"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -118,25 +120,29 @@
     </el-dialog>
 
     <!--新增界面-->
-    <el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
+    <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="addForm.name" auto-complete="off"></el-input>
+        <el-form-item label="普查名称" prop="name">
+          <el-input v-model="addForm.surveyName" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="性别">
-          <el-radio-group v-model="addForm.sex">
-            <el-radio class="radio" :label="1">男</el-radio>
-            <el-radio class="radio" :label="0">女</el-radio>
-          </el-radio-group>
+        <el-form-item label="选择设备">
+          <el-select v-model="addForm.deviceId" multiple placeholder="请选择">
+            <el-option
+                    v-for="item in devices"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="addForm.age" :min="0" :max="200"></el-input-number>
+        <el-form-item label="开始时间">
+          <el-date-picker type="date" placeholder="选择日期" v-model="addForm.startDate"></el-date-picker>
         </el-form-item>
-        <el-form-item label="生日">
-          <el-date-picker type="date" placeholder="选择日期" v-model="addForm.birth"></el-date-picker>
+        <el-form-item label="结束时间">
+          <el-date-picker type="date" placeholder="选择日期" v-model="addForm.endDate"></el-date-picker>
         </el-form-item>
-        <el-form-item label="地址">
-          <el-input type="textarea" v-model="addForm.addr"></el-input>
+        <el-form-item label="备注">
+          <el-input type="textarea" v-model="addForm.remark"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -150,11 +156,21 @@
 <script>
   import util from '../../common/js/util'
   //import NProgress from 'nprogress'
-  import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser } from '../../api/api';
+  import {
+    getUserListPage,
+    removeUser,
+    batchRemoveUser,
+    editUser,
+    addUser,
+    getSurveyList,
+    getDeviceList, createSurvey, editSurvey
+  } from '../../api/api';
 
   export default {
     data() {
       return {
+        deviceidlist:[],
+        isAdimin:false,
         tableData3: [{
           date: '2016-05-03',
           name: '王小虎',
@@ -187,6 +203,14 @@
         filters: {
           name: ''
         },
+        schooldevice:[],
+        selectForm:{
+          page:1,
+          pageSize:10,
+          surveyName:null,
+          schoolName:null,
+          schoolId:null
+        },
         gender:[{
           label:'男',
           value:'男'
@@ -204,28 +228,31 @@
             value:'性别-全部'
           }
         ],
+        options:[{
+          value:true,
+          label:'是'
+        },{
+          value:false,
+          label:'否'
+        }],
+        devices:[],
         gendervalue: '性别-全部',
         users: [],
         total: 0,
         page: 1,
         listLoading: false,
         sels: [],//列表选中列
-
+       surveys:[],
         editFormVisible: false,//编辑界面是否显示
         editLoading: false,
         editFormRules: {
-          name: [
-            { required: true, message: '请输入姓名', trigger: 'blur' }
+          surveyName: [
+            { required: true, message: '请输入名称', trigger: 'blur' }
           ]
         },
         //编辑界面数据
         editForm: {
-          id: 0,
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
+          deviceId:[]
         },
 
         form:{
@@ -242,17 +269,15 @@
         addFormVisible: false,//新增界面是否显示
         addLoading: false,
         addFormRules: {
-          name: [
-            { required: true, message: '请输入姓名', trigger: 'blur' }
+          surveyName: [
+            { required: true, message: '请输入普查名称', trigger: 'blur' }
           ]
         },
         //新增界面数据
         addForm: {
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
+          finish:false,
+          surveyType:0,
+
         }
 
       }
@@ -264,7 +289,8 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.getUsers();
+        this.selectForm.page=this.page;
+        this.getSurveyList();
       },
       //获取用户列表
       getUsers() {
@@ -278,6 +304,29 @@
           this.total = res.data.total;
           this.users = res.data.users;
           this.listLoading = false;
+          //NProgress.done();
+        });
+      },
+      handleReset(){
+        this.selectForm.surveyName=null;
+        this.selectForm.schoolName=null;
+      },
+      handleselect(){
+        if(this.selectForm.schoolName==''){
+          this.selectForm.schoolName=null;
+        }
+        if(this.selectForm.surveyName==''){
+          this.selectForm.surveyName=null;
+        }
+        this.getSurveyList();
+
+      },
+      getSurveyList() {
+        this.listLoading = true;
+        //NProgress.start();
+        getSurveyList(this.selectForm).then((res) => {
+         this.surveys=res.data.result.items;
+          this.total = res.data.result.totalNum;
           //NProgress.done();
         });
       },
@@ -306,17 +355,14 @@
       handleEdit: function (index, row) {
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
+        this.deviceidlist=[];
+        for(let i=0;i<this.editForm.deviceList.length;i++){
+          this.deviceidlist.push(this.editForm.deviceList[i].id);
+        }
       },
       //显示新增界面
       handleAdd: function () {
         this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
-        };
       },
       //编辑
       editSubmit: function () {
@@ -326,8 +372,10 @@
               this.editLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.editForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              editUser(para).then((res) => {
+              para.deviceId=this.deviceidlist;
+              para.startDate = (!para.startDate || para.startDate == '') ? '' : util.formatDate.format(new Date(para.startDate), 'yyyy-MM-dd');
+              para.endDate = (!para.endDate|| para.endDate == '') ? '' : util.formatDate.format(new Date(para.endDate), 'yyyy-MM-dd');
+              editSurvey(para).then((res) => {
                 this.editLoading = false;
                 //NProgress.done();
                 this.$message({
@@ -336,7 +384,7 @@
                 });
                 this.$refs['editForm'].resetFields();
                 this.editFormVisible = false;
-                this.getUsers();
+                this.getSurveyList();
               });
             });
           }
@@ -350,8 +398,13 @@
               this.addLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.addForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              addUser(para).then((res) => {
+              var schoolinfo = sessionStorage.getItem('schoolinfo');
+              schoolinfo=JSON.parse(schoolinfo);
+              var id=schoolinfo.schoolId;
+              para.schoolId=id;
+              para.startDate = (!para.startDate || para.startDate == '') ? '' : util.formatDate.format(new Date(para.startDate), 'yyyy-MM-dd');
+              para.endDate = (!para.endDate|| para.endDate == '') ? '' : util.formatDate.format(new Date(para.endDate), 'yyyy-MM-dd');
+              createSurvey(para).then((res) => {
                 this.addLoading = false;
                 //NProgress.done();
                 this.$message({
@@ -360,7 +413,7 @@
                 });
                 this.$refs['addForm'].resetFields();
                 this.addFormVisible = false;
-                this.getUsers();
+                this.getSurveyList();
               });
             });
           }
@@ -393,7 +446,35 @@
       }
     },
     mounted() {
-      this.getUsers();
+
+      var user = sessionStorage.getItem('user');
+      user=JSON.parse(user);
+      if(user.type>=3) {
+        var schoolinfo = sessionStorage.getItem('schoolinfo');
+        schoolinfo=JSON.parse(schoolinfo);
+        var id=schoolinfo.schoolId;
+        this.selectForm.schoolId=id;
+        this.getSurveyList();
+        let para = {
+          page: this.page,
+          pageSize: 1000000,
+          schoolId:id
+        };
+        getDeviceList(para).then(res=>{
+          let deviceList=res.data.result.items;
+          this.devices=[];
+          for(let i=0;i<deviceList.length;i++){
+            let item={
+              value: deviceList[i].id,
+              label:deviceList[i].deviceName
+            }
+            this.devices.push(item);
+          }
+        })
+      }else{
+        this.isAdimin=true;
+        this.getSurveyList();
+      }
     }
   }
 

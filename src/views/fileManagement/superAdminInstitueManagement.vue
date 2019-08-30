@@ -4,10 +4,10 @@
     <div class="retrieval  criteria Style">
       <el-form :model="selectForm" :inline="true" >
         <el-form-item>
-          <el-input placeholder="请输入机构名称" v-model="selectForm.institutionName"></el-input>
+          <el-input placeholder="请输入机构名称" v-model.trim="selectForm.institutionName"></el-input>
         </el-form-item>
         <el-form-item>
-         <v-distpicker @selected="onSelected" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county"></v-distpicker>
+         <v-distpicker @selected="onSelected" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county" @province="selectProvince" @city="selectCity" @area="selectArea"></v-distpicker>
         </el-form-item>
         <el-form-item><el-button type="primary" round @click="handleselect">查询</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="handleReset">重置</el-button></el-form-item>
@@ -47,10 +47,10 @@
             </template>
           </el-table-column>
           <el-table-column
-                  prop="institutionAccount"
-                  label="机构账号"
-                  show-overflow-tooltip align="center">
-          </el-table-column>
+                prop="account"
+                label="机构账号"
+                show-overflow-tooltip align="center">
+        </el-table-column>
 <!--          <el-table-column-->
 <!--                prop="audit"-->
 <!--                label="状态"-->
@@ -97,7 +97,7 @@
         </el-form-item>
 
         <el-form-item label="所在位置">
-          <v-distpicker :disabled="editable" :province="editForm.province" :city="editForm.city" :area="editForm.county" @selected="onSelected2"></v-distpicker>
+          <v-distpicker :disabled="editable" :province="editForm.province" :city="editForm.city" :area="editForm.county" @province="selectProvince3" @city="selectCity3" @area="selectArea3" @selected="onSelected2"></v-distpicker>
         </el-form-item>
 
         <el-form-item label="登陆账号">
@@ -138,7 +138,7 @@
           <el-input v-model="addForm.mobile" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="所在地区">
-          <v-distpicker @selected="onSelected1"></v-distpicker>
+          <v-distpicker @selected="onSelected1"   @province="selectProvince2" @city="selectCity2" @area="selectArea2"></v-distpicker>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -171,7 +171,11 @@
         selectForm:{
           page:1,
           pageSize:10,
-          type:1
+          type:1,
+          institutionName:null,
+          county:null,
+          city:null,
+          province:null
         },
         disabledelete:false,
         editable: true,
@@ -220,14 +224,14 @@
         },
         //编辑界面数据
         editForm: {
-          city: "",
-          county: "",
+          city: null,
+          county: null,
           insAccount: "",
           insName: "",
           insPassword: "",
           mobile: "",
           principal: "",
-          province: "",
+          province: null,
           type: "",
           schoolList:"",
           id:''
@@ -267,29 +271,71 @@
       }
     },
     methods: {
+      selectProvince(data){
+         this.selectForm.province=data.value;
+        console.log(data);
+      },
+      selectCity(data){
+        this.selectForm.city=data.value;
+      },
+      selectArea(data){
+        this.selectForm.county=data.value;
+      },
+        selectProvince2(data){
+            this.addForm.province=data.value;
+            if(this.addForm.province=='省'){
+                this.addForm.province=null;
+            }
+            console.log(data);
+        },
+        selectCity2(data){
+            this.addForm.city=data.value;
+            if(this.addForm.city=='市'){
+                this.addForm.city=null;
+            }
+        },
+        selectArea2(data){
+            this.addForm.county=data.value;
+            if(this.addForm.county=='区'){
+                this.addForm.county=null;
+            }
+        },
+        selectProvince3(data){
+            this.editForm.province=data.value;
+            if(this.editForm.province=='省'){
+                this.editForm.province=null;
+            }
+            console.log(data);
+        },
+        selectCity3(data){
+            this.editForm.city=data.value;
+            if(this.editForm.city=='市'){
+                this.editForm.city=null;
+            }
+        },
+        selectArea3(data){
+            this.editForm.county=data.value;
+            if(this.editForm.county=='区'){
+                this.editForm.county=null;
+            }
+        },
       handleReset(){
-        this.getInstitutionList();
-        this.selectForm = {
-          page:1,
-          pageSize:1000000,
-          institutionName:'',
-          type:1,
-          province:'',
-          city:'',
-          county:''
-        };
+        this.selectForm.institutionName=null;
+        this.selectForm.province=null;
+        this.selectForm.city=null;
+        this.selectForm.county=null;
       },
       handleselect(){
         if(this.selectForm.institutionName==''){
           this.selectForm.institutionName=null;
         }
-        if(this.selectForm.province==''){
+        if(this.selectForm.province=='省'){
           this.selectForm.province=null;
         }
-        if(this.selectForm.city==''){
+        if(this.selectForm.city=='市'){
           this.selectForm.city=null;
         }
-        if(this.selectForm.county==''){
+        if(this.selectForm.county=='区'){
           this.selectForm.county=null;
         }
         getInstitutionList(this.selectForm).then((res)=>{
@@ -321,7 +367,7 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.selectForm=this.page;
+        this.selectForm.page=this.page;
         getInstitutionList(this.selectForm).then((res)=>{
           this.institutes=res.data.result.items;
         })
@@ -448,6 +494,15 @@
       },
       //编辑
       editSubmit: function () {
+          if(this.editForm.province=='省'){
+              this.editForm.province=null;
+          }
+          if(this.editForm.city=='市'){
+              this.editForm.city=null;
+          }
+          if(this.editForm.county=='区'){
+              this.editForm.county=null;
+          }
         this.$refs.editForm.validate((valid) => {
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
@@ -503,6 +558,7 @@
           }
         });
       },
+
       selsChange: function (sels) {
         this.sels = sels;
       },

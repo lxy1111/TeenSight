@@ -74,16 +74,13 @@
                 show-overflow-tooltip align="center">
           <template slot-scope="scope">
             <div style="background: whitesmoke;
-                        width: 7rem;
-                        height: 4rem;
+                        width: 9rem;
+                        height: 2rem;
                         margin-left: 2rem;
                         border-radius: 1rem;
                         position: inherit;">
               <el-col style="height: 2rem;" :span="24">
-                <div style="transform: translateY(40%);">日期</div>
-              </el-col>
-              <el-col style="height: 2rem;" :span="24">
-                <div style="transform: translateY(10%);">时间</div>
+                <div style="transform: translateY(40%);">{{scope.row.createTime}}</div>
               </el-col>
             </div>
           </template>
@@ -289,7 +286,7 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.getUsers();
+        this.getNoticeList();
       },
       //获取用户列表
       getUsers() {
@@ -313,7 +310,9 @@
         }).then(() => {
           this.listLoading = true;
           //NProgress.start();
-          let para = { idList: [row.id] };
+          let para = {
+            codeList: [row.id]
+          };
           removeNotice(para).then((res) => {
             this.listLoading = false;
             //NProgress.done();

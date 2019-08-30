@@ -21,6 +21,8 @@ export const removeTeacher = params => { return axios.get(`/api/teacher/removeTe
 
 export const removeStudent = params => { return axios.get(`/api/student/removeStudent`, {params:params});};
 
+export const removeSchool= params => { return axios.get(`/api/school/removeSchool`, {params:params});};
+
 export const requestRegisterSchool = params => { return axios.post(`/api/user/schoolRegister`, params).then(res => res.data); };
 
 export const requestRegisterInstitute = params => { return axios.post(`/api/user/institutionRegister`, params).then(res => res.data); };
@@ -29,7 +31,9 @@ export const getUserList = params => { return axios.get(`${base}/user/list`, { p
 
 export const getNoticeList = params => { return axios.get(`/api/common/getNoticeList`, { params: params }); };
 
-export const getMessageList = params => { return axios.get(`/api/common/getMessageList`, { params: params }); };
+export const getStatisticsBySchool = params => { return axios.get(`/api/statistics/getStatisticBySchool`, { params: params }); };
+
+export const getMessageList = params => { return axios.get(`/api/device/getMessageList`, { params: params }); };
 
 export const getStudentCode = params => { return axios.post(`/api/student/generateQrCode`, params).then(res => res.data) };
 
@@ -45,9 +49,16 @@ export const getSchoolListPage = params => { return axios.get('/api/school/getSc
 
 export const getInstitutionList = params => { return axios.get(`/api/institution/getInstitutionList`, { params: params }); };
 
+export const getSurveyList = params => { return axios.get(`/api/survey/getSurveyList`, { params: params }); };
+
+export const getSurveyCode = params => { return axios.post(`/api/student/generateSurveyQrCode`, params).then(res=>res.data) };
+
+
 export const getInstituteDetail = params => { return axios.get(`/api/institution/getInstitutionDetail`, { params: params }); };
 
 export const getStudentDetail = params => { return axios.get(`/api/student/getStudentDetail`, { params: params }); };
+
+export const getSchoolDetail = params => { return axios.get(`/api/school/getSchoolDetail`, { params: params }); };
 
 export const getRecordList = params => { return axios.get(`/api/record/getRecordList`, { params: params }); };
 
@@ -61,10 +72,19 @@ export const editUser = params => { return axios.get(`${base}/user/edit`, { para
 
 export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
 
+export const modifyAdmin = params => { return axios.post(`/api/user/modifyPassword`, params); };
+
 export const bindDevice = params => { return axios.get(`/api/device/bindDevice`, { params: params }); };
+
+export const getBindSchools = params => { return axios.get(`/api/device/getBindSchool`, { params: params }); };
+
 export const addStudents = params => { return axios.post(`/api/student/createStudent`, params).then(res => res.data); };
 
 export const addCharts = params => { return axios.post(`/api/common/createChart`, params).then(res => res.data); };
+
+export const createSurvey = params => { return axios.post(`/api/survey/createSurvey`, params).then(res => res.data); };
+
+export const editSurvey = params => { return axios.post(`/api/survey/modifySurvey`, params).then(res => res.data); };
 
 export const addGrades = params => { return axios.post(`/api/teacher/createTeacher`, params).then(res => res.data); };
 
@@ -81,3 +101,5 @@ export const editGrades = params => { return axios.post(`/api/teacher/modifyTeac
 export const editSchool = params => { return axios.post(`/api/school/modifySchool`, params).then(res => res.data); };
 
 export const editDevice = params => { return axios.post(`/api/device/modifyDevice`, params).then(res => res.data); };
+
+export const modifyStudents = params => { return axios.post(`/api/student/modifyStudent`, params).then(res => res.data); };

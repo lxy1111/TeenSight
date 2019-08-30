@@ -4,19 +4,23 @@
     <div class="retrieval  criteria Style">
       <el-form :inline="true" :model="selectForm">
         <el-form-item>
-         <el-input placeholder="请输入班主任名字" v-model="selectForm.teacherName">
+         <el-input placeholder="请输入班主任名字" v-model.trim="selectForm.teacherName">
          </el-input>
         </el-form-item>
         <el-form-item>
-         <el-input placeholder="请输入年级号" v-model="selectForm.gradeNo">
+          <el-input placeholder="请输入学校名称" v-model.trim="selectForm.schoolName">
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+         <el-input placeholder="请输入年级号" v-model.trim="selectForm.gradeNo">
          </el-input>
         </el-form-item>
         <el-form-item>
-        <el-input placeholder="请输入班级号" v-model="selectForm.classNo"></el-input>
+        <el-input placeholder="请输入班级号" v-model.trim="selectForm.classNo"></el-input>
         </el-form-item>
         <el-form-item><el-button type="primary" round @click="handleselect">搜索</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="handleReset">重置</el-button></el-form-item>
-        <el-form-item><el-button type="primary" round @click="showBatchAdd">批量导入</el-button></el-form-item>
+        <el-form-item v-if="!hidedelete"><el-button type="primary" round @click="showBatchAdd">批量导入</el-button></el-form-item>
       </el-form>
 
 
@@ -45,7 +49,7 @@
           </el-table-column>
           <el-table-column
                   prop="teacherName"
-                  label="负责人"
+                  label="班主任"
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
@@ -58,7 +62,7 @@
                   label="操作"
                   show-overflow-tooltip align="center">
             <template slot-scope="scope">
-              <el-link style="color: #7980FA; " size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-link>
+              <el-link style="color: #7980FA; " size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-link>
               <el-link style="color: #7980FA; " size="small" v-if="!hidedelete" @click="handleDel(scope.$index, scope.row)">删除</el-link>
             </template>
           </el-table-column>
@@ -146,10 +150,6 @@
           <el-input v-model="editForm.teacherPhone" auto-complete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="登陆账号">
-            <el-input v-model="editForm.teacherAccount" auto-complete="off"></el-input>
-        </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="editFormVisible = false">取消</el-button>
@@ -207,6 +207,13 @@
         selectForm:{
           page:1,
           pageSize:10,
+          institutionId:null,
+          schoolId:null,
+          teacherName:null,
+          gradeNo:null,
+          classNo:null,
+          schoolName:null
+
         },
         hidedelete:true,
         teachers:[],
@@ -292,12 +299,10 @@
     },
     methods: {
       handleReset(){
-        this.getTeachersList();
-        this.selectForm = {
-          teacherName:'',
-          classNo:'',
-          gradeNo:''
-        };
+        this.selectForm.teacherName=null;
+        this.selectForm.classNo=null;
+        this.selectForm.gradeNo=null;
+        this.selectForm.schoolName=null;
       },
       handleselect(){
         if(this.selectForm.gradeNo==''){
@@ -309,23 +314,10 @@
         if(this.selectForm.teacherName==''){
           this.selectForm.teacherName=null;
         }
-        getTeachersList(this.selectForm).then((res)=>{
-          let reslist=res.data.result.items;
-          this.teachersList=reslist;
-          this.total=res.data.result.totalNum;
-          // this.teachers=[];
-          // for(let i=0;i<this.teachersList.length;i++){
-          //   let teacher={
-          //     classgradeNo:reslist[i].gradeNo+"-"+reslist[i].classNo,
-          //     school:reslist[i].schoolName,
-          //     teacher:reslist[i].teacherName,
-          //     account:reslist[i].teacherAccount,
-          //     tel:reslist[i].teacherPhone,
-          //     id:reslist[i].id
-          //   }
-          //   this.teachers.push(teacher);
-          // }
-        })
+        if(this.selectForm.schoolName==''){
+          this.selectForm.schoolName=null;
+        }
+      this.getTeachersList();
       },
       beforeUpload(file) {
         // 取文件大小，限制文件大小超过1mb
@@ -364,9 +356,7 @@
             classNo: this.tableData[i].班级,
             gradeNo: this.tableData[i].年级,
             schoolId: this.myid,
-            teacherAccount: this.tableData[i].教师账号,
             teacherName: this.tableData[i].教师姓名,
-            teacherPassword: this.tableData[i].教师密码,
             teacherPhone: this.tableData[i].教师手机号,
           }
           addGrades(teacher).then((res) => {
@@ -411,10 +401,7 @@
       handleCurrentChange(val) {
         this.page = val;
         this.selectForm.page=this.page;
-        getTeachersList(this.selectForm).then((res)=> {
-          let reslist = res.data.result.items;
-          this.teachersList = reslist;
-        })
+        this.getTeachersList();
       },
       getTeachersList(){
         var user = sessionStorage.getItem('user');
@@ -424,26 +411,16 @@
         if(user.type==2||user.type==1) {
           var institute = sessionStorage.getItem('institute');
           institute = JSON.parse(institute);
-
-          para = {
-            page: this.page,
-            pageSize: 10,
-            institutionId:institute.insDetail.id
-          };
+          this.selectForm.page=this.page;
+          this.selectForm.institutionId=institute.insDetail.id
         }else if(user.type==0) {
-          para = {
-            page: this.page,
-            pageSize: 10
-          };
+          this.selectForm.page=this.page;
         }else{
           var schoolinfo=sessionStorage.getItem('schoolinfo');
           schoolinfo= JSON.parse(schoolinfo);
           this.myid=schoolinfo.schoolId;
-          para={
-            page: this.page,
-            pageSize: 10,
-            schoolId:schoolinfo.schoolId
-          }
+          this.selectForm.page=this.page;
+          this.selectForm.schoolId=schoolinfo.schoolId;
         }
         this.listLoading = true;
         console.log("hihihi");
@@ -451,23 +428,13 @@
         // 并且响应成功以后会执行then方法中的回调函数
        this.teachers=[];
 
-        getTeachersList(para)
+        getTeachersList(this.selectForm)
                 .then(res => {
                   console.log("login get success");
                   console.log(res);
                   let reslist=res.data.result.items;
                   this.teachersList=reslist;
                   this.total=res.data.result.totalNum;
-                  // for(let i=0;i<this.teachersList.length;i++){
-                  //   let teacher={
-                  //     classgradeNo:reslist[i].gradeNo+"-"+reslist[i].classNo,
-                  //     school:reslist[i].schoolName,
-                  //     teacher:reslist[i].teacherName,
-                  //     account:reslist[i].teacherAccount,
-                  //     tel:reslist[i].teacherPhone,
-                  //     id:reslist[i].id
-                  //   }
-                  //   this.teachers.push(teacher);
                   console.log(this.teachers);
                 })
                 .catch(failResponse => {

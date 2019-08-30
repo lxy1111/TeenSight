@@ -6,10 +6,10 @@
 
       <el-form :inline="true" :model="selectForm">
         <el-form-item label="">
-          <el-input size="small" v-model="selectForm.deviceId" placeholder="按设备ID搜索"></el-input>
+          <el-input size="small" v-model.trim="selectForm.deviceId" placeholder="按设备ID搜索"></el-input>
         </el-form-item>
         <el-form-item label="">
-          <el-input size="small" v-model="selectForm.deviceName" placeholder="按设备名称搜索"></el-input>
+          <el-input size="small" v-model.trim="selectForm.deviceName" placeholder="按设备名称搜索"></el-input>
         </el-form-item>
         <el-form-item label="">
           <el-button type="primary" round
@@ -21,11 +21,31 @@
                      style="margin-right: 2rem;"
                      @click="handleReset">重置</el-button>
         </el-form-item>
-        <el-form-item><el-button type="primary" round @click="handleAdd">添加设备</el-button></el-form-item>
+        <el-form-item v-if="isAdmin"><el-button type="primary" round @click="handleAdd">添加设备</el-button></el-form-item>
       </el-form>
     </div>
     <el-dialog title="绑定" :visible.sync="showSchool" :close-on-click-modal="false">
       <el-form>
+        <el-form-item label="已绑定学校">
+          <el-select style="width: 86%;"
+                     class="select-school-name"
+                     multiple
+                     v-model="deviceschool"
+                     placeholder="暂无"
+                     disabled
+                     filterable
+                     remote
+                     reserve-keyword
+                     :remote-method="remoteMethod"
+                     :loading="loading">
+            <el-option
+                    v-for="item in schools"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
       <el-form-item >
         <el-select style="width: 100%;"
                    class="select-school-name"
@@ -45,8 +65,10 @@
           </el-option>
         </el-select>
       </el-form-item>
-        <el-form-item><el-button type="primary" round @click="binddevice">确定</el-button></el-form-item>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" round @click.native="binddevice">确定</el-button>
+      </div>
     </el-dialog>
     <div class="retrieval  criteria Style">
       <el-table
@@ -81,14 +103,14 @@
                 label="位置"
                 show-overflow-tooltip align="center">
         </el-table-column>
-        <el-table-column
+        <el-table-column v-if="isAdmin"
                 prop="address"
                 label="操作"
                 show-overflow-tooltip align="center">
           <template slot-scope="scope">
-            <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleBind(scope.$index, scope.row)">绑定学校</el-link>
+<!--            <el-link style="color: #7980FA; margin-right: 1rem;" size="small"  @click="handleBind(scope.$index, scope.row)">绑定学校</el-link>-->
             <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-link>
-            <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-link>
+            <el-link style="color: #7980FA; margin-right: 1rem;" size="small"  @click="handleDel(scope.$index, scope.row)">删除</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -113,7 +135,23 @@
           <el-input v-model="editForm.deviceName" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="地址">
-          <el-input type="textarea" v-model="editForm.address"></el-input>
+          <el-input  v-model="editForm.address"></el-input>
+        </el-form-item>
+        <el-form-item label="已绑定学校">
+          <el-select style="width: 86%;"
+                     class="select-school-name"
+                     multiple
+                     v-model="deviceschoolid"
+                     placeholder="暂无"
+                     filterable
+                     :loading="loading">
+            <el-option
+                    v-for="item in schoolist"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -156,21 +194,22 @@
     addUser,
     getDeviceList,
     addDevice,
-    getSchoolListPage, bindDevice
+    getSchoolListPage, bindDevice, getBindSchools
   } from '../../api/api';
 
   export default {
     data() {
       return {
+        isAdmin:true,
         devices:[],
         schoollist:[],
         selectForm:{
           page: 1,
           pageSize: 10,
-          address: "",
-          deviceId: "",
-          deviceName: "",
-          schoolId: ""
+          schoolId: null,
+          address:null,
+          deviceId:null,
+          deviceName:null
         },
         tableData3: [{
           date: '2016-05-03',
@@ -204,6 +243,7 @@
         filters: {
           name: ''
         },
+        deviceschoolid:[],
         gender:[{
           label:'男',
           value:'男'
@@ -233,6 +273,7 @@
         schools:[],
         editFormVisible: false,//编辑界面是否显示
         editLoading: false,
+        bindedSchools:[],
         editFormRules: {
           name: [
             { required: true, message: '请输入姓名', trigger: 'blur' }
@@ -246,6 +287,8 @@
           schoolId: ""
         },
         schoolist:[],
+        deviceschool:{
+        },
 
         form:{
           classes:'',
@@ -278,15 +321,11 @@
     methods: {
 
       handleReset(){
-        this.getDevices();
-        this.selectForm = {
-          page: 1,
-          pageSize: 10,
-          address: "",
-          deviceId: "",
-          deviceName: "",
-          schoolId: ""
-        };
+
+        this.selectForm.address = null;
+        this.selectForm.deviceId=null;
+        this.selectForm.deviceName=null;
+        this.selectForm.schoolId=null;
       },
       binddevice(){
         for(let i=0;i<this.schoollist.length;i++){
@@ -302,6 +341,23 @@
           type:'success',
           message:'绑定成功'
         })
+        this.showSchool=false;
+      },
+      getBindedSchool(id){
+        let para={
+          deviceId:id
+        }
+        this.schoollist=[];
+        this.deviceschool=[];
+        this.deviceschoolid=[];
+        getBindSchools(para).then(res=>{
+          this.bindedSchools=res.data.result;
+          for(let i=0;i<this.bindedSchools.length;i++) {
+           this.deviceschool.push(this.bindedSchools[i].schoolName);
+           this.deviceschoolid.push(this.bindedSchools[i].id);
+          }
+        })
+
       },
       handleselect() {
         if(this.selectForm.deviceName==''){
@@ -316,10 +372,7 @@
         if(this.selectForm.schoolId==''){
           this.selectForm.schoolId=null;
         }
-        getDeviceList(this.selectForm).then((res)=>{
-          this.devices=res.data.result.items;
-          this.total=res.data.result.totalNum;
-        })
+        this.getDevices();
       },
       remoteMethod(query) {
         console.log(this.schoolist);
@@ -342,16 +395,13 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.getUsers();
+        this.selectForm.page=this.page;
+      this.getDevices();
       },
       getDevices() {                         /////////////////////获取所有设备列表
-
-        let para = {
-          page: this.page,
-          pageSize: 10
-        };
+       this.selectForm.page=this.page;
         this.listLoading = true;
-        getDeviceList(para).then((res) => {
+        getDeviceList(this.selectForm).then((res) => {
           this.total = res.data.result.totalNum;
           this.devices = res.data.result.items;
           this.listLoading = false;
@@ -383,6 +433,8 @@
           }
           this.schoolist.push(school);
         }
+        this.getBindedSchool(row.id);
+
       },
       //删除
       handleDel: function (index, row) {
@@ -409,6 +461,17 @@
       handleEdit: function (index, row) {
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
+        this.deviceId=row.id;
+        this.schoolist=[];
+        for(let i=0;i<this.allschool.length;i++){
+          let school ={
+            value:this.allschool[i].id,
+            label:this.allschool[i].schoolName
+          }
+          this.schoolist.push(school);
+        }
+        this.getBindedSchool(row.id);
+
       },
       //显示新增界面
       handleAdd: function () {
@@ -428,12 +491,34 @@
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.editLoading = true;
               //NProgress.start();
+              let idlist=[];
+              let schoollist=[];
+              for(let i=0;i<this.deviceschoolid.length;i++){
+                let school={
+                  id:this.deviceschoolid[i]
+                };
+                schoollist.push(school);
+              }
+              this.editForm.schoolList= schoollist;
               let para = Object.assign({}, this.editForm);
+              if(this.deviceschoolid.length>0){
+                for(let i=0;i<this.deviceschoolid.length;i++) {
+
+                  let para = {
+                    schoolId:this.deviceschoolid[i],
+                    isBind: true,
+                    deviceId:this.editForm.id
+                  }
+                  bindDevice(para).then(res=>{
+
+                  })
+                }
+              }
               editDevice(para).then((res) => {
                 this.editLoading = false;
                 //NProgress.done();
                 this.$message({
-                  message: '提交成功',
+                  message: '修改成功',
                   type: 'success'
                 });
                 this.$refs['editForm'].resetFields();
@@ -495,6 +580,15 @@
       }
     },
     mounted() {
+      var user=sessionStorage.getItem('user');
+      user=JSON.parse(user);
+      if(user.type>=3){
+        this.isAdmin=false;
+        var schoolinfo = sessionStorage.getItem('schoolinfo');
+        schoolinfo=JSON.parse(schoolinfo);
+        var id=schoolinfo.schoolId;
+        this.selectForm.schoolId=id;
+      }
       this.getDevices();
       console.log("1111111111111111111111111")
       let para={

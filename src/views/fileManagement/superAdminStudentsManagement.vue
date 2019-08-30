@@ -2,18 +2,18 @@
   <section>
     <!--工具条-->
     <div class="retrieval  criteria Style">
-      <el-form style="margin-left: 2rem;" :inline="true" :model="selectForm">
+      <el-form style="margin-left: 2rem;" :inline="true" :model="selectForm" ref="selectForm">
         <el-form-item>
-          <el-input placeholder="请输入学生姓名" v-model="selectForm.stuName"></el-input>
+          <el-input placeholder="请输入学生姓名" v-model.trim="selectForm.studentName"></el-input>
         </el-form-item>
         <el-form-item>
-         <el-input placeholder="请输入学校名称" v-model="selectForm.schoolName"></el-input>
+         <el-input placeholder="请输入学校名称" v-model.trim="selectForm.schoolName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input placeholder="请输入年级"  v-model="selectForm.gradeNo"></el-input>
+          <el-input placeholder="请输入年级"  v-model.trim="selectForm.gradeNo"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input placeholder="请输入班级" v-model="selectForm.classNo"></el-input>
+          <el-input placeholder="请输入班级" v-model.trim="selectForm.classNo"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -29,7 +29,7 @@
           </el-button>
         </el-form-item>
 
-        <el-form-item>
+        <el-form-item v-if="!hidedelete">
           <el-button class="reset-student" type="primary" round @click="showBatchAdd">
             <span style="font-size: 0.9rem;font-family: PingFang SC;">
               批量导入
@@ -152,8 +152,8 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button style="margin-left: 2rem; margin-top: 1rem;" @click.native="generateStudentCode">生成学生二维码</el-button>
-        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" @click.native="" >生成普查二维码</el-button>
+        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" @click.native="generateStudentCode">生成学生二维码</el-button>
+        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" @click.native="generateSurveyCode" >生成普查二维码</el-button>
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
         </el-pagination>
       </div>
@@ -162,18 +162,31 @@
     <!--工具条-->
 
      <el-dialog title="学生信息二维码"  style="border: 0;" :visible.sync="qrcodevisible" :close-on-click-modal="false">
-      <el-row  v-for="item in studentInfoCodeList">
+    <el-row  v-for="item in studentInfoCodeList">
+      <el-row>
         <el-image
                 style="width: 100px; height: 100px;left:40%"
                 :src="item.url">
         </el-image>
-        <br>
-        <span >学生姓名:{{item.req.stuName}}</span>
       </el-row>
-
-
-
-     </el-dialog>
+      <el-row >
+        <span style="margin-left: 40%">学生姓名:{{item.req.stuName}}</span>
+      </el-row>
+    </el-row>
+  </el-dialog>
+    <el-dialog title="学生普查二维码"  style="border: 0;" :visible.sync="surveyqrcodevisible" :close-on-click-modal="false">
+      <el-row  v-for="item in surveyqrcodelit">
+        <el-row>
+          <el-image
+                  style="width: 100px; height: 100px;left:40%"
+                  :src="item.url">
+          </el-image>
+        </el-row>
+        <el-row >
+          <span style="margin-left: 40%">学生姓名:{{item.req.stuName}}</span>
+        </el-row>
+      </el-row>
+    </el-dialog>
 
     <!--编辑界面-->
     <el-dialog title="编辑" style="border: 0;" v-model="editFormVisible" :close-on-click-modal="false">
@@ -243,7 +256,7 @@
     editUser,
     addUser,
     getStudentsList,
-    addStudents, removeStudent, getStudentCode
+    addStudents, removeStudent, getStudentCode, getSurveyList, getSurveyCode
   } from '../../api/api';
 
 
@@ -259,6 +272,12 @@
         selectForm:{
           page:1,
           pageSize:10,
+          institutionId: null,
+          schoolId:null,
+          studentName:null,
+          schoolName:null,
+          classNo:null,
+          gradeNo:null
         },
         loading: false,
         excelData: {
@@ -276,6 +295,7 @@
         batchAddVisible: false,
         path: '',
         hidedelete: false,
+        surveyqrcodevisible:false,
         students: [],
         filters: {
           name: ''
@@ -298,6 +318,7 @@
           }
         ],
         studentInfoCodeList:[],
+        surveyqrcodelit:[],
         qrcodevisible:false,
         gendervalue: '性别-全部',
         users: [],
@@ -349,8 +370,8 @@
     },
     methods: {
       handleselect(){
-        if(this.selectForm.stuName==''){
-          this.selectForm.stuName=null;
+        if(this.selectForm.studentName==''){
+          this.selectForm.studentName=null;
         }
         if(this.selectForm.schoolName==''){
           this.selectForm.schoolName=null;
@@ -361,9 +382,36 @@
         if(this.selectForm.gradeNo==''){
           this.selectForm.gradeNo=null;
         }
-        getStudentsList(this.selectForm).then((res)=>{
-          this.students=res.data.result.items;
-          this.total=res.data.result.totalNum;
+       this.getStudentsList();
+      },
+      generateSurveyCode(){
+        let codelist=[];
+        for(let i=0;i<this.multipleselection.length;i++){
+          let id=this.multipleselection[i].id;
+          codelist.push(id);
+        }
+
+        let para2={
+          page:1,
+          pageSize:10,
+          schoolId:this.myid
+        }
+        getSurveyList(para2).then(res=>{
+          let surveyid=res.data.result.items[0].id;
+          let para={
+            idList:codelist,
+            surveyId:surveyid
+          };
+        getSurveyCode(para).then((res)=>{
+          console.log(res);
+          this.$message({
+            message:'成功',
+            type:'success'
+          })
+          this.surveyqrcodevisible=true;
+          this.surveyqrcodelit=res.result;
+
+        })
         })
       },
       generateStudentCode(){
@@ -394,15 +442,10 @@
         this.multipleselection=val;
       },
       handleReset(){
-        this.getStudentsList();
-        this.selectForm = {
-          page:1,
-          pageSize:10,
-          stuName: "",
-          schoolName: "",
-          gradeNo: "",
-          classNo: ""
-        };
+        this.selectForm.gradeNo=null;
+        this.selectForm.classNo=null;
+        this.selectForm.studentName=null;
+        this.selectForm.schoolName=null;
       },
       handlebeforeclose(){
         this.finishstep=0;
@@ -427,9 +470,7 @@
             parentPhone: this.tableData[i].家长电话,
             schoolId: this.myid,
             sex: this.tableData[i].学生性别=='男'? 0:1,
-            stuAccount: this.tableData[i].学生账号,
             stuName: this.tableData[i].学生姓名,
-            stuPassword: this.tableData[i].学生密码,
             weight: this.tableData[i].体重,
           }
           addStudents(student).then((res) => {
@@ -504,9 +545,7 @@
       handleCurrentChange(val) {
         this.page = val;
         this.selectForm.page=this.page;
-        getStudentsList(this.selectForm).then((res)=>{
-          this.students=res.data.result.items;
-        })
+         this.getStudentsList();
       },
       //获取用户列表
       getUsers() {
@@ -531,32 +570,24 @@
         if(user.type==2||user.type==1) {
           var institute = sessionStorage.getItem('institute');
           institute = JSON.parse(institute);
-          para = {
-            page: this.page,
-            pageSize: 10,
-            institutionId:institute.insDetail.id
-          };
+          this.selectForm.page=this.page;
+          this.selectForm.institutionId=institute.insDetail.id;
         }else if(user.type==0){
-         para = {
-           page: this.page,
-           pageSize: 10
-         }}
+         this.selectForm.page=this.page;
+        }
          else{
             var schoolinfo=sessionStorage.getItem('schoolinfo');
             schoolinfo= JSON.parse(schoolinfo);
             this.myid=schoolinfo.schoolId;
-            para={
-              page: this.page,
-              pageSize: 10,
-              schoolId:schoolinfo.schoolId
-            }
+            this.selectForm.page=this.page;
+            this.selectForm.schoolId=schoolinfo.schoolId;
           }
         this.listLoading = true;
         console.log("hihihi");
         // 发送请求:将数据返回到一个回到函数中
         // 并且响应成功以后会执行then方法中的回调函数
 
-        getStudentsList(para)
+        getStudentsList(this.selectForm)
                 .then(res => {
                   console.log("login get success");
                   console.log(res);
@@ -705,6 +736,10 @@
           this.hidedelete=true;
         }
         else {
+          var schoolinfo = sessionStorage.getItem('schoolinfo');
+          schoolinfo=JSON.parse(schoolinfo);
+          var id=schoolinfo.schoolId;
+          this.myid=id;
           this.path='school';
           this.hidedelete=false;
         }

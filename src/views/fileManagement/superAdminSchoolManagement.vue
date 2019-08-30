@@ -4,11 +4,11 @@
     <div class="retrieval  criteria Style">
       <el-form :inline="true" :model="selectForm">
         <el-form-item>
-         <el-input placeholder="请输入学校名称" v-model="selectForm.schoolName">
+         <el-input placeholder="请输入学校名称" v-model.trim="selectForm.schoolName">
          </el-input>
         </el-form-item>
         <el-form-item>
-          <v-distpicker @selected="onSelected_search" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county"></v-distpicker>
+          <v-distpicker @selected="onSelected_search" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county"  @province="selectProvince" @city="selectCity" @area="selectArea"></v-distpicker>
         </el-form-item>
         <el-form-item>
           <el-select v-model="selectForm.schoolType" placeholder="请选择">
@@ -42,7 +42,7 @@
                   label="学校类型"
             show-overflow-tooltip align="center">
             <template slot-scope="scope">
-              {{scope.row.schoolType==1? '小学':scope.row.schoolType==2?'初中':'高中'}}
+              {{scope.row.schoolType==3? '小学':scope.row.schoolType==4?'初中':'高中'}}
             </template>
 
           </el-table-column>
@@ -191,8 +191,15 @@
       return {
         isSuperAdmin:true,
         selectForm:{
-          page:1,
-          pageSize:10
+            page:1,
+            pageSize:10,
+            institutionId:null,
+          schoolName:null,
+          schoolType:null,
+          province:null,
+          city:null,
+          county:null
+
         },
         schoolsList:[],
         state:'',
@@ -217,14 +224,19 @@
             value:'性别-全部'
           }
         ],
-        schoolType:[{
-          value:1,
+        schoolType:[
+            {
+              value:0,
+              label:'全部'
+            },
+            {
+          value:3,
           label:'小学'
         },{
-          value:2,
+          value:4,
           label:'初中'
         },{
-          value:3,
+          value:5,
           label:'高中'
         }],
         gendervalue: '性别-全部',
@@ -286,16 +298,12 @@
     },
     methods: {
       handleReset(){
-        this.getSchoolsList();
-        this.selectForm = {
-          page:1,
-          pageSize:1000000,
-          schoolName:'',
-          schoolType:'',
-          province:'',
-          city:'',
-          county: ''
-        };
+        // this.getSchoolsList();
+        this.selectForm.schoolName=null;
+        this.selectForm.schoolType=null;
+        this.selectForm.province=null;
+        this.selectForm.city=null;
+        this.selectForm.county=null;
       },
       handleselect(){
         if(this.selectForm.schoolName==''){
@@ -304,20 +312,33 @@
         if(this.selectForm.schoolType==''){
           this.selectForm.schoolType=null;
         }
-        if(this.selectForm.province==''){
+        if(this.selectForm.province=='省'){
           this.selectForm.province=null;
         }
-        if(this.selectForm.city==''){
+        if(this.selectForm.city=='市'){
           this.selectForm.city=null;
         }
-        if(this.selectForm.county==''){
+        if(this.selectForm.county=='区'){
           this.selectForm.county=null;
         }
-        getSchoolListPage(this.selectForm).then((res)=>{
-          this.schoolsList=res.data.result.items;
-          this.total=res.data.result.totalNum;
-        })
+        if(this.selectForm.schoolType==0){
+            this.selectForm.schoolType=null;
+        }
+        this.getSchoolsList();
       },
+      selectProvince(data){
+        this.selectForm.province=data.value;
+        console.log(data);
+      },
+      selectCity(data){
+        this.selectForm.city=data.value;
+      },
+      selectArea(data){
+        this.selectForm.county=data.value;
+      },
+
+
+
       onSelected_search(data) {
         this.selectForm.province=data.province.value;
         this.selectForm.city=data.city.value;
@@ -335,9 +356,9 @@
           this.$confirm('确认要通过审核吗?', '提示', {
             type: 'warning'
           }).then(()=>{
-           let para=this.schoolsList[index];
-           para.audit=1;
-           modifySchool(para).then((res)=>{
+            let detail = Object.assign({}, row);
+           detail.audit=1;
+           modifySchool(detail).then((res)=>{
              console.log(res);
              if(res.result==true) {
                this.$message({
@@ -366,9 +387,7 @@
       handleCurrentChange(val) {
         this.page = val;
         this.selectForm.page=this.page
-        getSchoolListPage(this.selectForm).then((res)=>{
-          this.schoolsList=res.data.result.items;
-        })
+        this.getSchoolsList();
       },
       getSchoolsList(){
         var user = sessionStorage.getItem('user');
@@ -378,16 +397,10 @@
         if(user.type==2||user.type==1) {
           var institute = sessionStorage.getItem('institute');
           institute = JSON.parse(institute);
-          para = {
-            page: this.page,
-            pageSize: 10,
-            institutionId:institute.insDetail.id
-          };
+          this.selectForm.page=this.page;
+          this.selectForm.institutionId=institute.insDetail.id;
         }else {
-          para = {
-            page: this.page,
-            pageSize: 10
-          };
+          this.selectForm.page=this.page;
         }
         this.listLoading = true;
         console.log("hihihi");
@@ -396,7 +409,7 @@
         // 并且响应成功以后会执行then方法中的回调函数
 
 
-        getSchoolListPage(para)
+        getSchoolListPage(this.selectForm)
                 .then(res => {
                   console.log("login get success");
                   console.log(res);
