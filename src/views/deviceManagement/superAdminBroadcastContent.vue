@@ -73,14 +73,14 @@
                 width="200"
                 show-overflow-tooltip align="center">
           <template slot-scope="scope">
-            <div style="background: whitesmoke;
-                        width: 9rem;
-                        height: 2rem;
+            <div style="background: lightgrey;
+                        width: 9.5rem;
+                        height: 4rem;
                         margin-left: 2rem;
                         border-radius: 1rem;
                         position: inherit;">
               <el-col style="height: 2rem;" :span="24">
-                <div style="transform: translateY(40%);">{{scope.row.createTime}}</div>
+                <div style="transform: translateY(70%); color: black;">{{scope.row.createTime}}</div>
               </el-col>
             </div>
           </template>
