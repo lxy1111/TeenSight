@@ -64,16 +64,16 @@ let routes = [
         { path: '/superAdmin/superAdminSightData', component: superAdminSightData,hidden:true,name:'历史记录'},
 ]
 },
-{
-    path: '/superAdmin',
-        component: Home,
-    name: '普查管理',
-    iconCls: 'fa fa-id-card-o',
-    children: [
-    { path: '/superAdmin/superAdminCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' },
-    { path: '/superAdminCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
-]
-},
+// {
+//     path: '/superAdmin',
+//         component: Home,
+//     name: '普查管理',
+//     iconCls: 'fa fa-id-card-o',
+//     children: [
+//     { path: '/superAdmin/superAdminCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' },
+//     { path: '/superAdminCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
+// ]
+// },
 {
     path: '/superAdmin',
     component: Home,

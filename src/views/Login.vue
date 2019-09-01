@@ -26,7 +26,7 @@
         </el-form-item>
         <el-form-item style="height: 5%">
             <el-col :span="12">
-                <el-checkbox v-model="checked" checked class="remember"><span >记住用户名</span></el-checkbox>
+<!--                <el-checkbox v-model="checked" checked class="remember"><span >记住用户名</span></el-checkbox>-->
             </el-col>
         </el-form-item>
         <el-form-item style="width:100%; margin-bottom: 0rem !important;">

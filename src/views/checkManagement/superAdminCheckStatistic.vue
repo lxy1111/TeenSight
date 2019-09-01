@@ -4,7 +4,7 @@
     <div class="retrieval  criteria Style">
       <el-form :inline="true" :model="selectForm">
         <el-row type="flex" >
-          <el-form-item label="学校">
+          <el-form-item label="学校" v-if="!isschool">
             <el-select  style="width: 120%"
                        v-model="selectForm.schoolId"
                        filterable
@@ -23,8 +23,9 @@
 <!--            <img src="../../assets/img/search.png" @click="handlesearch">-->
 <!--          </el-form-item>-->
             <el-form-item prop="planeOnlineDateSecond" label="年级">
-              <el-select size="small" v-model="selectForm.gradeNo" filterable placeholder="请选择">
+              <el-select size="small" @change="handleGradeChange" v-model="selectForm.gradeNo" filterable placeholder="请选择">
                 <el-option
+
                         v-for="item in gradelist"
                         :key="item.value"
                         :label="item.label"
@@ -33,26 +34,27 @@
               </el-select>
             </el-form-item>
             <el-form-item prop="planeOnlineDateSecond" label="班级">
-              <el-select size="small" v-model="form.versionStatus" placeholder="请选择">
+              <el-select size="small" v-model="selectForm.classNo" @change="handleClassChange" placeholder="请选择">
                 <el-option
-                        v-for="item in versionOptions"
+                        v-for="item in classlist"
                         :label="item.label"
                         :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
+          <el-form-item prop="planeOnlineDateSecond" label="选择普查">
+            <el-select size="small" @change="handlegetdata" v-model="selectForm.surveyId" placeholder="请选择">
+              <el-option
+                      v-for="item in surveylist"
+                      :label="item.label"
+                      :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item><el-button type="primary" round @click="handlesearch">搜索</el-button></el-form-item>
+<!--          <el-form-item><el-button type="primary"  round @click="refresh">刷新</el-button></el-form-item>-->
 
-          <el-form-item prop="planeOnlineDateSecond" label="普查时间范围">
-              <el-select size="small" v-model="form.versionStatus" placeholder="请选择">
-                <el-option
-                        v-for="item in versionOptions"
-                        :label="item.label"
-                        :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          <el-form-item><el-button type="primary"  round @click="Search">重置</el-button></el-form-item>
+          <el-form-item><el-button type="primary"  round @click="handlereset">重置</el-button></el-form-item>
         </el-row>
       </el-form>
     </div>
@@ -60,8 +62,15 @@
       <el-form :model="form" label-width="160px">
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="4" >
-            <span style="font-size: xx-large" >上海小学</span>
+            <span style="font-size: xx-large" >{{nowschool}}</span>
           </el-col>
+          <el-col :span="4">
+            <span v-if="showgradename" style="font-size: xx-large" >{{nowgrade}}</span>
+          </el-col>
+          <el-col :span="4">
+            <span v-if="showclassname" style="font-size: xx-large" >{{nowclass}}班</span>
+          </el-col>
+
           <el-col :span="20"> <el-button type="primary" round  @click="Search">下载PDF报告</el-button></el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
@@ -85,43 +94,43 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="4" >
-            <span  >xx区 xx</span>
+            <span  >{{schoolplace}}</span>
           </el-col>
           <el-col :span="4" >
-            <span  >小学</span>
+            <span  >{{schooltype}}</span>
           </el-col>
           <el-col :span="4" >
-            <span  >0人</span>
+            <span  >{{studentno}}人</span>
           </el-col>
         </el-row>
       </el-form>
 
       <el-table
               ref="multipleTable"
-              :data="tableData3"
+              :data="smalltable"
               border
               tooltip-effect="dark"
-              style="width: 100%"
-              @selection-change="handleSelectionChange">
+              style="width: 100%">
         <el-table-column
-                prop="involvedproportion"
+                prop="coveragerate"
                 label="筛查覆盖率(筛查参与情况)"
                 show-overflow-tooltip
                 align="center">
         </el-table-column>
         <el-table-column
-                prop="badsightproportion"
+                prop="poorsightrate"
                 label="视力不良率(裸眼视力低于正常水平)"
                 show-overflow-tooltip align="center">
         </el-table-column>
+
         <el-table-column
-                prop="poorsightproportion"
-                label="近视率(视力不良，且屈光读书低于-0.50)"
+                prop="shortsightrate"
+                label="(视力不良，且屈光读书低于-0.50)"
                 show-overflow-tooltip align="center">
         </el-table-column>
       </el-table>
     </div>
-    <div :hidden="ishidden" class="retrieval  criteria Style">
+    <div :hidden="showschooloverall" class="retrieval  criteria Style">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >学校统计总览</el-breadcrumb-item>
       </el-breadcrumb>
@@ -163,11 +172,11 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <div class="retrieval  criteria Style">
-            <div id="schoolsight"></div>
+            <div id="schoolsight" ref="schoolsight"></div>
           </div>
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
           <div  class="retrieval  criteria Style">
-            <div id="warning"></div>
+            <div id="warning" ref="warning"></div>
           </div>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
@@ -217,7 +226,7 @@
         </el-row>
       </el-form>
     </div>
-    <div :hidden="ishidden" class="retrieval  criteria Style">
+    <div :hidden="showschooloverall" class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >年级统计</el-breadcrumb-item>
@@ -230,13 +239,13 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <div class="retrieval  criteria Style">
-            <div id="gradestatistic"></div>
+            <div id="gradestatistic" ref="gradestatistic"></div>
           </div>
         </el-row>
       </el-form>
     </div>
 
-    <div :hidden="ishidden"class="retrieval  criteria Style">
+    <div :hidden="showschooloverall"class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >班级统计</el-breadcrumb-item>
@@ -300,7 +309,7 @@
         </el-row>
       </el-form>
     </div>
-    <div :hidden="ishidden" class="retrieval  criteria Style">
+    <div :hidden="showschooloverall" class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >性别统计</el-breadcrumb-item>
@@ -314,24 +323,25 @@
           <div class="retrieval  criteria Style">
             <div id="gender">
               <el-row type="flex" class="row-bg" justify="right">
-                <span  style="font-size: x-large">男生近视率       0%</span>
+                <span  style="font-size: x-large">男生近视率       {{this.maleshortrate*100}}%</span>
               </el-row>
               <el-row type="flex" class="row-bg" justify="right">
-                <span  style="font-size: x-large">女生近视率       0%</span>
+                <span  style="font-size: x-large">女生近视率        {{this.femaleshortrate*100}}%</span>
               </el-row>
             </div>
           </div>
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
           <div class="retrieval  criteria Style">
-            <div id="genderstatistic"></div>
+            <div id="genderstatistic" ref="genderstatistic"></div>
           </div>
         </el-row>
       </el-form>
     </div>
-    <div :hidden="ishidden"  class="retrieval  criteria Style">
+    <div :hidden="showgradeoverall"  class="retrieval  criteria Style">
       <el-breadcrumb separator=">" class="bread-title" >
-        <el-breadcrumb-item style="font-size: xx-large" >一年级</el-breadcrumb-item>
+        <el-breadcrumb-item  style="font-size: xx-large" >{{nowgrade}} <span v-if="showclassname"  style="font-size: xx-large" >{{nowclass}}班</span></el-breadcrumb-item>
       </el-breadcrumb>
+
       <el-form :model="form" label-width="160px">
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12" align="left">
@@ -351,11 +361,11 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <div class="retrieval  criteria Style">
-            <div id="specificgrade"></div>
+            <div id="specificgrade"  ref="specificgrade"></div>
           </div>
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
           <div class="retrieval  criteria Style">
-            <div id="trend"></div>
+            <div id="trend" ref="trend"></div>
           </div>
         </el-row>
 
@@ -364,7 +374,7 @@
             <span style="font-size: x-large">预警分布情况</span>
           </el-col>
           <el-col :span="12" >
-            <span style="font-size: x-large">各班级近视率</span>
+            <span  style="font-size: x-large">各班级近视率</span>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
@@ -374,11 +384,11 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <div class="retrieval  criteria Style">
-            <div id="gradewarning"></div>
+            <div id="gradewarning" ref="gradewarning"></div>
           </div>
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
-          <div class="retrieval  criteria Style">
-            <div id="specificgradestatistic"></div>
+          <div class="retrieval  criteria Style" >
+            <div id="specificgradestatistic" ref="specificgradestatistic"></div>
           </div>
         </el-row>
       </el-form>
@@ -397,17 +407,33 @@
     editUser,
     addUser,
     getSchoolListPage,
-    getSchoolDetail
+    getSchoolDetail, getTeachersList, getClassByschool, getStatisticsBySchool, getSurveyList, getStatisticsDetail
   } from '../../api/api';
 
   export default {
     data() {
       return {
+        grades:[],
+        gradeslist:[],
+        classeslist:[],
+        shortratelist2:[],
+        shortratelist:[],
+        chart:'',
+        chart2:'',
+        chart3:'',
+        chart4:'',
+        chart5:'',
+        chart6:'',
+        chart7:'',
+        chart8:'',
         schoolsNameList:[],
+        showclassname:false,
+
         ishidden:true,
         filters: {
           name: ''
         },
+        showgradeoverall:true,
         tableData2: [{
           class: '一班',
           data:'20%'
@@ -438,9 +464,17 @@
             value:'性别-全部'
           }
         ],
-        selectForm:{
-          schoolId:''
-        },
+        maleshortrate:0,
+        femaleshortrate:0,
+        schoolplace:'',
+        smalltable:[{
+          coveragerate:null,
+          poorsightrate:null,
+          shortsightrate:null
+        }],
+        maleshortcnt:0,
+        schooltype:'',
+        studentno:'',
         gendervalue: '性别-全部',
         users: [],
         total: 0,
@@ -464,7 +498,8 @@
           birth: '',
           addr: ''
         },
-
+        isschool:false,
+       coveragecount:'',
         form:{
           classes:'',
           gender: '',
@@ -475,6 +510,11 @@
           actualOnlineDateFirst:'',
           actualOnlineDateSecond:'',
         },
+        poorsightcount:0,
+        shortsightcount:0,
+        showschool:false,
+        showschooloverall:true,
+        showgrade:false,
         gradelist:[],
         addFormVisible: false,//新增界面是否显示
         addLoading: false,
@@ -483,6 +523,25 @@
             { required: true, message: '请输入姓名', trigger: 'blur' }
           ]
         },
+        allsurveys:[],
+        surveylist:[],
+        selectForm:{
+          page:1,
+          pageSize:1000000,
+          schoolId:null,
+          institutionId:null,
+          gradeNo:null,
+          classNo:null,
+          surveyId:null
+        },
+        nowgrade:'',
+        showgradename:false,
+        firstwarning:0,
+        secondwarning:0,
+        thirdwarning:0,
+        coveragerate:'',
+        poorsightrate:'',
+        shortsightrate:'',
         //新增界面数据
         addForm: {
           name: '',
@@ -493,22 +552,142 @@
         },
         schools:[],
         schoolist:[],
-        allschool:[]
-
+        allschool:[],
+        allTeachers:[],
+        classlist:[],
+        allclass:[],
+        nowschool:'',
+        nowgrade:'',
+        nowclass:'',
+        shortsightlist:[],
+        poorsightlist:[]
       }
     },
     methods: {
+      handleClassChange(val){
+        this.showclassname=true;
+        this.nowclass=val;
+        this.selectForm.surveyId=null;
+      //  this.showgradeoverall=true;
+      },
+      handleGradeChange(val){
+        this.classlist=[];
+        if(!this.ishidden) {
+          this.showgradename = true;
+          this.showclassname=false;
+          this.showgradeoverall=false;
+        }
+        this.selectForm.surveyId=null;
+
+        if(val==1){
+          this.nowgrade='一年级'
+        }
+        if(val==2){
+          this.nowgrade='二年级'
+        }
+        if(val==3){
+          this.nowgrade='三年级'
+        }
+        if(val==4){
+          this.nowgrade='四年级'
+        }
+        if(val==5){
+          this.nowgrade='五年级'
+        }
+        if(val==6){
+          this.nowgrade='六年级'
+        }
+        if(val==7){
+          this.nowgrade='七年级'
+        }
+        if(val==8){
+          this.nowgrade='八年级'
+        }
+        if(val==9){
+          this.nowgrade='九年级'
+        }
+        let para={
+          schoolId:this.selectForm.schoolId,
+          gradeNo:val
+        }
+        this.classlist=[];
+        this.selectForm.classNo=null;
+        getClassByschool(para).then(res=>{
+          this.allclass=res.data.result.classList;
+          this.classlist=[];
+          for(let i=0;i<this.allclass.length;i++){
+            let classes={
+              value:this.allclass[i],
+              label:this.allclass[i]
+            }
+            this.classlist.push(classes);
+          }
+        })
+      },
       handleChange(val){
+        this.gradelist=[];
+        this.classlist=[];
+        this.selectForm.surveyId=null;
+        if(!this.ishidden) {
+          this.showschooloverall = false;
+          this.showgradeoverall=true;
+          this.showgradename=false;
+          this.showclassname=false;
+        }
         console.log(val);
         let para={
-           id:val
+           schoolId:val,
         }
-        getSchoolDetail(para).then(res=>{
+        let para1={
+          id:val
+        }
 
+        getSchoolDetail(para1).then(res=>{
+          this.nowschool=res.data.result.schoolName
+        })
+        this.gradelist=[];
+        this.selectForm.gradeNo=null;
+        this.selectForm.classNo=null;
+        this.selectForm.surveyId=null;
+        getClassByschool(para).then(res=>{
+          this.allTeachers=res.data.result.gradeList;
+          this.gradelist=[];
+          for(let i=0;i<this.allTeachers.length;i++){
+            let teacher ={
+              value:this.allTeachers[i],
+              label:this.allTeachers[i]
+            }
+            this.gradelist.push(teacher);
+          }
 
         })
 
+        getSurveyList(this.selectForm).then(res=>{
+          this.allsurveys=res.data.result.items;
+          this.surveylist=[];
+          for(let i=0;i<this.allsurveys.length;i++){
+            let survey ={
+              value:this.allsurveys[i].id,
+              label:this.allsurveys[i].surveyName
+            }
+            this.surveylist.push(survey);
+          }
 
+        })
+
+      },
+      handlereset(){
+      this.selectForm.surveyId=null;
+        this.selectForm.classNo=null;
+        this.selectForm.gradeNo=null;
+        if(!this.isschool) {
+          this.selectForm.schoolId = null;
+        }
+        this.showschooloverall = true;
+        this.showgradeoverall=true;
+        this.ishidden=true;
+    this.showgradename=false;
+    this.showclassname=false;
       },
       remoteMethod(query) {
         console.log(this.schoolist);
@@ -633,9 +812,136 @@
 
         });
       },
+      refresh(){
+       this.initChart()
+    },
+      handlegetdata(){
+        getStatisticsDetail(this.selectForm).then(res=>{
+          if(!res.data.succeed){
+            this.$message({
+              type:'error',
+              message:'暂无数据'
+            })
+            this.handlereset();
+            return;
+          }
+          this.smalltable[0].coveragerate=res.data.result.coverageRate;
+          this.smalltable[0].shortsightrate=res.data.result.shortSightRate;
+          this.smalltable[0].poorsightrate=res.data.result.poorSightRate;
+          this.poorsightcount=res.data.result.poorSightCount;
+          this.shortsightcount=res.data.result.shortSightCount;
+          this.coveragecount=res.data.result.coverageCount;
+          this.firstwarning=res.data.result.warning.firstDegreeCount;
+          this.secondwarning=res.data.result.warning.secondDegreeCount;
+          this.thirdwarning=res.data.result.warning.thirdDegreeCount;
+          this.maleshortrate=res.data.result.shortSightRateByMale;
+          this.femaleshortrate=res.data.result.shortSightRateByFemale;
+          this.poorsightcount=res.data.result.poorSightCount;
+          let allgrades=[];
+          let shortlist=[];
+          this.grades=res.data.result.gradeList;
+          for(let i=0;i<this.grades.length;i++) {
+            allgrades.push(this.grades[i].gradeNo);
+            shortlist.push(this.grades[i].shortSightRate*100);
+          }
+          this.gradeslist=allgrades;
+          this.shortratelist=shortlist;
+          this.classes=res.data.result.classList;
+          let allclasses=[];
+          let shortlist2=[];
+          for(let i=0;i<this.classes.length;i++){
+             allclasses.push(this.classes[i].classNo);
+             shortlist2.push(this.classes[i].shortSightRate*100);
+          }
+          this.classeslist=allclasses;
+          this.shortratelist2=shortlist2;
+          let poor=[];
+          let short=[];
+          for(let i=0;i<res.data.result.resList.length;i++){
+            poor.push(res.data.result.resList[i].poorSightRate);
+            short.push(res.data.result.resList[i].shortSightRate);
+          }
+          this.poorsightlist=poor;
+          this.shortsightlist=short;
+          console.log(this.poorsightlist);
+          console.log(this.shortsightlist)
+        })
+      },
       handlesearch(){
+        if(this.selectForm.surveyId==null){
+          this.$message({
+            type:'error',
+            message:'请选择普查'
+          })
+          return
+        }
+        if(this.selectForm.schoolId!=null&&this.selectForm.surveyId!=null){
+
           this.ishidden=false;
-        if(this.selectForm.schoolId!=null){
+          if(this.selectForm.gradeNo!=null) {
+            let val=this.selectForm.gradeNo;
+            this.showgradename=true;
+            if(val==1){
+              this.nowgrade='一年级';
+            }
+            if(val==2){
+              this.nowgrade='二年级'
+            }
+            if(val==3){
+              this.nowgrade='三年级'
+            }
+            if(val==4){
+              this.nowgrade='四年级'
+            }
+            if(val==5){
+              this.nowgrade='五年级'
+            }
+            if(val==6){
+              this.nowgrade='六年级'
+            }
+            if(val==7){
+              this.nowgrade='七年级'
+            }
+            if(val==8){
+              this.nowgrade='八年级'
+            }
+            if(val==9){
+              this.nowgrade='九年级'
+            }
+            this.showschooloverall = true;
+            this.showgradeoverall=false;
+          }else if(this.selectForm.classNo!=null){
+            this.nowclass=this.selectForm.classNo;
+            this.showschooloverall=false;
+          }else{
+            this.showschooloverall=false;
+          }
+
+          let para={
+            id:this.selectForm.schoolId
+          }
+          getSchoolDetail(para).then( res=>{
+            this.schoolplace=res.data.result.province+res.data.result.city+res.data.result.county;
+           if(res.data.result.schoolType==3){
+             this.schooltype='小学'
+           }
+            if(res.data.result.schoolType==4){
+              this.schooltype='初中'
+            }
+            if(res.data.result.schoolType==5){
+              this.schooltype='高中'
+            }
+            this.studentno=res.data.result.studentCount;
+          })
+          getStatisticsDetail(this.selectForm).then(async  res=>{
+              this.smalltable[0].coveragerate=res.data.result.coverageRate;
+              this.smalltable[0].shortsightrate=res.data.result.shortSightRate;
+              this.smalltable[0].poorsightrate=res.data.result.poorSightRate;
+              this.poorsightcount=res.data.result.poorSightCount;
+              this.shortsightcount=res.data.result.shortSightCount;
+              this.coveragecount=res.data.result.coverageCount;
+          })
+          this.initChart();
 
         }
 
@@ -728,40 +1034,422 @@
         }).catch(() => {
 
         });
-      }
-    },
-    mounted() {
-      this.getUsers();
-      let para={
-        page:1,
-        pageSize:100000000
-      };
-      getSchoolListPage(para)
-              .then(res => {
-                console.log("login get success");
-                console.log(res);
-                this.allschool=res.data.result.items;
+      },
 
-                for(let i=0;i<this.allschool.length;i++){
-                  let school ={
-                    value:this.allschool[i].id,
-                    label:this.allschool[i].schoolName
+      initChart(){
+         this.chart=echarts.init(this.$refs.schoolsight);
+         this.chart.setOption({
+           tooltip: {
+             trigger: 'item',
+             formatter: "{a} <br/>{b}: {c} ({d}%)"
+           },
+           legend: {
+             orient: 'vertical',
+             x: 'left',
+             data:['近视率','非近视率']
+           },
+           series: [
+             {
+               name:'访问来源',
+               type:'pie',
+               radius: ['50%', '70%'],
+               avoidLabelOverlap: false,
+               label: {
+                 normal: {
+                   show: false,
+                   position: 'center'
+                 },
+                 emphasis: {
+                   show: true,
+                   textStyle: {
+                     fontSize: '30',
+                     fontWeight: 'bold'
+                   }
+                 }
+               },
+               labelLine: {
+                 normal: {
+                   show: false
+                 }
+               },
+               data:[
+                 {value:this.poorsightcount, name:'近视率'},
+                 {value:this.coveragecount-this.poorsightcount, name:'非近视率'}
+               ]
+             }
+           ]
+         });
+
+
+        this.chart2=echarts.init(this.$refs.warning);
+        this.chart2.setOption({
+          tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+          },
+          legend: {
+            orient: 'vertical',
+            x: 'left',
+            data:['一级预警','二级预警','三级预警']
+          },
+          series: [
+            {
+              name:'访问来源',
+              type:'pie',
+              radius: ['50%', '70%'],
+              avoidLabelOverlap: false,
+              label: {
+                normal: {
+                  show: false,
+                  position: 'center'
+                },
+                emphasis: {
+                  show: true,
+                  textStyle: {
+                    fontSize: '30',
+                    fontWeight: 'bold'
                   }
-                  this.schoolist.push(school);
                 }
-                //this.myInfo = successResponse.data.datas[0];
-              })
-              .catch(failResponse => {
-                console.log("login get fail");
-              });
-      this.$chart.line1('schoolsight');
-      this.$chart.line1('warning');
-      this.$chart.line1('gradestatistic');
-      this.$chart.line1('genderstatistic');
-      this.$chart.line1('specificgrade');
-      this.$chart.line1('trend');
-      this.$chart.line1('gradewarning');
-      this.$chart.line1('specificgradestatistic');
+              },
+              labelLine: {
+                normal: {
+                  show: false
+                }
+              },
+              data:[
+                {value:this.firstwarning, name:'一级预警'},
+                {value:this.secondwarning, name:'二级预警'},
+                {value:this.thirdwarning, name:'三级预警'}
+              ]
+            }
+          ]
+        });
+
+        this.chart3=echarts.init(this.$refs.gradestatistic);
+        this.chart3.setOption({
+          color: ['#3398DB'],
+          tooltip : {
+            trigger: 'axis',
+            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          xAxis : [
+            {
+              type : 'category',
+              data : this.gradeslist,
+              axisTick: {
+                alignWithLabel: true
+              }
+            }
+          ],
+          yAxis : [
+            {
+              type : 'value',
+              axisLabel: {
+                formatter: '{value}%'
+              }
+            }
+          ],
+          series : [
+            {
+              name:'直接访问',
+              type:'bar',
+              barWidth: '60%',
+              data:this.shortratelist
+            }
+          ]
+
+        });
+        this.chart4=echarts.init(this.$refs.genderstatistic);
+        this.chart4.setOption({
+          color: ['#3398DB'],
+          tooltip : {
+            trigger: 'axis',
+            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          xAxis : [
+            {
+              type : 'category',
+              data : ['男生', '女生'],
+              axisTick: {
+                alignWithLabel: true
+              }
+            }
+          ],
+          yAxis : [
+            {
+              type : 'value',
+              axisLabel: {
+                formatter: '{value}%'
+              }
+            }
+          ],
+          series : [
+            {
+              name:'直接访问',
+              type:'bar',
+              barWidth: '60%',
+              data:[this.maleshortrate*100, this.femaleshortrate*100]
+            }
+          ]
+        });
+        this.chart5=echarts.init(this.$refs.specificgrade);
+        this.chart5.setOption({
+          tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+          },
+          legend: {
+            orient: 'vertical',
+            x: 'left',
+            data:['近视率','非近视率']
+          },
+          series: [
+            {
+              name:'访问来源',
+              type:'pie',
+              radius: ['50%', '70%'],
+              avoidLabelOverlap: false,
+              label: {
+                normal: {
+                  show: false,
+                  position: 'center'
+                },
+                emphasis: {
+                  show: true,
+                  textStyle: {
+                    fontSize: '30',
+                    fontWeight: 'bold'
+                  }
+                }
+              },
+              labelLine: {
+                normal: {
+                  show: false
+                }
+              },
+              data:[
+                {value:this.poorsightcount, name:'近视率'},
+                {value:this.coveragecount-this.poorsightcount, name:'非近视率'}
+              ]
+            }
+          ]
+        });
+        this.chart6=echarts.init(this.$refs.gradewarning);
+        this.chart6.setOption({
+          tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+          },
+          legend: {
+            orient: 'vertical',
+            x: 'left',
+            data:['一级预警','二级预警','三级预警']
+          },
+          series: [
+            {
+              name:'访问来源',
+              type:'pie',
+              radius: ['50%', '70%'],
+              avoidLabelOverlap: false,
+              label: {
+                normal: {
+                  show: false,
+                  position: 'center'
+                },
+                emphasis: {
+                  show: true,
+                  textStyle: {
+                    fontSize: '30',
+                    fontWeight: 'bold'
+                  }
+                }
+              },
+              labelLine: {
+                normal: {
+                  show: false
+                }
+              },
+              data:[
+                {value:this.firstwarning, name:'一级预警'},
+                {value:this.secondwarning, name:'二级预警'},
+                {value:this.thirdwarning, name:'三级预警'}
+              ]
+            }
+          ]
+
+        });
+        this.chart7=echarts.init(this.$refs.specificgradestatistic);
+        this.chart7.setOption({
+          color: ['#3398DB'],
+          tooltip : {
+            trigger: 'axis',
+            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          xAxis : [
+            {
+              type : 'category',
+              data : this.classeslist,
+              axisTick: {
+                alignWithLabel: true
+              }
+            }
+          ],
+          yAxis : [
+            {
+              type : 'value',
+              axisLabel: {
+                formatter: '{value}%'
+              }
+            }
+          ],
+          series : [
+            {
+              name:'直接访问',
+              type:'bar',
+              barWidth: '60%',
+              data: this.shortratelist2
+            }
+          ]
+        });
+
+
+        this.chart8=echarts.init(this.$refs.trend);
+        this.chart8.setOption({
+          tooltip : {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross',
+              label: {
+                backgroundColor: '#6a7985'
+              }
+            }
+          },
+          legend: {
+            data:['视力不良率','近视率']
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {}
+            }
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          xAxis : [
+            {
+              type : 'category',
+              boundaryGap : false,
+              data:[]
+            }
+          ],
+          yAxis : [
+            {
+              type : 'value',
+              axisLabel: {
+                formatter: '{value}%'
+              }
+            }
+          ],
+          series : [
+            {
+              name:'视力不良率',
+              type:'line',
+              stack: '总量',
+              data:this.poorsightlist
+            },
+            {
+              name:'近视率',
+              type:'line',
+              stack: '总量',
+              data:this.shortsightlist
+            }
+          ]
+        });
+
+
+      },
+      getSchools(){
+        getSchoolListPage(this.selectForm)
+                .then(res => {
+                  console.log("login get success");
+                  console.log(res);
+                  this.allschool=res.data.result.items;
+
+                  for(let i=0;i<this.allschool.length;i++){
+                    let school ={
+                      value:this.allschool[i].id,
+                      label:this.allschool[i].schoolName
+                    }
+                    this.schoolist.push(school);
+                  }
+                  //this.myInfo = successResponse.data.datas[0];
+                })
+                .catch(failResponse => {
+                  console.log("login get fail");
+                });
+      },
+    },
+
+
+
+    mounted() {
+      var user = sessionStorage.getItem('user');
+      user=JSON.parse(user);
+      if(user.type==1||user.type==2) {
+        var institute = sessionStorage.getItem('institute');
+        institute = JSON.parse(institute);
+        this.selectForm.institutionId=institute.insDetail.id;
+        //this.selectForm.type=user.type;
+      }
+      else{
+        this.isschool=true;
+        var schoolinfo = sessionStorage.getItem('schoolinfo');
+        schoolinfo=JSON.parse(schoolinfo);
+        var id=schoolinfo.schoolId;
+        this.selectForm.schoolId=id;
+        this.handleChange(id);
+      }
+
+     this.getSchools();
+      let para={
+        num:this.shortsightcount
+      }
+  //    this.initChart();
+     // this.$chart.line1('schoolsight');
+     //  this.$chart.line1('warning');
+     //  this.$chart.line1('gradestatistic');
+     //  this.$chart.line1('genderstatistic');
+     //  this.$chart.line1('specificgrade');
+     //  this.$chart.line1('trend');
+     //  this.$chart.line1('gradewarning');
+     //  this.$chart.line1('specificgradestatistic');
 
 
     }

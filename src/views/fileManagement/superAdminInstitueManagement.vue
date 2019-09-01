@@ -67,7 +67,7 @@
                   label="操作"
                   show-overflow-tooltip align="center">
             <template slot-scope="scope">
-              <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleShow(scope.$index, scope.row)">详情</el-link>
+<!--              <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleShow(scope.$index, scope.row)">详情</el-link>-->
               <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-link>
               <el-link style="color: #7980FA; margin-right: 1rem;" size="small"  @click="handleDel(scope.$index, scope.row)">删除</el-link>
             </template>
@@ -495,13 +495,13 @@
       //编辑
       editSubmit: function () {
           if(this.editForm.province=='省'){
-              this.editForm.province=null;
+              this.editForm.province='';
           }
           if(this.editForm.city=='市'){
-              this.editForm.city=null;
+              this.editForm.city='';
           }
           if(this.editForm.county=='区'){
-              this.editForm.county=null;
+              this.editForm.county='';
           }
         this.$refs.editForm.validate((valid) => {
           if (valid) {

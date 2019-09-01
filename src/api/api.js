@@ -31,7 +31,6 @@ export const getUserList = params => { return axios.get(`${base}/user/list`, { p
 
 export const getNoticeList = params => { return axios.get(`/api/common/getNoticeList`, { params: params }); };
 
-export const getStatisticsBySchool = params => { return axios.get(`/api/statistics/getStatisticBySchool`, { params: params }); };
 
 export const getMessageList = params => { return axios.get(`/api/device/getMessageList`, { params: params }); };
 
@@ -51,7 +50,11 @@ export const getInstitutionList = params => { return axios.get(`/api/institution
 
 export const getSurveyList = params => { return axios.get(`/api/survey/getSurveyList`, { params: params }); };
 
+export const getClassByschool = params => { return axios.get(`/api/teacher/classQuery`, { params: params }); };
+
 export const getSurveyCode = params => { return axios.post(`/api/student/generateSurveyQrCode`, params).then(res=>res.data) };
+
+export const getStatisticsDetail = params => { return axios.get(`/api/statistics/getStatisticByDetail`, {params:params}); };
 
 
 export const getInstituteDetail = params => { return axios.get(`/api/institution/getInstitutionDetail`, { params: params }); };

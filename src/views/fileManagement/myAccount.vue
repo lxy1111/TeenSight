@@ -398,6 +398,12 @@
                                     message: '提交成功',
                                     type: 'success'
                                 });
+                                let user={
+                                    name: this.editForm.account,
+                                    avatar:this.editForm.newPassword,
+                                    type:0
+                                }
+                                sessionStorage.setItem('user', JSON.stringify(user));
                                 this.$refs['editForm'].resetFields();
                                 this.editFormVisible = false;
                             });
