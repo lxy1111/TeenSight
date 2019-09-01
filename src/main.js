@@ -18,7 +18,9 @@ import 'font-awesome/css/font-awesome.min.css'
 import myCharts from "./common/js/myCharts";
 import axios from 'axios'
 import globalvariable from './global'
+import htmlToPdf from "./common/js/htmlToPdf";
 
+Vue.use(htmlToPdf)
 
 Vue.prototype.$axios = axios
 Vue.use(ElementUI)

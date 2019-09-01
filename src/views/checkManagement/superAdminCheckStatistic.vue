@@ -1,7 +1,7 @@
 <template>
   <section>
     <!--工具条-->
-    <div class="retrieval  criteria Style">
+    <div class="retrieval  criteria Style" id="pdfDom">
       <el-form :inline="true" :model="selectForm">
         <el-row type="flex" >
           <el-form-item label="学校" v-if="!isschool">
@@ -57,7 +57,7 @@
           <el-form-item><el-button type="primary"  round @click="handlereset">重置</el-button></el-form-item>
         </el-row>
       </el-form>
-    </div>
+
     <div :hidden="ishidden" class="retrieval  criteria Style">
       <el-form :model="form" label-width="160px">
         <el-row type="flex" class="row-bg" justify="right">
@@ -71,14 +71,14 @@
             <span v-if="showclassname" style="font-size: xx-large" >{{nowclass}}班</span>
           </el-col>
 
-          <el-col :span="20"> <el-button type="primary" round  @click="Search">下载PDF报告</el-button></el-col>
+          <el-col :span="20"> <el-button type="primary" round  v-on:click="getPdf()">下载PDF报告</el-button></el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="4" >
             <span  >视力统计情况</span>
           </el-col>
           <el-col :span="4" >
-            <span  >2019年7月29日16:00</span>
+            <span  >{{this.inspectiondate}}</span>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
@@ -245,70 +245,70 @@
       </el-form>
     </div>
 
-    <div :hidden="showschooloverall"class="retrieval  criteria Style">
+<!--    <div :hidden="showschooloverall"class="retrieval  criteria Style">-->
 
-      <el-breadcrumb separator=">" class="bread-title" >
-        <el-breadcrumb-item style="font-size: xx-large" >班级统计</el-breadcrumb-item>
-      </el-breadcrumb>
-      <el-form :model="form" label-width="160px">
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="5" align="left">
-            <span style="font-size: x-large">班级近视率</span>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <div class="retrieval  criteria Style">
-            <el-table
-                    ref="multipleTable"
-                    :data="tableData2"
-                    border
-                    tooltip-effect="dark"
-                    style="width: 100%"
-                    @selection-change="handleSelectionChange">
-              <el-table-column
-                      prop="class"
-                      show-overflow-tooltip
-                      align="center">
-              </el-table-column>
-              <el-table-column
-                      prop="data"
-                      label="一年级"
-                      show-overflow-tooltip align="center">
-              </el-table-column>
-              <el-table-column
-                      prop="data"
-                      label="二年级"
-                      show-overflow-tooltip align="center">
-              </el-table-column>
-              <el-table-column
-                      prop="data"
-                      label="三年级"
+<!--      <el-breadcrumb separator=">" class="bread-title" >-->
+<!--        <el-breadcrumb-item style="font-size: xx-large" >班级统计</el-breadcrumb-item>-->
+<!--      </el-breadcrumb>-->
+<!--      <el-form :model="form" label-width="160px">-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="5" align="left">-->
+<!--            <span style="font-size: x-large">班级近视率</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <div class="retrieval  criteria Style">-->
+<!--            <el-table-->
+<!--                    ref="multipleTable"-->
+<!--                    :data="tableData2"-->
+<!--                    border-->
+<!--                    tooltip-effect="dark"-->
+<!--                    style="width: 100%"-->
+<!--                    @selection-change="handleSelectionChange">-->
+<!--              <el-table-column-->
+<!--                      prop="class"-->
+<!--                      show-overflow-tooltip-->
+<!--                      align="center">-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                      prop="data"-->
+<!--                      label="一年级"-->
+<!--                      show-overflow-tooltip align="center">-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                      prop="data"-->
+<!--                      label="二年级"-->
+<!--                      show-overflow-tooltip align="center">-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                      prop="data"-->
+<!--                      label="三年级"-->
 
-                      show-overflow-tooltip align="center">
-              </el-table-column>
-              <el-table-column
-                      prop="data"
-                      label="四年级"
+<!--                      show-overflow-tooltip align="center">-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                      prop="data"-->
+<!--                      label="四年级"-->
 
-                      show-overflow-tooltip align="center">
-              </el-table-column>
-              <el-table-column
-                      prop="data"
-                      label="五年级"
-                      show-overflow-tooltip align="center">
-              </el-table-column>
-              <el-table-column
-                      prop="data"
-                      label="六年级"
-                      show-overflow-tooltip align="center">
-              </el-table-column>
+<!--                      show-overflow-tooltip align="center">-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                      prop="data"-->
+<!--                      label="五年级"-->
+<!--                      show-overflow-tooltip align="center">-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                      prop="data"-->
+<!--                      label="六年级"-->
+<!--                      show-overflow-tooltip align="center">-->
+<!--              </el-table-column>-->
 
-            </el-table>
+<!--            </el-table>-->
 
-          </div>
-        </el-row>
-      </el-form>
-    </div>
+<!--          </div>-->
+<!--        </el-row>-->
+<!--      </el-form>-->
+<!--    </div>-->
     <div :hidden="showschooloverall" class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
@@ -393,11 +393,13 @@
         </el-row>
       </el-form>
     </div>
+    </div>
   </section>
 </template>
 
 <script>
   import util from '../../common/js/util'
+
   import echarts from 'echarts'
   //import NProgress from 'nprogress'
   import {
@@ -407,7 +409,13 @@
     editUser,
     addUser,
     getSchoolListPage,
-    getSchoolDetail, getTeachersList, getClassByschool, getStatisticsBySchool, getSurveyList, getStatisticsDetail
+    getSchoolDetail,
+    getTeachersList,
+    getClassByschool,
+    getStatisticsBySchool,
+    getSurveyList,
+    getStatisticsDetail,
+    getSchoolInfo
   } from '../../api/api';
 
   export default {
@@ -560,7 +568,8 @@
         nowgrade:'',
         nowclass:'',
         shortsightlist:[],
-        poorsightlist:[]
+        poorsightlist:[],
+        inspectiondate:''
       }
     },
     methods: {
@@ -837,6 +846,7 @@
           this.maleshortrate=res.data.result.shortSightRateByMale;
           this.femaleshortrate=res.data.result.shortSightRateByFemale;
           this.poorsightcount=res.data.result.poorSightCount;
+          this.inspectiondate=res.data.result.inspectionDate;
           let allgrades=[];
           let shortlist=[];
           this.grades=res.data.result.gradeList;
@@ -846,7 +856,9 @@
           }
           this.gradeslist=allgrades;
           this.shortratelist=shortlist;
-          this.classes=res.data.result.classList;
+          this.classes=res.data.result.classList[0];
+          this.allclasses=res.data.result.classList;
+
           let allclasses=[];
           let shortlist2=[];
           for(let i=0;i<this.classes.length;i++){
@@ -858,8 +870,8 @@
           let poor=[];
           let short=[];
           for(let i=0;i<res.data.result.resList.length;i++){
-            poor.push(res.data.result.resList[i].poorSightRate);
-            short.push(res.data.result.resList[i].shortSightRate);
+            poor.push(res.data.result.resList[i].poorSightRate*100);
+            short.push(res.data.result.resList[i].shortSightRate*100);
           }
           this.poorsightlist=poor;
           this.shortsightlist=short;
@@ -918,9 +930,9 @@
           }
 
           let para={
-            id:this.selectForm.schoolId
+            schoolId:this.selectForm.schoolId
           }
-          getSchoolDetail(para).then( res=>{
+          getSchoolInfo(para).then( res=>{
             this.schoolplace=res.data.result.province+res.data.result.city+res.data.result.county;
            if(res.data.result.schoolType==3){
              this.schooltype='小学'

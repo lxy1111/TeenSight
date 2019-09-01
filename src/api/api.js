@@ -63,6 +63,8 @@ export const getStudentDetail = params => { return axios.get(`/api/student/getSt
 
 export const getSchoolDetail = params => { return axios.get(`/api/school/getSchoolDetail`, { params: params }); };
 
+export const getSchoolInfo = params => { return axios.get(`/api/school/getSchoolInfo`, { params: params }); };
+
 export const getRecordList = params => { return axios.get(`/api/record/getRecordList`, { params: params }); };
 
 export const getDeviceList = params => { return axios.get(`/api/device/getDeviceList`, { params: params }); };

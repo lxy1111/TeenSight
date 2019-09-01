@@ -7,8 +7,8 @@
          <el-input placeholder="请输入学校名称" v-model.trim="selectForm.schoolName">
          </el-input>
         </el-form-item>
-        <el-form-item>
-          <v-distpicker @selected="onSelected_search" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county"  @province="selectProvince" @city="selectCity" @area="selectArea"></v-distpicker>
+        <el-form-item v-if="ischeckins">
+          <v-distpicker  @selected="onSelected_search" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county"  @province="selectProvince" @city="selectCity" @area="selectArea"></v-distpicker>
         </el-form-item>
         <el-form-item>
           <el-select v-model="selectForm.schoolType" placeholder="请选择">
@@ -277,7 +277,7 @@
           actualOnlineDateFirst:'',
           actualOnlineDateSecond:'',
         },
-
+        ischeckins:false,
         addFormVisible: false,//新增界面是否显示
         addLoading: false,
         addFormRules: {
@@ -573,7 +573,6 @@
         user = JSON.parse(user);
         if(user.type==0){
           this.hidedelete=false;
-
           this.isSuperAdmin=true;
         }
         else if(user.type==1){
@@ -583,6 +582,7 @@
         else if(user.type==2){
           this.hidedelete=true;
           this.isSuperAdmin=false;
+          this.ischeckins=true;
         }
         else if(user.type==3){
           this.hidedelete=true;
