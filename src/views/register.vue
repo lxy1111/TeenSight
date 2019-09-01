@@ -88,7 +88,7 @@
             <el-tab-pane label="登记学校信息" disabled name="second"></el-tab-pane>
         </el-tabs>
         <el-form-item prop="schoolName">
-            <el-input class="login-input" v-model="ruleForm.schoolName" type="text"  auto-complete="off" placeholder="学校名称"></el-input>
+            <el-input class="school-input" v-model="ruleForm.schoolName" type="text"  auto-complete="off" placeholder="学校名称"></el-input>
         </el-form-item>
         <el-form-item prop="schoolType">
             <el-select v-model="ruleForm.schoolType" placeholder= "选择学校类型">
@@ -618,6 +618,37 @@
         border-bottom: 1px;
         border-right: 1px;
         padding-left: 0.5rem;
+    }
+    .school-input{
+        position: relative;
+        height: 2rem;
+        width: 100%;
+        border-radius: 2rem;
+        border-top: 1px;
+        border-left: 1px;
+        border-bottom: 1px;
+        border-right: 1px;
+
+        .el-input__inner {
+            -webkit-appearance: none;
+            background-color: #FFF;
+            background-image: none;
+            border-radius: 2rem !important;
+            border: 1px solid #DCDFE6;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            color: #606266;
+            display: inline-block;
+            font-size: inherit;
+            height: 40px;
+            line-height: 40px;
+            outline: 0;
+            -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+            transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+            width: 100%;
+            left: 0% !important;
+            position: relative !important;
+        }
     }
     .el-tabs--bottom .el-tabs__item.is-bottom:nth-child(2), .el-tabs--bottom .el-tabs__item.is-top:nth-child(2), .el-tabs--top .el-tabs__item.is-bottom:nth-child(2), .el-tabs--top .el-tabs__item.is-top:nth-child(2) {
         margin-left: 1rem;
