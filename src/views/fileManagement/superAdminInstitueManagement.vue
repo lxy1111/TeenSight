@@ -4,7 +4,7 @@
     <div class="retrieval  criteria Style">
       <el-form :model="selectForm" :inline="true" >
         <el-form-item>
-          <el-input placeholder="请输入机构名称" v-model.trim="selectForm.institutionName"></el-input>
+          <el-input style="width: 50%;" placeholder="请输入机构名称" v-model.trim="selectForm.institutionName"></el-input>
         </el-form-item>
         <el-form-item>
          <v-distpicker @selected="onSelected" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county" @province="selectProvince" @city="selectCity" @area="selectArea"></v-distpicker>

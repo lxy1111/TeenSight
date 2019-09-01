@@ -4,7 +4,7 @@
         <div class="retrieval  criteria Style">
             <el-form :inline="true" :model="selectForm">
                 <el-form-item>
-                    <el-input placeholder="请输入机构名称" v-model.trim="selectForm.institutionName"></el-input>
+                    <el-input style="width: 50%;" placeholder="请输入机构名称" v-model.trim="selectForm.institutionName"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <v-distpicker @selected="onSelected" :province="selectForm.province" :city="selectForm.city" :area="selectForm.county"  @province="selectProvince" @city="selectCity" @area="selectArea" ></v-distpicker>
@@ -100,7 +100,7 @@
                 </el-form-item>
 
                 <el-form-item label="所含学校" >
-                    <el-select :disabled="editable" style="width: 200%"
+                    <el-select :disabled="editable"
                                             v-model="schoolsIDList"
                                             multiple
                                             filterable
@@ -756,7 +756,10 @@
 
     }
     .el-form {
-        margin-left: 2rem;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        margin-top: 1rem;
+        margin-bottom: 2rem;
     }
     .el-dialog {
         position: relative;
@@ -812,5 +815,43 @@
         border-bottom: 1px;
         border-right: 1px;
         padding-left: 0.5rem;
+
+    }
+    .el-input__inner {
+        width: 200%;
+    }
+    .el-select .el-input__prefix, .el-input__suffix {
+        position: absolute;
+        top: 0;
+        -webkit-transition: all .3s;
+        height: 100%;
+        color: #C0C4CC;
+        text-align: center;
+        right: -180px;
+    }
+    .el-select-dropdown el-popper is-multiple {
+        width: 10rem !important;
+    }
+    .el-select__tags {
+        width: 200% !important;
+        max-width: 100% !important;
+    }
+    .el-select {
+        display: inline-block;
+        position: relative;
+        width: 80%;
+    }
+    .el-select .el-input {
+        width: 50% !important;
+    }
+    .el-select .el-input .el-input--suffix .is-focus {
+        width: 50% !important;
+        margin: 0 !important;
+        position: relative;
+    }
+    .el-select .el-input .el-input--suffix {
+        width: 50% !important;
+        margin: 0 !important;
+        position: relative;
     }
 </style>

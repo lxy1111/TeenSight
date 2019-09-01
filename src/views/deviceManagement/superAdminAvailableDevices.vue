@@ -6,10 +6,10 @@
 
       <el-form :inline="true" :model="selectForm">
         <el-form-item label="">
-          <el-input size="small" v-model.trim="selectForm.deviceId" placeholder="按设备ID搜索"></el-input>
+          <el-input style="width: 50%;" size="small" v-model.trim="selectForm.deviceId" placeholder="按设备ID搜索"></el-input>
         </el-form-item>
         <el-form-item label="">
-          <el-input size="small" v-model.trim="selectForm.deviceName" placeholder="按设备名称搜索"></el-input>
+          <el-input style="width: 50%;" size="small" v-model.trim="selectForm.deviceName" placeholder="按设备名称搜索"></el-input>
         </el-form-item>
         <el-form-item label="">
           <el-button type="primary" round

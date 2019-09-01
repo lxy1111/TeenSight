@@ -5,10 +5,10 @@
 
       <el-form :inline="true" :model="filters">
         <el-form-item label="">
-          <el-input size="small" v-model="searchDeviceID" placeholder="按设备ID搜索"></el-input>
+          <el-input style="width: 50%;" size="small" v-model="searchDeviceID" placeholder="按设备ID搜索"></el-input>
         </el-form-item>
         <el-form-item label="">
-          <el-input size="small" v-model="searchDeviceName" placeholder="按设备名称搜索"></el-input>
+          <el-input style="width: 50%;" size="small" v-model="searchDeviceName" placeholder="按设备名称搜索"></el-input>
         </el-form-item>
         <el-form-item label="">
           <el-button type="primary" round

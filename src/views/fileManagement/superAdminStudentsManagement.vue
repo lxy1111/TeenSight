@@ -4,16 +4,16 @@
     <div class="retrieval  criteria Style">
       <el-form style="margin-left: 2rem;" :inline="true" :model="selectForm" ref="selectForm">
         <el-form-item>
-          <el-input placeholder="请输入学生姓名" v-model.trim="selectForm.studentName"></el-input>
+          <el-input style="width: 50%;" placeholder="请输入学生姓名" v-model.trim="selectForm.studentName"></el-input>
         </el-form-item>
         <el-form-item>
-         <el-input placeholder="请输入学校名称" v-model.trim="selectForm.schoolName"></el-input>
+         <el-input style="width: 50%;" placeholder="请输入学校名称" v-model.trim="selectForm.schoolName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input placeholder="请输入年级"  v-model.trim="selectForm.gradeNo"></el-input>
+          <el-input style="width: 50%;" placeholder="请输入年级"  v-model.trim="selectForm.gradeNo"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input placeholder="请输入班级" v-model.trim="selectForm.classNo"></el-input>
+          <el-input style="width: 50%;" placeholder="请输入班级" v-model.trim="selectForm.classNo"></el-input>
         </el-form-item>
 
         <el-form-item>

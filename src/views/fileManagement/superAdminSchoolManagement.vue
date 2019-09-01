@@ -4,7 +4,7 @@
     <div class="retrieval  criteria Style">
       <el-form :inline="true" :model="selectForm">
         <el-form-item>
-         <el-input placeholder="请输入学校名称" v-model.trim="selectForm.schoolName">
+         <el-input style="width: 50%;" placeholder="请输入学校名称" v-model.trim="selectForm.schoolName">
          </el-input>
         </el-form-item>
         <el-form-item v-if="ischeckins">
