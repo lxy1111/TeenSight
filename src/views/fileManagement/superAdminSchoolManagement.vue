@@ -20,7 +20,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item><el-button type="primary" round @click="handleselect">搜索</el-button></el-form-item>
+        <el-form-item><el-button type="primary" round @click="elect">搜索</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="handleReset">重置</el-button></el-form-item>
       </el-form>
       <div class="retrieval  criteria Style">
@@ -305,7 +305,7 @@
         this.selectForm.city=null;
         this.selectForm.county=null;
       },
-      handleselect(){
+      handleselect(){handles
         if(this.selectForm.schoolName==''){
           this.selectForm.schoolName=null;
         }

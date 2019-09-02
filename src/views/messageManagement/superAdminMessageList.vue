@@ -3,17 +3,17 @@
     <!--工具条-->
     <div class="retrieval  criteria Style">
 
-      <el-form :inline="true" :model="filters">
+      <el-form :inline="true" :model="selectForm">
         <el-form-item label="">
-          <el-input style="width: 50%;" size="small" v-model="searchDeviceID" placeholder="按设备ID搜索"></el-input>
+          <el-input style="width: 50%;" size="small" v-model="selectForm.deviceId" placeholder="按设备ID搜索"></el-input>
         </el-form-item>
         <el-form-item label="">
-          <el-input style="width: 50%;" size="small" v-model="searchDeviceName" placeholder="按设备名称搜索"></el-input>
+          <el-input style="width: 50%;" size="small" v-model="selectForm.deviceName" placeholder="按设备名称搜索"></el-input>
         </el-form-item>
         <el-form-item label="">
           <el-button type="primary" round
                      style="margin-right: 2rem;"
-                     @click="searchByName">搜索</el-button>
+                     @click="handleSelect">搜索</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -29,35 +29,35 @@
                 tooltip-effect="dark"
                 style="width: 100%">
           <el-table-column
-                  prop="name"
+                  prop="deviceId"
                   label="设备ID"
                   show-overflow-tooltip
                   align="center">
           </el-table-column>
           <el-table-column
-                  prop="address"
+                  prop="deviceName"
                   label="设备名称"
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="address"
+                  prop="message"
                   label="故障原因"
                   show-overflow-tooltip align="center">
           </el-table-column>
           <el-table-column
-                  prop="address"
+                  prop="createTime"
                   label="发送时间"
                   show-overflow-tooltip align="center">
           </el-table-column>
-          <el-table-column
-                  prop="address"
-                  label="操作"
-                  show-overflow-tooltip align="center">
-            <template slot-scope="scope">
-              <el-button size="small" @click="handleEdit(scope.row)">详情</el-button>
-              <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
+<!--          <el-table-column-->
+<!--                  prop="address"-->
+<!--                  label="操作"-->
+<!--                  show-overflow-tooltip align="center">-->
+<!--            <template slot-scope="scope">-->
+<!--              <el-button size="small" @click="handleEdit(scope.row)">详情</el-button>-->
+<!--              <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
         </el-table>
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
         </el-pagination>
@@ -150,6 +150,7 @@
         ],
         gendervalue: '性别-全部',
         users: [],
+        messages:[],
         total: 0,
         page: 1,
         listLoading: false,
@@ -188,6 +189,12 @@
             { required: true, message: '请输入姓名', trigger: 'blur' }
           ]
         },
+        selectForm:{
+          page:1,
+          pageSize:10,
+          deviceId:null,
+          deviceName:null
+        },
         //新增界面数据
         addForm: {
           deviceId: "",
@@ -215,7 +222,8 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.getUsers();
+        this.selectForm.page=this.page;
+        this.getMessageList();
       },
       //获取用户列表
       getUsers() {
@@ -233,15 +241,11 @@
         });
       },
       getMessageList() {
-        let para = {
-          page: this.page,
-          pageSize: 10
-        };
         this.listLoading = true;
         //NProgress.start();
-        getMessageList(para).then((res) => {
-          this.total = res.data.total;
-          this.users = res.data.users;
+        getMessageList(this.selectForm).then((res) => {
+          this.total = res.data.result.totalNum;
+          this.messageList = res.data.result.items;
           this.listLoading = false;
           //NProgress.done();
         });
@@ -281,6 +285,9 @@
           faultCause: "",
           sendTime: ""
         };
+      },
+      handleSelect(){
+        this.getMessageList();
       },
       //编辑
       editSubmit: function () {

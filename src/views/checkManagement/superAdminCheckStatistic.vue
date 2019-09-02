@@ -113,19 +113,19 @@
               style="width: 100%">
         <el-table-column
                 prop="coveragerate"
-                label="筛查覆盖率(筛查参与情况)"
+                label="筛查覆盖率(筛查参与情况)%"
                 show-overflow-tooltip
                 align="center">
         </el-table-column>
         <el-table-column
                 prop="poorsightrate"
-                label="视力不良率(裸眼视力低于正常水平)"
+                label="视力不良率(裸眼视力低于正常水平)%"
                 show-overflow-tooltip align="center">
         </el-table-column>
 
         <el-table-column
                 prop="shortsightrate"
-                label="(视力不良，且屈光读书低于-0.50)"
+                label="(视力不良，且屈光读书低于-0.50)%"
                 show-overflow-tooltip align="center">
         </el-table-column>
       </el-table>
@@ -377,11 +377,11 @@
             <span  style="font-size: x-large">各班级近视率</span>
           </el-col>
         </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="5" align="left">
-            <span style="font-size: large">视力不良且屈光度低于-0.5</span>
-          </el-col>
-        </el-row>
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="5" align="left">-->
+<!--            <span style="font-size: large">视力不良且屈光度低于-0.5</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
         <el-row type="flex" class="row-bg" justify="right">
           <div class="retrieval  criteria Style">
             <div id="gradewarning" ref="gradewarning"></div>
@@ -834,9 +834,12 @@
             this.handlereset();
             return;
           }
-          this.smalltable[0].coveragerate=res.data.result.coverageRate;
-          this.smalltable[0].shortsightrate=res.data.result.shortSightRate;
-          this.smalltable[0].poorsightrate=res.data.result.poorSightRate;
+          let coverage=res.data.result.coverageRate;
+          let shortsight=res.data.result.shortSightRate;
+          let poorsight=res.data.result.poorSightRate;
+          this.smalltable[0].coveragerate=coverage*100;
+          this.smalltable[0].shortsightrate=shortsight*100;
+          this.smalltable[0].poorsightrate=poorsight*100;
           this.poorsightcount=res.data.result.poorSightCount;
           this.shortsightcount=res.data.result.shortSightCount;
           this.coveragecount=res.data.result.coverageCount;
@@ -945,14 +948,14 @@
             }
             this.studentno=res.data.result.studentCount;
           })
-          getStatisticsDetail(this.selectForm).then(async  res=>{
-              this.smalltable[0].coveragerate=res.data.result.coverageRate;
-              this.smalltable[0].shortsightrate=res.data.result.shortSightRate;
-              this.smalltable[0].poorsightrate=res.data.result.poorSightRate;
-              this.poorsightcount=res.data.result.poorSightCount;
-              this.shortsightcount=res.data.result.shortSightCount;
-              this.coveragecount=res.data.result.coverageCount;
-          })
+          // getStatisticsDetail(this.selectForm).then(async  res=>{
+          //     this.smalltable[0].coveragerate=res.data.result.coverageRate;
+          //     this.smalltable[0].shortsightrate=res.data.result.shortSightRate;
+          //     this.smalltable[0].poorsightrate=res.data.result.poorSightRate;
+          //     this.poorsightcount=res.data.result.poorSightCount;
+          //     this.shortsightcount=res.data.result.shortSightCount;
+          //     this.coveragecount=res.data.result.coverageCount;
+          // })
           this.initChart();
 
         }
