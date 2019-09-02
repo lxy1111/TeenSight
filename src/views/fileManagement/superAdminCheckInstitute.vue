@@ -827,7 +827,7 @@
         height: 100%;
         color: #C0C4CC;
         text-align: center;
-        right: -180px;
+        right: -95%;
     }
     .el-select-dropdown el-popper is-multiple {
         width: 10rem !important;

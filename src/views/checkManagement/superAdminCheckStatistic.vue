@@ -5,7 +5,7 @@
       <el-form :inline="true" :model="selectForm">
         <el-row type="flex" >
           <el-form-item label="学校" v-if="!isschool">
-            <el-select  style="width: 120%"
+            <el-select  size="small"
                        v-model="selectForm.schoolId"
                        filterable
                         @change="handleChange"

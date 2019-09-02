@@ -4,10 +4,10 @@
     <div class="retrieval  criteria Style">
       <el-form :inline="true" :model="selectForm">
         <el-form-item>
-          <el-input placeholder="搜索普查名称" v-model.trim="selectForm.surveyName"></el-input>
+          <el-input style="width: 50%;" size="small" placeholder="搜索普查名称" v-model.trim="selectForm.surveyName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input placeholder="搜索学校名称" v-model.trim="selectForm.schoolName"></el-input>
+          <el-input style="width: 50%;" size="small" placeholder="搜索学校名称" v-model.trim="selectForm.schoolName"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" round @click="handleselect">搜索</el-button>
