@@ -24,6 +24,7 @@
         <el-form-item prop="schoolPrincipal">
             <el-input class="login-input" type="text" v-model="ruleForm.schoolPrincipal" auto-complete="off" placeholder="请输入负责人"></el-input>
         </el-form-item>
+
         <el-form-item style="width:100%;">
             <el-button type="primary" style="width:100%;
                       background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);
@@ -99,6 +100,9 @@
                         :value="parseInt(item.value)">
                 </el-option>
             </el-select>
+        </el-form-item>
+        <el-form-item prop="maxGrade">
+            <el-input-number class="maxgradeinput"  v-model="ruleForm.maxGrade"  :min="1" :max="10" ></el-input-number>
         </el-form-item>
         <el-form-item  prop="county">
             <v-distpicker @selected="onSelected" @province="selectProvince" @city="selectCity" @area="selectArea"></v-distpicker>
@@ -214,7 +218,8 @@
                     city:'',
                     county:'',
                     schoolPhone:'',
-                    schoolPrincipal:''
+                    schoolPrincipal:'',
+                    maxGrade:1
                 },
                 ruleForm2: {
                     insName:'',
@@ -269,6 +274,9 @@
                     ],
                     schoolPrincipal:[
                         {required: true, message: '请输入负责人', trigger: 'blur'}
+                    ],
+                    maxGrade:[
+                        {required: true, message: '请输入最大年级', trigger: 'blur'}
                     ]
                 },
                 rules3: {
@@ -618,6 +626,9 @@
         border-bottom: 1px;
         border-right: 1px;
         padding-left: 0.5rem;
+    }
+    .maxgradeinput{
+
     }
     .school-input{
         position: relative;
