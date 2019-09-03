@@ -627,9 +627,6 @@
         border-right: 1px;
         padding-left: 0.5rem;
     }
-    .maxgradeinput{
-
-    }
     .school-input{
         position: relative;
         height: 2rem;
@@ -723,5 +720,20 @@
     }
     .select-school-name .el-input {
         width: 100%;
+    }
+    .maxgradeinput {
+        width: 70%;
+    }
+    .el-input-number__decrease {
+        margin-left: 2%;
+        background: rgba(255,255,255,0);
+        border-radius: 2rem;
+        border: 0;
+    }
+    .el-input-number__increase {
+        transform: translate(70%,0);
+        background: rgba(255,255,255,0);
+        border-radius: 2rem;
+        border: 0;
     }
 </style>
