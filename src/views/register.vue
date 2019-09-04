@@ -722,7 +722,7 @@
         width: 100%;
     }
     .maxgradeinput {
-        width: 70%;
+        width: 62%;
     }
     .el-input-number__decrease {
         margin-left: 2%;
