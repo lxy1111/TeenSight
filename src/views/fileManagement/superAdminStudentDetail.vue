@@ -409,13 +409,13 @@
                     this.hideedit=false;
                     this.isAdmin=true;
                 }
-                else if(user.type==1){
+                else if(user.type==1||user.type==2){
                     this.path='institute';
                     this.hideedit=true;
+                    this.isAdmin=true;
                 }
-                else if(user.type==2){
+                else {
                     this.path='school';
-                    this.hideedit=true;
                 }
             }
             let id=this.$route.query.id;
