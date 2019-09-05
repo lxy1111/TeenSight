@@ -107,6 +107,9 @@
         <el-form-item  prop="county">
             <v-distpicker @selected="onSelected" @province="selectProvince" @city="selectCity" @area="selectArea"></v-distpicker>
         </el-form-item>
+        <el-form-item prop="detailaddress">
+            <el-input class="school-input" v-model="ruleForm.detailAddress" type="text"  auto-complete="off" placeholder="详细地址（注意：不必输入省市区）"></el-input>
+        </el-form-item>
         <el-form-item style="width:100%;" >
             <el-button type="primary" style="width:100%;
                       background: linear-gradient(315deg,rgba(88,96,250,1) 0%,rgba(121,128,250,1) 100%);

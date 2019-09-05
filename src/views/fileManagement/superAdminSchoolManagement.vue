@@ -20,7 +20,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item><el-button type="primary" round @click="elect">搜索</el-button></el-form-item>
+        <el-form-item><el-button type="primary" round @click="handleselect">搜索</el-button></el-form-item>
         <el-form-item><el-button type="primary" round @click="handleReset">重置</el-button></el-form-item>
       </el-form>
       <div class="retrieval  criteria Style">
@@ -305,7 +305,7 @@
         this.selectForm.city=null;
         this.selectForm.county=null;
       },
-      handleselect(){handles
+      handleselect(){
         if(this.selectForm.schoolName==''){
           this.selectForm.schoolName=null;
         }
@@ -574,17 +574,19 @@
         if(user.type==0){
           this.hidedelete=false;
           this.isSuperAdmin=true;
+          this.ischeckins=true;
         }
         else if(user.type==1){
           this.hidedelete=true;
           this.isSuperAdmin=false;
+          this.ischeckins=true;
         }
         else if(user.type==2){
           this.hidedelete=true;
           this.isSuperAdmin=false;
           this.ischeckins=true;
         }
-        else if(user.type==3){
+        else{
           this.hidedelete=true;
           this.isSuperAdmin=false;
         }

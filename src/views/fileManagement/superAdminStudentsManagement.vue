@@ -103,7 +103,7 @@
                 highlight-current-row
                 tooltip-effect="dark"
                 @selection-change="handleSelectionChange">
-          <el-table-column width="30"
+          <el-table-column width="30" v-if="this.path!='superAdmin'"
                   type="selection">
           </el-table-column>
           <el-table-column
@@ -152,8 +152,8 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" @click.native="generateStudentCode">生成学生二维码</el-button>
-        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" @click.native="generateSurveyCode" >生成普查二维码</el-button>
+        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" v-if="this.path!='superAdmin'" @click.native="generateStudentCode">生成学生二维码</el-button>
+        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" v-if="this.path!='superAdmin'" @click.native="generateSurveyCode" >生成普查二维码</el-button>
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
         </el-pagination>
       </div>

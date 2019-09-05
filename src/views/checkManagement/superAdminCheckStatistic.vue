@@ -51,7 +51,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item><el-button type="primary" round @click="handlesearch">搜索</el-button></el-form-item>
+          <el-form-item><el-button type="primary" round @click="handlesearch">查看报告</el-button></el-form-item>
 <!--          <el-form-item><el-button type="primary"  round @click="refresh">刷新</el-button></el-form-item>-->
 
           <el-form-item><el-button type="primary"  round @click="handlereset">重置</el-button></el-form-item>
@@ -697,6 +697,9 @@
         this.ishidden=true;
     this.showgradename=false;
     this.showclassname=false;
+        this.gradelist=[];
+        this.classlist=[];
+        this.schoolist=[];
       },
       remoteMethod(query) {
         console.log(this.schoolist);

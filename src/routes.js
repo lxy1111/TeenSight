@@ -85,15 +85,15 @@ let routes = [
     { path: '/superAdmin/superAdminBroadcastContent', component: superAdminBroadcastContent, name: '公告内容' }
 ]
 },
-{
-    path: '/superAdmin',
-        component: Home,
-    name: '消息管理',
-    iconCls: 'fa fa-bar-chart',
-    children: [
-    { path: '/superAdmin/superAdminMessageList', component: superAdminMessageList, name: '系统消息' }
-]
-},
+// {
+//     path: '/superAdmin',
+//         component: Home,
+//     name: '消息管理',
+//     iconCls: 'fa fa-bar-chart',
+//     children: [
+//     { path: '/superAdmin/superAdminMessageList', component: superAdminMessageList, name: '系统消息' }
+// ]
+// },
     {
         path: '/institute',
         component: Home,
