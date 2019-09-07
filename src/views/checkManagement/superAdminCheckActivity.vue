@@ -50,17 +50,7 @@
               {{scope.row.finish==true? "是":"否"}}
             </template>
           </el-table-column>
-          <el-table-column
-                  prop="startDate"
-                  label="预计开始时间"
-                  show-overflow-tooltip align="center">
-          </el-table-column>
-          <el-table-column
-                  prop="endDate"
-                  label="预计结束时间"
-                  show-overflow-tooltip align="center">
 
-          </el-table-column>
           <el-table-column v-if="!isAdimin"
                   prop="id"
                   label="操作"
@@ -103,12 +93,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="开始时间">
-          <el-date-picker type="date" placeholder="选择日期" v-model="editForm.startDate"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="结束时间">
-          <el-date-picker type="date" placeholder="选择日期" v-model="editForm.endDate"></el-date-picker>
-        </el-form-item>
+
         <el-form-item label="备注">
           <el-input type="textarea" v-model="editForm.remark"></el-input>
         </el-form-item>
@@ -135,12 +120,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="开始时间">
-          <el-date-picker type="date" placeholder="选择日期" v-model="addForm.startDate"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="结束时间">
-          <el-date-picker type="date" placeholder="选择日期" v-model="addForm.endDate"></el-date-picker>
-        </el-form-item>
+
         <el-form-item label="备注">
           <el-input type="textarea" v-model="addForm.remark"></el-input>
         </el-form-item>
