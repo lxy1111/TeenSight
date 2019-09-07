@@ -4,7 +4,7 @@
     <div class="retrieval  criteria Style" id="pdfDom">
       <el-form :inline="true" :model="selectForm">
         <el-row type="flex" >
-          <el-form-item label="学校" v-if="!isschool">
+          <el-form-item  v-if="!isschool">
             <el-select  size="small"
                        v-model="selectForm.schoolId"
                        filterable
@@ -22,8 +22,8 @@
 <!--          <el-form-item>-->
 <!--            <img src="../../assets/img/search.png" @click="handlesearch">-->
 <!--          </el-form-item>-->
-            <el-form-item prop="planeOnlineDateSecond" label="年级">
-              <el-select size="small" @change="handleGradeChange" v-model="selectForm.gradeNo" filterable placeholder="请选择">
+            <el-form-item prop="planeOnlineDateSecond" >
+              <el-select size="small" @change="handleGradeChange" v-model="selectForm.gradeNo" filterable placeholder="请选择年级">
                 <el-option
 
                         v-for="item in gradelist"
@@ -33,8 +33,8 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item prop="planeOnlineDateSecond" label="班级">
-              <el-select size="small" v-model="selectForm.classNo" @change="handleClassChange" placeholder="请选择">
+            <el-form-item prop="planeOnlineDateSecond" >
+              <el-select size="small" v-model="selectForm.classNo" @change="handleClassChange" placeholder="请选择班级">
                 <el-option
                         v-for="item in classlist"
                         :label="item.label"
@@ -42,8 +42,8 @@
                 </el-option>
               </el-select>
             </el-form-item>
-          <el-form-item prop="planeOnlineDateSecond" label="选择普查">
-            <el-select size="small" @change="handlegetdata" v-model="selectForm.surveyId" placeholder="请选择">
+          <el-form-item prop="planeOnlineDateSecond" >
+            <el-select size="small" @change="handlegetdata" v-model="selectForm.surveyId" placeholder="请选择普查">
               <el-option
                       v-for="item in surveylist"
                       :label="item.label"
@@ -699,7 +699,7 @@
     this.showclassname=false;
         this.gradelist=[];
         this.classlist=[];
-        this.schoolist=[];
+        // this.schoolist=[];
       },
       remoteMethod(query) {
         console.log(this.schoolist);

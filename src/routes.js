@@ -146,6 +146,15 @@ let routes = [
         ]
     },
     {
+        path: '/institute',
+        component: Home,
+        name: '设备管理',
+        iconCls: 'fa fa-bar-chart',
+        children: [
+            { path: '/institute/instituteAvailableDevices', component: superAdminAvailableDevices, name: '可用设备' }
+        ]
+    },
+    {
         path: '/school',
         component: Home,
         name: '档案管理',

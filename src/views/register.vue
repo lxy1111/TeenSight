@@ -107,8 +107,8 @@
         <el-form-item  prop="county">
             <v-distpicker @selected="onSelected" @province="selectProvince" @city="selectCity" @area="selectArea"></v-distpicker>
         </el-form-item>
-        <el-form-item prop="detailaddress">
-            <el-input class="school-input" v-model="ruleForm.detailAddress" type="text"  auto-complete="off" placeholder="详细地址（注意：不必输入省市区）"></el-input>
+        <el-form-item prop="address">
+            <el-input class="school-input" v-model="ruleForm.address" type="text"  auto-complete="off" placeholder="详细地址（注意：不必输入省市区）"></el-input>
         </el-form-item>
         <el-form-item style="width:100%;" >
             <el-button type="primary" style="width:100%;
@@ -164,6 +164,9 @@
         </el-form-item>
         <el-form-item  prop="province">
             <v-distpicker @selected="onSelected2"  @province="selectProvince2" @city="selectCity2" @area="selectArea2" ></v-distpicker>
+        </el-form-item>
+        <el-form-item prop="address">
+            <el-input class="school-input" v-model="ruleForm2.address" type="text"  auto-complete="off" placeholder="详细地址（注意：不必输入省市区）"></el-input>
         </el-form-item>
         <el-form-item style="width:100%;" >
             <el-button type="primary" style="width:100%;
@@ -222,7 +225,8 @@
                     county:'',
                     schoolPhone:'',
                     schoolPrincipal:'',
-                    maxGrade:1
+                    maxGrade:1,
+                    address:''
                 },
                 ruleForm2: {
                     insName:'',
@@ -235,7 +239,8 @@
                     county:'',
                     mobile:'',
                     principal:'',
-                    type:2
+                    type:2,
+                    address:''
                 },
                 options: [{
                     value: '3',

@@ -733,7 +733,9 @@
         }
         else if(user.type==1||user.type==2){
           this.path='institute';
-          this.hidedelete=true;
+          if(user.type==1) {
+            this.hidedelete = true;
+          }
         }
         else {
           var schoolinfo = sessionStorage.getItem('schoolinfo');

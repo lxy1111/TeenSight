@@ -21,7 +21,7 @@
                      style="margin-right: 2rem;"
                      @click="handleReset">重置</el-button>
         </el-form-item>
-        <el-form-item v-if="isAdmin"><el-button type="primary" round @click="handleAdd">添加设备</el-button></el-form-item>
+        <el-form-item v-if="!isAdmin&&isins"><el-button type="primary" round @click="handleAdd">添加设备</el-button></el-form-item>
       </el-form>
     </div>
     <el-dialog title="绑定" :visible.sync="showSchool" :close-on-click-modal="false">
@@ -99,8 +99,24 @@
 <!--                show-overflow-tooltip align="center">-->
 <!--        </el-table-column>-->
         <el-table-column
-                prop="address"
-                label="位置"
+              prop="address"
+              label="位置"
+              show-overflow-tooltip align="center">
+      </el-table-column>
+        <el-table-column
+                prop="isBind"
+                label="状态"
+                show-overflow-tooltip align="center">
+          <template slot-scope="scope">
+            <el-button  :disabled="scope.row.isBind==0 ? false : true"  :type="scope.row.isBind === 0 ? 'danger' : 'success'"
+                        effect="dark" @click="bindSchool(scope.$index,scope.row)">
+              {{scope.row.isBind==0 ? '未绑定' : '已绑定'}}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+                prop="schoolName"
+                label="学校名称"
                 show-overflow-tooltip align="center">
         </el-table-column>
         <el-table-column v-if="isAdmin"
@@ -109,8 +125,8 @@
                 show-overflow-tooltip align="center">
           <template slot-scope="scope">
 <!--            <el-link style="color: #7980FA; margin-right: 1rem;" size="small"  @click="handleBind(scope.$index, scope.row)">绑定学校</el-link>-->
-            <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-link>
-            <el-link style="color: #7980FA; margin-right: 1rem;" size="small"  @click="handleDel(scope.$index, scope.row)">删除</el-link>
+<!--            <el-link style="color: #7980FA; margin-right: 1rem;" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-link>-->
+            <el-link style="color: #7980FA; margin-right: 0rem;" size="small"  @click="handleDel(scope.$index, scope.row)">删除</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -163,6 +179,21 @@
     <!--新增界面-->
     <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
+        <el-form-item label="学校" v-if="isins" prop="schoolId">
+          <el-select style="width: 86%;"
+                     class="select-school-name"
+                     v-model="addForm.schoolId"
+                     placeholder="暂无"
+                     filterable
+                     :loading="loading">
+            <el-option
+                    v-for="item in schoolist"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="设备ID">
           <el-input v-model="addForm.deviceId" auto-complete="off"></el-input>
         </el-form-item>
@@ -201,6 +232,7 @@
     data() {
       return {
         isAdmin:true,
+        institutionId:null,
         devices:[],
         schoollist:[],
         selectForm:{
@@ -209,7 +241,8 @@
           schoolId: null,
           address:null,
           deviceId:null,
-          deviceName:null
+          deviceName:null,
+          institutionId:null,
         },
         tableData3: [{
           date: '2016-05-03',
@@ -274,6 +307,8 @@
         editFormVisible: false,//编辑界面是否显示
         editLoading: false,
         bindedSchools:[],
+        isins:false,
+        bindschool:'',
         editFormRules: {
           name: [
             { required: true, message: '请输入姓名', trigger: 'blur' }
@@ -304,8 +339,8 @@
         addFormVisible: false,//新增界面是否显示
         addLoading: false,
         addFormRules: {
-          name: [
-            { required: true, message: '请输入姓名', trigger: 'blur' }
+          schoolId: [
+            { required: true, message: '请输入学校', trigger: 'blur' }
           ]
         },
         //新增界面数据
@@ -313,7 +348,7 @@
           address: "",
           deviceId: "",
           deviceName: "",
-          schoolId: ""
+          schoolId: null
         }
 
       }
@@ -445,6 +480,13 @@
           //NProgress.start();
           let para = { codeList: [row.id] };
           removeDevice(para).then((res) => {
+            if (!res.succeed) {
+              this.$message({
+                message: res.codeMessage,
+                type: 'error'
+              });
+              return;
+            }
             this.listLoading = false;
             //NProgress.done();
             this.$message({
@@ -456,6 +498,31 @@
         }).catch(() => {
 
         });
+      },
+      bindSchool: function(index,row){
+        var deviceid=row.id;
+        var schoolid=row.schoolId;
+        var para={
+          deviceId:deviceid,
+          schoolId:schoolid,
+          isBind:true
+        }
+          bindDevice(para).then(res=>{
+            if(!res.succeed){
+              this.$message({
+                message: data.codeMessage,
+                type: 'error'
+              });
+              return ;
+            }
+            this.$message({
+              message: '绑定成功',
+              type: 'success'
+            });
+            this.getDevices();
+          })
+
+
       },
       //显示编辑界面
       handleEdit: function (index, row) {
@@ -475,14 +542,15 @@
       },
       //显示新增界面
       handleAdd: function () {
+        this.schoolist=[];
         this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
-        };
+        for(let i=0;i<this.allschool.length;i++){
+          let school ={
+            value:this.allschool[i].id,
+            label:this.allschool[i].schoolName
+          }
+          this.schoolist.push(school);
+        }
       },
       //编辑
       editSubmit: function () {
@@ -515,6 +583,13 @@
                 }
               }
               editDevice(para).then((res) => {
+                if (!res.succeed) {
+                  this.$message({
+                    message: res.codeMessage,
+                    type: 'error'
+                  });
+                  return;
+                }
                 this.editLoading = false;
                 //NProgress.done();
                 this.$message({
@@ -533,12 +608,19 @@
       addSubmit: function () {
         this.$refs.addForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm('请确认信息是否有误，一旦提交无法修改！', '提示', {}).then(() => {
               this.addLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.addForm);
               console.log(para);
               addDevice(para).then((res) => {
+                if (!res.succeed) {
+                  this.$message({
+                    message: res.codeMessage,
+                    type: 'error'
+                  });
+                  return;
+                }
                 this.addLoading = false;
                 //NProgress.done();
                 this.$message({
@@ -577,24 +659,37 @@
         }).catch(() => {
 
         });
-      }
+      },
     },
     mounted() {
       var user=sessionStorage.getItem('user');
       user=JSON.parse(user);
+      let para={
+        page:1,
+        pageSize:10000000,
+        institutionId: null,
+      };
+      if(user.type==1||user.type==2){
+        this.isAdmin=false;
+        if(user.type==2) {
+          this.isins = true;
+        }
+        var insinfo = sessionStorage.getItem('institute');
+        insinfo=JSON.parse(insinfo);
+        var id=insinfo.insDetail.id;
+        para.institutionId=id;
+        this.selectForm.institutionId=id;
+      }
       if(user.type>=3){
         this.isAdmin=false;
         var schoolinfo = sessionStorage.getItem('schoolinfo');
         schoolinfo=JSON.parse(schoolinfo);
         var id=schoolinfo.schoolId;
         this.selectForm.schoolId=id;
+        this.addForm.schoolId=id;
       }
       this.getDevices();
       console.log("1111111111111111111111111")
-      let para={
-        page:1,
-        pageSize:100000000
-      };
       getSchoolListPage(para)
               .then(res => {
                 console.log("login get success");

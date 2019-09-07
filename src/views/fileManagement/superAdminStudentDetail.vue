@@ -9,9 +9,9 @@
         <div v-if="showSight" class="retrieval  criteria Style">
             <el-form :model="record" >
                 <el-tabs v-model="selectTime" type="card" @tab-click="handleClick2">
-                    <el-tab-pane label="第一次" name="first"></el-tab-pane>
-                    <el-tab-pane label="第二次" name="second" ></el-tab-pane>
-                    <el-tab-pane label="第三次" name="third"></el-tab-pane>
+                    <el-tab-pane v-if="showhistory" label="第一次" name="first"></el-tab-pane>
+                    <el-tab-pane v-if="showhistory" label="第二次" name="second" ></el-tab-pane>
+                    <el-tab-pane v-if="!showhistory" label="最近一次" name="third"></el-tab-pane>
                 </el-tabs>
 
                 <el-form-item label="采集日期">
@@ -261,7 +261,8 @@
         data() {
             return {
                 recordList:[],
-                selectTime:'first',
+                showhistory:false,
+                selectTime:'',
                 showSight:false,
                 showDetail:true,
                 path:'',
@@ -488,25 +489,37 @@
                 if(tab.name=='stuinfo'){
                     this.showDetail=true;
                     this.showSight=false;
+                    this.showhistory=false;
                 }
                 if(tab.name=='sightdata'){
                     this.showDetail=false;
                     this.showSight=true;
+                    this.showhistory=false;
+                    this.selectTime='third';
                     // this.$router.push({ path: '/'+this.path+'/'+this.path+'SightData' });
                 }
                 if(tab.name=='history'){
-
+                    this.showDetail=false;
+                    this.showSight=true;
+                    this.showhistory=true;
+                    this.selectTime='first';
                 }
             },
             handleClick2(tab, event) {
                 if(tab.name=='first'){
-                 this.record=this.recordList[0];
+                    if(this.recordList[0]!=null) {
+                        this.record = this.recordList[0];
+                    }
                 }
                 if(tab.name=='second'){
-                    this.record=this.recordList[1];
+                    if(this.recordList[1]!=null) {
+                        this.record = this.recordList[1];
+                    }
                 }
                 if(tab.name=='third'){
-                    this.record=this.recordList[2];
+                    if(this.recordList[2]!=null) {
+                        this.record = this.recordList[2];
+                    }
                 }
                 this.importdata();
             },

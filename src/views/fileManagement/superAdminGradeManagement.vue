@@ -215,7 +215,7 @@
           schoolName:null
 
         },
-        hidedelete:true,
+        hidedelete:false,
         teachers:[],
         filters: {
           name: ''
@@ -576,7 +576,9 @@
           this.hidedelete=true;
         }
         else if(user.type==1||user.type==2){
-          this.hidedelete=true;
+          if(user.type==1) {
+            this.hidedelete = true;
+          }
         }
         else{
           this.hidedelete=false;

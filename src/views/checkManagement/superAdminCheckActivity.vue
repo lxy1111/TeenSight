@@ -123,7 +123,7 @@
     <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
         <el-form-item label="普查名称" prop="name">
-          <el-input v-model="addForm.surveyName" auto-complete="off"></el-input>
+          <el-input disabled v-model="addForm.surveyName" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="选择设备">
           <el-select v-model="addForm.deviceId" multiple placeholder="请选择">
@@ -169,6 +169,7 @@
   export default {
     data() {
       return {
+        surveyName:'',
         deviceidlist:[],
         isAdimin:false,
         tableData3: [{
@@ -277,7 +278,7 @@
         addForm: {
           finish:false,
           surveyType:0,
-
+         surveyName:'',
         }
 
       }
@@ -363,6 +364,17 @@
       //显示新增界面
       handleAdd: function () {
         this.addFormVisible = true;
+        var date = new Date();
+        var year = date.getFullYear();
+        var month = date.getMonth()+1;
+        if(month<7){
+          this.surveyName=(year-1)+'到'+year+'年度下半学期普查';
+        }
+        else {
+          this.surveyName=(year)+'到'+(year+1)+'年度上半学期普查';
+        }
+        this.addForm.surveyName=this.surveyName;
+
       },
       //编辑
       editSubmit: function () {
