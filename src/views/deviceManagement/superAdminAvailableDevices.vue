@@ -8,9 +8,7 @@
         <el-form-item label="">
           <el-input style="width: 50%;" size="small" v-model.trim="selectForm.deviceId" placeholder="按设备ID搜索"></el-input>
         </el-form-item>
-        <el-form-item label="">
-          <el-input style="width: 50%;" size="small" v-model.trim="selectForm.deviceName" placeholder="按设备名称搜索"></el-input>
-        </el-form-item>
+
         <el-form-item label="">
           <el-button type="primary" round
                      style="margin-right: 0rem;"
@@ -77,12 +75,7 @@
               stripe
               tooltip-effect="dark"
               style="width: 100%">
-        <el-table-column
-                prop="deviceName"
-                label="设备名称"
-                show-overflow-tooltip
-                align="center">
-        </el-table-column>
+
         <el-table-column
                 prop="deviceId"
                 label="设备ID"
@@ -147,9 +140,7 @@
         <el-form-item label="设备ID">
           <el-input v-model="editForm.deviceId" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="设备名称">
-          <el-input v-model="editForm.deviceName" auto-complete="off"></el-input>
-        </el-form-item>
+
         <el-form-item label="地址">
           <el-input  v-model="editForm.address"></el-input>
         </el-form-item>
@@ -197,9 +188,7 @@
         <el-form-item label="设备ID">
           <el-input v-model="addForm.deviceId" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="设备名称">
-          <el-input v-model="addForm.deviceName" auto-complete="off"></el-input>
-        </el-form-item>
+
         <el-form-item label="地址">
           <el-input type="textarea" v-model="addForm.address"></el-input>
         </el-form-item>
