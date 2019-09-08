@@ -110,6 +110,16 @@
         <el-form-item label="普查名称" prop="name">
           <el-input disabled v-model="addForm.surveyName" auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="选择学校" v-if="isIns">
+          <el-select v-model="addForm.schoolId" multiple placeholder="请选择">
+            <el-option
+                    v-for="item in schoolist"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="选择设备">
           <el-select v-model="addForm.deviceId" multiple placeholder="请选择">
             <el-option
@@ -143,7 +153,7 @@
     editUser,
     addUser,
     getSurveyList,
-    getDeviceList, createSurvey, editSurvey
+    getDeviceList, createSurvey, editSurvey, getSchoolListPage
   } from '../../api/api';
 
   export default {
@@ -190,7 +200,8 @@
           pageSize:10,
           surveyName:null,
           schoolName:null,
-          schoolId:null
+          schoolId:null,
+          institutionId:null
         },
         gender:[{
           label:'男',
@@ -209,6 +220,7 @@
             value:'性别-全部'
           }
         ],
+        isIns:false,
         options:[{
           value:true,
           label:'是'
@@ -259,7 +271,9 @@
           finish:false,
           surveyType:0,
          surveyName:'',
-        }
+        },
+        allschool:[],
+        schoolist:[]
 
       }
     },
@@ -441,7 +455,32 @@
 
       var user = sessionStorage.getItem('user');
       user=JSON.parse(user);
-      if(user.type>=3) {
+      if(user.type==2){
+         this.isAdimin=false;
+         this.isIns=true;
+        var institute = sessionStorage.getItem('institute');
+        institute = JSON.parse(institute);
+        this.selectForm.institutionId=institute.insDetail.id;
+        this.getSurveyList();
+        getSchoolListPage(this.selectForm)
+                .then(res => {
+                  console.log("login get success");
+                  console.log(res);
+                  this.allschool=res.data.result.items;
+
+                  for(let i=0;i<this.allschool.length;i++){
+                    let school ={
+                      value:this.allschool[i].id,
+                      label:this.allschool[i].schoolName
+                    }
+                    this.schoolist.push(school);
+                  }
+                  //this.myInfo = successResponse.data.datas[0];
+                })
+                .catch(failResponse => {
+                  console.log("login get fail");
+                });
+      } else if(user.type>=3) {
         var schoolinfo = sessionStorage.getItem('schoolinfo');
         schoolinfo=JSON.parse(schoolinfo);
         var id=schoolinfo.schoolId;

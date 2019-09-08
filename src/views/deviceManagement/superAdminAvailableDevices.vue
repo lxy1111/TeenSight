@@ -19,7 +19,7 @@
                      style="margin-right: 2rem;"
                      @click="handleReset">重置</el-button>
         </el-form-item>
-        <el-form-item v-if="!isAdmin&&isins"><el-button type="primary" round @click="handleAdd">添加设备</el-button></el-form-item>
+        <el-form-item v-if="(!isAdmin&&isins)||isSchool"><el-button type="primary" round @click="handleAdd">添加设备</el-button></el-form-item>
       </el-form>
     </div>
     <el-dialog title="绑定" :visible.sync="showSchool" :close-on-click-modal="false">
@@ -101,8 +101,8 @@
                 label="状态"
                 show-overflow-tooltip align="center">
           <template slot-scope="scope">
-            <el-button  :disabled="scope.row.isBind==0 ? false : true"  :type="scope.row.isBind === 0 ? 'danger' : 'success'"
-                        effect="dark" @click="bindSchool(scope.$index,scope.row)">
+            <el-button   :type="scope.row.isBind === 0 ? 'danger' : 'success'"
+                        effect="dark" @click="scope.row.isBind === 0 ? bindSchool(scope.$index,scope.row):unbindSchool(scope.$index,scope.row)">
               {{scope.row.isBind==0 ? '未绑定' : '已绑定'}}
             </el-button>
           </template>
@@ -220,6 +220,7 @@
   export default {
     data() {
       return {
+        isSchool:false,
         isAdmin:true,
         institutionId:null,
         devices:[],
@@ -497,9 +498,9 @@
           isBind:true
         }
           bindDevice(para).then(res=>{
-            if(!res.succeed){
+            if(!res.data.succeed){
               this.$message({
-                message: data.codeMessage,
+                message: res.data.codeMessage,
                 type: 'error'
               });
               return ;
@@ -512,6 +513,29 @@
           })
 
 
+      },
+      unbindSchool: function(index,row){
+        var deviceid=row.id;
+        var schoolid=row.schoolId;
+        var para={
+          deviceId:deviceid,
+          schoolId:schoolid,
+          isBind:false
+        }
+        bindDevice(para).then(res=>{
+          if(!res.data.succeed){
+            this.$message({
+              message: res.data.codeMessage,
+              type: 'error'
+            });
+            return ;
+          }
+          this.$message({
+            message: '解绑成功',
+            type: 'success'
+          });
+          this.getDevices();
+        })
       },
       //显示编辑界面
       handleEdit: function (index, row) {
@@ -603,6 +627,7 @@
               let para = Object.assign({}, this.addForm);
               console.log(para);
               addDevice(para).then((res) => {
+                this.addLoading = false;
                 if (!res.succeed) {
                   this.$message({
                     message: res.codeMessage,
@@ -610,7 +635,7 @@
                   });
                   return;
                 }
-                this.addLoading = false;
+
                 //NProgress.done();
                 this.$message({
                   message: '提交成功',
@@ -671,6 +696,7 @@
       }
       if(user.type>=3){
         this.isAdmin=false;
+        this.isSchool=true;
         var schoolinfo = sessionStorage.getItem('schoolinfo');
         schoolinfo=JSON.parse(schoolinfo);
         var id=schoolinfo.schoolId;

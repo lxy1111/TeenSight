@@ -81,6 +81,7 @@
             </el-button>
             </template>
           </el-table-column>
+
           <el-table-column v-if="isSuperAdmin"
                   prop="id"
                   label="操作"
@@ -277,6 +278,7 @@
           actualOnlineDateFirst:'',
           actualOnlineDateSecond:'',
         },
+        isIns:false,
         ischeckins:false,
         addFormVisible: false,//新增界面是否显示
         addLoading: false,
@@ -585,6 +587,7 @@
           this.hidedelete=true;
           this.isSuperAdmin=false;
           this.ischeckins=true;
+          this.isIns=true;
         }
         else{
           this.hidedelete=true;

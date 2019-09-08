@@ -141,8 +141,8 @@ let routes = [
         name: '普查管理',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/institute/instituteCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' }
-            // { path: '/superAdminCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
+            { path: '/institute/instituteCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' },
+             { path: '/institute/instituteCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
         ]
     },
     {

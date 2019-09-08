@@ -29,7 +29,14 @@
           </el-button>
         </el-form-item>
 
-        <el-form-item v-if="!hidedelete">
+        <el-form-item v-if="!hidedelete&&isIns">
+          <el-button class="reset-student" type="primary" round @click="showSelect">
+            <span style="font-size: 0.9rem;font-family: PingFang SC;">
+              批量导入
+            </span>
+          </el-button>
+        </el-form-item>
+        <el-form-item v-if="!hidedelete&&!isIns">
           <el-button class="reset-student" type="primary" round @click="showBatchAdd">
             <span style="font-size: 0.9rem;font-family: PingFang SC;">
               批量导入
@@ -38,6 +45,8 @@
         </el-form-item>
 
       </el-form>
+
+
 
       <el-dialog  title="批量导入" :visible.sync="batchAddVisible" @closed="handlebeforeclose" >
         <el-steps align-center  :space="200" :active.sync="finishstep" finish-status="success">
@@ -216,6 +225,8 @@
       </div>
     </el-dialog>
 
+
+
     <!--新增界面-->
     <el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
@@ -243,6 +254,29 @@
         <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
       </div>
     </el-dialog>
+    <el-dialog  :visible.sync="showSelectSchool" title="选择学校"  :close-on-click-modal="false">
+      <el-form  label-width="80px" >
+        <el-form-item label="姓名" prop="schoolId">
+          <el-select style="width: 86%;"
+                     class="select-school-name"
+                     v-model="myid"
+                     placeholder="暂无"
+                     filterable
+                     :loading="loading">
+            <el-option
+                    v-for="item in schoolist"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="showSelectSchool = false">取消</el-button>
+        <el-button type="primary" @click.native="showBatchAdd" :loading="addLoading">确认</el-button>
+      </div>
+    </el-dialog>
   </section>
 </template>
 
@@ -256,7 +290,7 @@
     editUser,
     addUser,
     getStudentsList,
-    addStudents, removeStudent, getStudentCode, getSurveyList, getSurveyCode
+    addStudents, removeStudent, getStudentCode, getSurveyList, getSurveyCode, getSchoolListPage
   } from '../../api/api';
 
 
@@ -269,6 +303,7 @@
     data() {
       return {
         myid:'',
+        isIns:false,
         selectForm:{
           page:1,
           pageSize:10,
@@ -364,8 +399,10 @@
           birth: '',
           addr: ''
         },
-        multipleselection:[]
-
+        allschool:[],
+        schoolist:[],
+        multipleselection:[],
+        showSelectSchool:false
       }
     },
     methods: {
@@ -535,7 +572,17 @@
 
         window.open(url);
       },
-      //性别显示转换
+      showSelect(){
+        this.showSelectSchool=true;
+        this.schoolist=[];
+        for(let i=0;i<this.allschool.length;i++){
+          let school ={
+            value:this.allschool[i].id,
+            label:this.allschool[i].schoolName
+          }
+          this.schoolist.push(school);
+        }
+      },
       showBatchAdd() {
         this.batchAddVisible = true;
       },
@@ -735,6 +782,27 @@
           this.path='institute';
           if(user.type==1) {
             this.hidedelete = true;
+          }else{
+            this.isIns=true;
+            var insinfo = sessionStorage.getItem('institute');
+            insinfo=JSON.parse(insinfo);
+            var id=insinfo.insDetail.id;
+            var para={
+              page:1,
+              pageSize:1000000,
+              institutionId:id
+            }
+            getSchoolListPage(para)
+                    .then(res => {
+                      console.log("login get success");
+                      console.log(res);
+                      this.allschool=res.data.result.items;
+                      //this.myInfo = successResponse.data.datas[0];
+                    })
+                    .catch(failResponse => {
+                      console.log("login get fail");
+                    });
+
           }
         }
         else {
@@ -745,6 +813,7 @@
           this.path='school';
           this.hidedelete=false;
         }
+
       }
     }
 }
