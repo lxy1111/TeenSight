@@ -100,7 +100,8 @@
           <v-distpicker :disabled="editable" :province="editForm.province" :city="editForm.city" :area="editForm.county" @province="selectProvince3" @city="selectCity3" @area="selectArea3" @selected="onSelected2"></v-distpicker>
         </el-form-item>
 
-        <el-form-item label="登陆账号">
+
+          <el-form-item label="登陆账号">
           <el-input v-model="editForm.insAccount" auto-complete="off" :disabled="editable"></el-input>
         </el-form-item>
 

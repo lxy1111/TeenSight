@@ -123,7 +123,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
       </el-pagination>
     </div>
 
@@ -170,28 +170,28 @@
     <!--新增界面-->
     <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-        <el-form-item label="学校" v-if="isins" prop="schoolId">
-          <el-select style="width: 86%;"
-                     class="select-school-name"
-                     v-model="addForm.schoolId"
-                     placeholder="暂无"
-                     filterable
-                     :loading="loading">
-            <el-option
-                    v-for="item in schoolist"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="学校" v-if="isins" prop="schoolId">-->
+<!--          <el-select style="width: 86%;"-->
+<!--                     class="select-school-name"-->
+<!--                     v-model="addForm.schoolId"-->
+<!--                     placeholder="暂无"-->
+<!--                     filterable-->
+<!--                     :loading="loading">-->
+<!--            <el-option-->
+<!--                    v-for="item in schoolist"-->
+<!--                    :key="item.value"-->
+<!--                    :label="item.label"-->
+<!--                    :value="item.value">-->
+<!--            </el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item label="设备ID">
           <el-input v-model="addForm.deviceId" auto-complete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="地址">
-          <el-input type="textarea" v-model="addForm.address"></el-input>
-        </el-form-item>
+<!--        <el-form-item label="地址">-->
+<!--          <el-input type="textarea" v-model="addForm.address"></el-input>-->
+<!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addFormVisible = false">取消</el-button>
@@ -338,7 +338,8 @@
           address: "",
           deviceId: "",
           deviceName: "",
-          schoolId: null
+          schoolId: null,
+          institutionId:null
         }
 
       }
@@ -693,6 +694,7 @@
         var id=insinfo.insDetail.id;
         para.institutionId=id;
         this.selectForm.institutionId=id;
+        this.addForm.institutionId=id;
       }
       if(user.type>=3){
         this.isAdmin=false;

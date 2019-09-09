@@ -101,8 +101,9 @@
                 </el-option>
             </el-select>
         </el-form-item>
-        <el-form-item prop="maxGrade">
-            <el-input-number class="maxgradeinput"  v-model="ruleForm.maxGrade"  :min="1" :max="10" ></el-input-number>
+        <el-form-item prop="maxGrade" >
+            <el-input-number class="maxgradeinput"   v-model="ruleForm.maxGrade"  :min="1" :max="10" ></el-input-number>
+            <el-col :span="5">最高年级</el-col>
         </el-form-item>
         <el-form-item  prop="county">
             <v-distpicker @selected="onSelected" @province="selectProvince" @city="selectCity" @area="selectArea"></v-distpicker>

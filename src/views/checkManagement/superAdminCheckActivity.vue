@@ -60,7 +60,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
         </el-pagination>
       </div>
     </div>
@@ -84,7 +84,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择设备">
-          <el-select v-model="deviceidlist" multiple placeholder="请选择">
+          <el-select v-model="deviceidlist" multiple
+                     filterable placeholder="请选择">
             <el-option
                     v-for="item in devices"
                     :key="item.value"
@@ -111,7 +112,7 @@
           <el-input disabled v-model="addForm.surveyName" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="选择学校" v-if="isIns">
-          <el-select v-model="addForm.schoolId" multiple placeholder="请选择">
+          <el-select  v-model="addForm.schoolId"  placeholder="请选择">
             <el-option
                     v-for="item in schoolist"
                     :key="item.value"
@@ -302,6 +303,24 @@
           //NProgress.done();
         });
       },
+      getDevices(val){
+        let para = {
+          page: 1,
+          pageSize: 1000000,
+          schoolId:val
+        };
+        getDeviceList(para).then(res=>{
+          let deviceList=res.data.result.items;
+          this.devices=[];
+          for(let i=0;i<deviceList.length;i++){
+            let item={
+              value: deviceList[i].id,
+              label:deviceList[i].deviceId
+            }
+            this.devices.push(item);
+          }
+        })
+      },
       handleReset(){
         this.selectForm.surveyName=null;
         this.selectForm.schoolName=null;
@@ -348,9 +367,26 @@
       },
       //显示编辑界面
       handleEdit: function (index, row) {
+        let para = {
+          page: 1,
+          pageSize: 1000000,
+          schoolId:row.schoolId
+        };
+        getDeviceList(para).then(res=>{
+          let deviceList=res.data.result.items;
+          this.devices=[];
+          for(let i=0;i<deviceList.length;i++){
+            let item={
+              value: deviceList[i].id,
+              label:deviceList[i].deviceId
+            }
+            this.devices.push(item);
+          }
+        })
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
         this.deviceidlist=[];
+        this.devices=[];
         for(let i=0;i<this.editForm.deviceList.length;i++){
           this.deviceidlist.push(this.editForm.deviceList[i].id);
         }
@@ -404,12 +440,17 @@
               this.addLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.addForm);
-              var schoolinfo = sessionStorage.getItem('schoolinfo');
-              schoolinfo=JSON.parse(schoolinfo);
-              var id=schoolinfo.schoolId;
-              para.schoolId=id;
-              para.startDate = (!para.startDate || para.startDate == '') ? '' : util.formatDate.format(new Date(para.startDate), 'yyyy-MM-dd');
-              para.endDate = (!para.endDate|| para.endDate == '') ? '' : util.formatDate.format(new Date(para.endDate), 'yyyy-MM-dd');
+              let id=null;
+              if(this.isIns){
+                para.schoolId=this.addForm.schoolId;
+              }else {
+                let schoolinfo = sessionStorage.getItem('schoolinfo');
+                schoolinfo = JSON.parse(schoolinfo);
+                id = schoolinfo.schoolId;
+                para.schoolId = id;
+              }
+            //  para.startDate = (!para.startDate || para.startDate == '') ? '' : util.formatDate.format(new Date(para.startDate), 'yyyy-MM-dd');
+             // para.endDate = (!para.endDate|| para.endDate == '') ? '' : util.formatDate.format(new Date(para.endDate), 'yyyy-MM-dd');
               createSurvey(para).then((res) => {
                 this.addLoading = false;
                 //NProgress.done();
@@ -462,6 +503,22 @@
         institute = JSON.parse(institute);
         this.selectForm.institutionId=institute.insDetail.id;
         this.getSurveyList();
+        let para = {
+          page: 1,
+          pageSize: 1000000,
+          institutionId:institute.insDetail.id
+        };
+        getDeviceList(para).then(res=>{
+          let deviceList=res.data.result.items;
+          this.devices=[];
+          for(let i=0;i<deviceList.length;i++){
+            let item={
+              value: deviceList[i].id,
+              label:deviceList[i].deviceId
+            }
+            this.devices.push(item);
+          }
+        })
         getSchoolListPage(this.selectForm)
                 .then(res => {
                   console.log("login get success");
@@ -497,7 +554,7 @@
           for(let i=0;i<deviceList.length;i++){
             let item={
               value: deviceList[i].id,
-              label:deviceList[i].deviceName
+              label:deviceList[i].deviceId
             }
             this.devices.push(item);
           }

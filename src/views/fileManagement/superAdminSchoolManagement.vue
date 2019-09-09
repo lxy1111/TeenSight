@@ -51,9 +51,8 @@
                   label="位置"
                   show-overflow-tooltip align="center">
             <template slot-scope="scope">
-              {{scope.row.province+scope.row.city+scope.row.county}}
+              {{scope.row.province+scope.row.city+scope.row.county+scope.row.address}}
             </template>
-
           </el-table-column>
           <el-table-column
                   prop="schoolAccount"
@@ -127,6 +126,16 @@
         <el-form-item label="所在位置">
           <v-distpicker :province="editForm.province" :city="editForm.city" :area="editForm.county" @selected="onSelected"></v-distpicker>
         </el-form-item>
+
+
+        <el-form-item label="最大年级">
+          <el-input-number   class="maxgradeinput2"   v-model="editForm.maxGrade"  :min="1" :max="10" ></el-input-number>
+        </el-form-item>
+
+        <el-form-item label="详细地址">
+          <el-input v-model="editForm.address" auto-complete="off"> </el-input>
+        </el-form-item>
+
 
         <el-form-item label="登陆账号">
             <el-input v-model="editForm.schoolAccount" auto-complete="off"></el-input>
@@ -615,6 +624,9 @@
     background-color: #fff;
     overflow: hidden;
 
+  }
+  .maxgradeinput2{
+    width: 40%;
   }
 
 </style>

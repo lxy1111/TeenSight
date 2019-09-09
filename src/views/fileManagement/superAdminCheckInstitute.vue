@@ -42,7 +42,7 @@
                             label="位置"
                             show-overflow-tooltip align="center">
                         <template slot-scope="scope">
-                            {{scope.row.province+scope.row.city+scope.row.county}}
+                            {{scope.row.province+scope.row.city+scope.row.county+scope.row.address}}
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -114,6 +114,11 @@
                     </el-option>
                 </el-select>
                 </el-form-item>
+
+                <el-form-item label="详细地址">
+                    <el-input  :disabled="editable" v-model="editForm.address" auto-complete="off"> </el-input>
+                </el-form-item>
+
 
                 <el-form-item label="登陆账号">
                     <el-input  v-model="editForm.insAccount" auto-complete="off" :disabled="editable"></el-input>

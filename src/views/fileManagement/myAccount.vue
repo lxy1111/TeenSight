@@ -36,6 +36,11 @@
                     <el-input disabled v-model="editForm.province+editForm.city+editForm.county" auto-complete="off"></el-input>
                 </el-form-item>
 
+                <el-form-item label="详细地址">
+                    <el-input  disabled v-model="editForm.address" auto-complete="off"> </el-input>
+                </el-form-item>
+
+
                 <el-form-item label="所含学校" v-if="ischeckins">
                 <el-select disabled
                            v-model="schoolNameList"
@@ -81,6 +86,10 @@
 
                 <el-form-item label="所在位置">
                     <el-input disabled v-model="editForm.province+editForm.city+editForm.county" auto-complete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="详细地址">
+                    <el-input  disabled v-model="editForm.address" auto-complete="off"> </el-input>
                 </el-form-item>
 
                 <el-form-item label="登录账号">
