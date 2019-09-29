@@ -1,7 +1,7 @@
 <template>
   <section>
     <!--工具条-->
-    <div class="retrieval  criteria Style" id="pdfDom">
+
       <el-form :inline="true" :model="selectForm">
         <el-row type="flex" >
           <el-form-item  v-if="!isschool">
@@ -43,7 +43,7 @@
               </el-select>
             </el-form-item>
           <el-form-item prop="planeOnlineDateSecond" >
-            <el-select size="small" @change="handlegetdata" v-model="selectForm.surveyId" placeholder="请选择普查">
+            <el-select size="small" @change="handlegetdata" v-model="selectForm.surveyName" placeholder="请选择普查">
               <el-option
                       v-for="item in surveylist"
                       :label="item.label"
@@ -55,9 +55,10 @@
 <!--          <el-form-item><el-button type="primary"  round @click="refresh">刷新</el-button></el-form-item>-->
 
           <el-form-item><el-button type="primary"  round @click="handlereset">重置</el-button></el-form-item>
+          <el-form-item v-if="!ishidden"> <el-button type="primary" round  v-on:click="getPdf()">下载PDF报告</el-button></el-form-item>
         </el-row>
       </el-form>
-
+    <div class="retrieval  criteria Style" id="pdfDom">
     <div :hidden="ishidden" class="retrieval  criteria Style">
       <el-form :model="form" label-width="160px">
         <el-row type="flex" class="row-bg" justify="right">
@@ -71,7 +72,7 @@
             <span v-if="showclassname" style="font-size: xx-large" >{{nowclass}}班</span>
           </el-col>
 
-          <el-col :span="20"> <el-button type="primary" round  v-on:click="getPdf()">下载PDF报告</el-button></el-col>
+
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="4" >
@@ -519,6 +520,7 @@
           actualOnlineDateSecond:'',
         },
         poorsightcount:0,
+        schooltype:'',
         shortsightcount:0,
         showschool:false,
         showschooloverall:true,
@@ -540,7 +542,7 @@
           institutionId:null,
           gradeNo:null,
           classNo:null,
-          surveyId:null
+          surveyName:null
         },
         nowgrade:'',
         showgradename:false,
@@ -576,7 +578,7 @@
       handleClassChange(val){
         this.showclassname=true;
         this.nowclass=val;
-        this.selectForm.surveyId=null;
+        this.selectForm.surveyName=null;
       //  this.showgradeoverall=true;
       },
       handleGradeChange(val){
@@ -586,7 +588,7 @@
           this.showclassname=false;
           this.showgradeoverall=false;
         }
-        this.selectForm.surveyId=null;
+        this.selectForm.surveyName=null;
 
         if(val==1){
           this.nowgrade='一年级'
@@ -636,7 +638,7 @@
       handleChange(val){
         this.gradelist=[];
         this.classlist=[];
-        this.selectForm.surveyId=null;
+        this.selectForm.surveyName=null;
         if(!this.ishidden) {
           this.showschooloverall = false;
           this.showgradeoverall=true;
@@ -652,23 +654,60 @@
         }
 
         getSchoolDetail(para1).then(res=>{
-          this.nowschool=res.data.result.schoolName
-        })
+          this.nowschool=res.data.result.schoolName;
+          this.schooltype=res.data.result.schoolType;
+
         this.gradelist=[];
         this.selectForm.gradeNo=null;
         this.selectForm.classNo=null;
-        this.selectForm.surveyId=null;
+        this.selectForm.surveyName=null;
         getClassByschool(para).then(res=>{
           this.allTeachers=res.data.result.gradeList;
           this.gradelist=[];
+          let gradeName='';
           for(let i=0;i<this.allTeachers.length;i++){
+            if(this.schooltype==3){
+              if(this.allTeachers[i]==1){
+                gradeName="小学一年级";
+              }else if(this.allTeachers[i]==2){
+                gradeName="小学二年级"
+              }else if(this.allTeachers[i]==3){
+                gradeName="小学三年级"
+              }else if(this.allTeachers[i]==4){
+                gradeName="小学四年级"
+              }else if(this.allTeachers[i]==5){
+                gradeName="小学五年级"
+              }else if(this.allTeachers[i]==6){
+                gradeName="小学六年级"
+              }
+            }else if(this.schooltype==4){
+              if(this.allTeachers[i]==0){
+                gradeName="初中预备班";
+              }else if(this.allTeachers[i]==1){
+                gradeName="初中一年级"
+              }else if(this.allTeachers[i]==2){
+                gradeName="初中二年级"
+              }
+              else if(this.allTeachers[i]==3){
+                gradeName="初中三年级"
+              }
+            }
+            else if(this.schooltype==5){
+              if(this.allTeachers[i]==1){
+                gradeName="高中一年级"
+              }else if(this.allTeachers[i]==2){
+                gradeName="高中二年级"
+              }
+              else if(this.allTeachers[i]==3){
+                gradeName="高中三年级"
+              }
+            }
             let teacher ={
               value:this.allTeachers[i],
-              label:this.allTeachers[i]
+              label:gradeName
             }
             this.gradelist.push(teacher);
           }
-
         })
 
         getSurveyList(this.selectForm).then(res=>{
@@ -676,21 +715,24 @@
           this.surveylist=[];
           for(let i=0;i<this.allsurveys.length;i++){
             let survey ={
-              value:this.allsurveys[i].id,
+              value:this.allsurveys[i].surveyName,
               label:this.allsurveys[i].surveyName
             }
             this.surveylist.push(survey);
           }
 
         })
+        })
 
       },
       handlereset(){
-      this.selectForm.surveyId=null;
+      this.selectForm.surveyName=null;
         this.selectForm.classNo=null;
         this.selectForm.gradeNo=null;
         if(!this.isschool) {
           this.selectForm.schoolId = null;
+        }else{
+          this.handleChange(this.selectForm.schoolId);
         }
         this.showschooloverall = true;
         this.showgradeoverall=true;
@@ -886,14 +928,14 @@
         })
       },
       handlesearch(){
-        if(this.selectForm.surveyId==null){
+        if(this.selectForm.surveyName==null){
           this.$message({
             type:'error',
             message:'请选择普查'
           })
           return
         }
-        if(this.selectForm.schoolId!=null&&this.selectForm.surveyId!=null){
+        if(this.selectForm.schoolId!=null&&this.selectForm.surveyName!=null){
 
           this.ishidden=false;
           if(this.selectForm.gradeNo!=null) {

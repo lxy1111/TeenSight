@@ -108,8 +108,8 @@
     <!--新增界面-->
     <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-        <el-form-item label="普查名称" prop="name">
-          <el-input disabled v-model="addForm.surveyName" auto-complete="off"></el-input>
+        <el-form-item label="普查名称"  prop="name">
+          <el-input  disabled v-model="addForm.surveyName" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="选择学校" v-if="isIns">
           <el-select  v-model="addForm.schoolId"  placeholder="请选择">
@@ -397,11 +397,17 @@
         var date = new Date();
         var year = date.getFullYear();
         var month = date.getMonth()+1;
-        if(month<7){
-          this.surveyName=(year-1)+'到'+year+'年度下半学期普查';
+        if(month>=3&&month<5){
+          this.surveyName=(year-1)+'到'+(year)+'学年第二学期第一次普查';
         }
-        else {
-          this.surveyName=(year)+'到'+(year+1)+'年度上半学期普查';
+        else if(month>=5&&month<9){
+          this.surveyName=(year-1)+'到'+(year)+'学年第二学期第二次普查';
+        }else if(month>=9&&month<11)
+        {
+          this.surveyName=(year)+'到'+(year+1)+'学年第一学期第一次普查';
+        }else if(month>=11||month<3)
+        {
+          this.surveyName=(year)+'到'+(year+1)+'学年第一学期第二次普查';
         }
         this.addForm.surveyName=this.surveyName;
 
@@ -452,12 +458,20 @@
             //  para.startDate = (!para.startDate || para.startDate == '') ? '' : util.formatDate.format(new Date(para.startDate), 'yyyy-MM-dd');
              // para.endDate = (!para.endDate|| para.endDate == '') ? '' : util.formatDate.format(new Date(para.endDate), 'yyyy-MM-dd');
               createSurvey(para).then((res) => {
+                console.log(res);
                 this.addLoading = false;
                 //NProgress.done();
-                this.$message({
-                  message: '提交成功',
-                  type: 'success'
-                });
+                if(!res.succeed){
+                  this.$message({
+                    message:'重复创建！',
+                    type:'error'
+                  })
+                }else {
+                  this.$message({
+                    message: '提交成功',
+                    type: 'success'
+                  });
+                }
                 this.$refs['addForm'].resetFields();
                 this.addFormVisible = false;
                 this.getSurveyList();

@@ -107,7 +107,7 @@
             </el-button>
           </template>
         </el-table-column>
-        <el-table-column
+        <el-table-column v-if="!isins"
                 prop="schoolName"
                 label="学校名称"
                 show-overflow-tooltip align="center">
@@ -220,6 +220,7 @@
   export default {
     data() {
       return {
+        insId:null,
         isSchool:false,
         isAdmin:true,
         institutionId:null,
@@ -491,12 +492,20 @@
         });
       },
       bindSchool: function(index,row){
+
         var deviceid=row.id;
-        var schoolid=row.schoolId;
+
         var para={
           deviceId:deviceid,
-          schoolId:schoolid,
-          isBind:true
+          institutionId:null,
+          isBind:true,
+          schoolId:null
+        }
+        if(!this.isins){
+          var schoolid=row.schoolId;
+          para.schoolId=schoolid;
+        }else{
+         para.institutionId=this.insId;
         }
           bindDevice(para).then(res=>{
             if(!res.data.succeed){
@@ -686,13 +695,15 @@
       };
       if(user.type==1||user.type==2){
         this.isAdmin=false;
-        if(user.type==2) {
-          this.isins = true;
-        }
+
         var insinfo = sessionStorage.getItem('institute');
         insinfo=JSON.parse(insinfo);
         var id=insinfo.insDetail.id;
         para.institutionId=id;
+        if(user.type==2) {
+          this.isins = true;
+          this.insId=id;
+        }
         this.selectForm.institutionId=id;
         this.addForm.institutionId=id;
       }

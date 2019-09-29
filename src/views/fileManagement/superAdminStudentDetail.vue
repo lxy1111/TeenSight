@@ -4,14 +4,25 @@
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="个人信息" name="stuinfo"></el-tab-pane>
             <el-tab-pane label="屈光档案" name="sightdata" ></el-tab-pane>
-            <el-tab-pane label="历史记录" name="history"></el-tab-pane>
+<!--            <el-tab-pane label="历史记录" name="history"></el-tab-pane>-->
         </el-tabs>
         <div v-if="showSight" class="retrieval  criteria Style">
-            <el-form :model="record" >
+            <el-form :model="record">
                 <el-tabs v-model="selectTime" type="card" @tab-click="handleClick2">
                     <el-tab-pane v-if="showhistory" label="第一次" name="first"></el-tab-pane>
                     <el-tab-pane v-if="showhistory" label="第二次" name="second" ></el-tab-pane>
-                    <el-tab-pane v-if="!showhistory" label="最近一次" name="third"></el-tab-pane>
+<!--                    <el-tab-pane v-if="!showhistory" label="最近一次" name="third"></el-tab-pane>-->
+                    <el-form-item prop="planeOnlineDateSecond" >
+                        <el-select size="small"   v-model="surveyName" placeholder="请选择普查">
+                            <el-option
+                                    v-for="item in surveyList"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item><el-button type="primary"  round @click="getRecordInfo">获取视力数据</el-button></el-form-item>
+                    <el-form-item><el-button type="primary"  round @click="exportReport">导出报告</el-button></el-form-item>
                 </el-tabs>
 
                 <el-form-item label="采集日期">
@@ -254,12 +265,14 @@
         editUser,
         addUser,
         getStudentDetail,
-        getRecordList, modifyStudents
+        getRecordList, modifyStudents, getSurveyList
     } from '../../api/api';
 
     export default {
         data() {
             return {
+                surveyName:null,
+                surveyList:[],
                 recordList:[],
                 showhistory:false,
                 selectTime:'',
@@ -271,6 +284,12 @@
                 filters: {
                     name: ''
                 },
+                selectForm:{
+                  page:1,
+                  pageSize:100000,
+                  schoolId:null,
+                },
+                stuId:null,
                 gender:[{
                     label:'男',
                     value:'男'
@@ -420,26 +439,79 @@
                 }
             }
             let id=this.$route.query.id;
+            this.stuId=id;
            let para={
                id:id
            }
+
            let para2={
-               studentId:id
+               studentId:id,
+               surveyName:this.surveyName
            }
+           let para3={
+               studentId:id,
+               page:1,
+               pageSize:100000
+           }
+            getSurveyList(para3).then(res=>{
+                let allsurveys=res.data.result.items;
+                this.surveyList=[];
+                for(let i=0;i<allsurveys.length;i++){
+                    let survey ={
+                        value:allsurveys[i].surveyName,
+                        label:allsurveys[i].surveyName
+                    }
+                    this.surveyList.push(survey);
+                }
+
+            })
             getStudentDetail(para).then((res)=>{
                 this.editForm=res.data.result;
             })
-            getRecordList(para2).then((res)=>{
-                if(res.data.result.length!=0) {
-                    this.recordList = res.data.result;
-                    this.record = this.recordList[0];
-                    this.importdata();
-                }
-            })
+            // getSurveyList(this.selectForm).then(res=>{
+            //     this.allsurveys=res.data.result.items;
+            //     this.surveylist=[];
+            //     for(let i=0;i<this.allsurveys.length;i++){
+            //         let survey ={
+            //             value:this.allsurveys[i].surveyName,
+            //             label:this.allsurveys[i].surveyName
+            //         }
+            //         this.surveylist.push(survey);
+            //     }
+            //
+            // })
+            // getRecordList(para2).then((res)=>{
+            //     if(res.data.result.length!=0) {
+            //         this.recordList = res.data.result;
+            //         this.record = this.recordList[0];
+            //         this.importdata();
+            //     }
+            // })
 
         },
         methods: {
             //性别显示转换
+
+
+            getRecordInfo(){
+                let para2={
+                    studentId:this.stuId,
+                    surveyName:this.surveyName
+                }
+                getRecordList(para2).then((res)=>{
+                    if(res.data.result.length!=0) {
+                        this.recordList = res.data.result;
+                        this.record = this.recordList[0];
+                        this.importdata();
+                    }
+                })
+
+            },
+
+            exportReport(){
+
+
+            },
 
             importdata(){
                 this.shortsight[0].ucva=this.record.result[0].ucva;
