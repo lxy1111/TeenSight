@@ -56,6 +56,7 @@ export const getSurveyCode = params => { return axios.post(`/api/student/generat
 
 export const getStatisticsDetail = params => { return axios.get(`/api/statistics/getStatisticByDetail`, {params:params}); };
 
+export const getPersonalReport = params => { return axios.get(`/api/student/getPersonalReport`, {params:params}); };
 
 export const getInstituteDetail = params => { return axios.get(`/api/institution/getInstitutionDetail`, { params: params }); };
 

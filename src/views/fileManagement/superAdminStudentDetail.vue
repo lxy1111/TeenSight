@@ -265,7 +265,7 @@
         editUser,
         addUser,
         getStudentDetail,
-        getRecordList, modifyStudents, getSurveyList
+        getRecordList, modifyStudents, getSurveyList, getPersonalReport
     } from '../../api/api';
 
     export default {
@@ -509,6 +509,14 @@
             },
 
             exportReport(){
+                let para={
+                    studentId:this.stuId,
+                    surveyName:this.surveyName;
+                }
+              getPersonalReport(para).then(res=>{
+
+
+              })
 
 
             },
