@@ -128,9 +128,9 @@
         </el-form-item>
 
 
-        <el-form-item label="最大年级">
-          <el-input-number   class="maxgradeinput2"   v-model="editForm.maxGrade"  :min="1" :max="10" ></el-input-number>
-        </el-form-item>
+<!--        <el-form-item label="最大年级">-->
+<!--          <el-input-number   class="maxgradeinput2"   v-model="editForm.maxGrade"  :min="1" :max="10" ></el-input-number>-->
+<!--        </el-form-item>-->
 
         <el-form-item label="详细地址">
           <el-input v-model="editForm.address" auto-complete="off"> </el-input>

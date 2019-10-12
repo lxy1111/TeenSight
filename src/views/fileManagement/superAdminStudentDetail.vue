@@ -38,6 +38,7 @@
                     ref="multipleTable"
                     :data="shortsight"
                     stripe
+                    border
                     tooltip-effect="dark"
                     style="width: 100%"
                     @selection-change="handleSelectionChange">
@@ -50,10 +51,58 @@
                         label="裸眼视力"
                         show-overflow-tooltip align="center">
                 </el-table-column>
-
                 <el-table-column
-                        label="电脑验光(小瞳)"
+                        prop="glassEyesight"
+                        label="戴镜视力"
                         show-overflow-tooltip align="center">
+                </el-table-column>
+<!--                <el-table-column-->
+<!--                        label="电脑验光(小瞳)"-->
+<!--                        show-overflow-tooltip align="center">-->
+<!--                    <el-table-column-->
+<!--                            prop="pupilSphere"-->
+<!--                            label="球镜"-->
+<!--                            show-overflow-tooltip align="center"-->
+<!--                    >-->
+<!--                    </el-table-column>-->
+<!--                    <el-table-column-->
+<!--                            prop="pupilCylinder"-->
+<!--                            label="柱镜"-->
+<!--                            show-overflow-tooltip align="center"-->
+<!--                    >-->
+<!--                    </el-table-column>-->
+<!--                    <el-table-column-->
+<!--                            prop="pupilAxial"-->
+<!--                            label="轴向"-->
+<!--                            show-overflow-tooltip align="center"-->
+<!--                    >-->
+<!--                    </el-table-column>-->
+<!--                </el-table-column>-->
+            </el-table>
+
+
+            <br>
+
+            <el-breadcrumb separator=">" class="bread-title">
+                <el-breadcrumb-item>屈光筛查</el-breadcrumb-item>
+            </el-breadcrumb>
+            <el-table
+                    ref="multipleTable"
+                    :data="lightcheck"
+                    stripe
+                    border
+                    tooltip-effect="dark"
+                    style="width: 100%"
+                    @selection-change="handleSelectionChange">
+                <el-table-column
+                        prop="eyes"
+                        align="center">
+                </el-table-column>
+<!--                <el-table-column-->
+<!--                        label="睫状肌麻痹后电脑验光"-->
+<!--                        show-overflow-tooltip align="center">-->
+
+
                     <el-table-column
                             prop="pupilSphere"
                             label="球镜"
@@ -68,87 +117,54 @@
                     </el-table-column>
                     <el-table-column
                             prop="pupilAxial"
-                            label="轴向"
+                            label="轴位"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
-                </el-table-column>
-            </el-table>
-
-
-            <br>
-
-            <el-breadcrumb separator=">" class="bread-title">
-                <el-breadcrumb-item>屈光筛查</el-breadcrumb-item>
-            </el-breadcrumb>
-            <el-table
-                    ref="multipleTable"
-                    :data="lightcheck"
-                    stripe
-                    tooltip-effect="dark"
-                    style="width: 100%"
-                    @selection-change="handleSelectionChange">
                 <el-table-column
-                        prop="eyes"
-                        align="center">
+                        prop="distance"
+                        label="瞳距"
+                        show-overflow-tooltip align="center"
+                >
                 </el-table-column>
-                <el-table-column
-                        label="睫状肌麻痹后电脑验光"
-                        show-overflow-tooltip align="center">
-
-
-                    <el-table-column
-                            prop="computerSphere"
-                            label="球镜"
-                            show-overflow-tooltip align="center"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            prop="computerCylinder"
-                            label="柱镜"
-                            show-overflow-tooltip align="center"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            prop="computerAxial"
-                            label="轴向"
-                            show-overflow-tooltip align="center"
-                    >
-                    </el-table-column>
-                </el-table-column>
-                <el-table-column
-                        label="睫状肌麻痹验光(人工检影)"
-                        show-overflow-tooltip align="center">
-                    <el-table-column
-                            prop="manualSphere"
-                            label="球镜"
-                            show-overflow-tooltip align="center"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            prop="manualCylinder"
-                            label="柱镜"
-                            show-overflow-tooltip align="center"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            prop="manualCva"
-                            label="轴向"
-                            show-overflow-tooltip align="center"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            label="矫正视力"
-                            prop="manualAxial"
-                            show-overflow-tooltip align="center"
-                    >
-                    </el-table-column>
-                </el-table-column>
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                        label="睫状肌麻痹验光(人工检影)"-->
+<!--                        show-overflow-tooltip align="center">-->
+<!--                    <el-table-column-->
+<!--                            prop="manualSphere"-->
+<!--                            label="球镜"-->
+<!--                            show-overflow-tooltip align="center"-->
+<!--                    >-->
+<!--                    </el-table-column>-->
+<!--                    <el-table-column-->
+<!--                            prop="manualCylinder"-->
+<!--                            label="柱镜"-->
+<!--                            show-overflow-tooltip align="center"-->
+<!--                    >-->
+<!--                    </el-table-column>-->
+<!--                    <el-table-column-->
+<!--                            prop="manualCva"-->
+<!--                            label="轴向"-->
+<!--                            show-overflow-tooltip align="center"-->
+<!--                    >-->
+<!--                    </el-table-column>-->
+<!--                    <el-table-column-->
+<!--                            label="矫正视力"-->
+<!--                            prop="manualAxial"-->
+<!--                            show-overflow-tooltip align="center"-->
+<!--                    >-->
+<!--                    </el-table-column>-->
+<!--                </el-table-column>-->
             </el-table>
             <br>
+                <el-breadcrumb separator=">" class="bread-title">
+                    <el-breadcrumb-item>角膜曲率</el-breadcrumb-item>
+                </el-breadcrumb>
             <el-table
                     ref="multipleTable"
                     :data="lightcheck2"
+                    stripe
                     border
                     tooltip-effect="dark"
                     style="width: 100%"
@@ -157,44 +173,44 @@
                         prop="eyes"
                         align="center">
                 </el-table-column>
-                <el-table-column
-                        prop="axial"
-                        label="眼轴"
-                        show-overflow-tooltip align="center">
-                </el-table-column>
-                <el-table-column
-                        prop="pressure"
-                        label="眼压"
-                        show-overflow-tooltip align="center">
-                </el-table-column>
-                <el-table-column
-                        label="角膜曲率"
-                        show-overflow-tooltip align="center">
-                    <el-table-column
-                            prop="k1Axial"
-                            label="曲率（K1）"
-                            show-overflow-tooltip align="center"
-                    >
-                    </el-table-column>
+<!--                <el-table-column-->
+<!--                        prop="axial"-->
+<!--                        label="眼轴"-->
+<!--                        show-overflow-tooltip align="center">-->
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                        prop="pressure"-->
+<!--                        label="眼压"-->
+<!--                        show-overflow-tooltip align="center">-->
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                        label="角膜曲率"-->
+<!--                        show-overflow-tooltip align="center">-->
+<!--                    <el-table-column-->
+<!--                            prop="k1Axial"-->
+<!--                            label="曲率（K1）"-->
+<!--                            show-overflow-tooltip align="center"-->
+<!--                    >-->
+<!--                    </el-table-column>-->
                     <el-table-column
                             prop="k1Curvature"
-                            label="轴向（K1）"
-                            show-overflow-tooltip align="center"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            prop="k2Axial"
-                            label="曲率（K2）"
+                            label="曲率（R1）"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
                     <el-table-column
                             prop="k2Curvature"
-                            label="轴向（K2）"
+                            label="曲率（R2）"
                             show-overflow-tooltip align="center"
                     >
                     </el-table-column>
-                </el-table-column>
+                    <el-table-column
+                            prop="k1Axial"
+                            label="轴位"
+                            show-overflow-tooltip align="center"
+                    >
+                    </el-table-column>
+<!--                </el-table-column>-->
             </el-table>
             </el-form>
         </div>
@@ -355,7 +371,10 @@
                     manualAxial:'',
                     computerSphere:'',
                     computerCylinder:'',
-                    computerAxial:''
+                    computerAxial:'',
+                    pupilSphere:'',
+                    pupilCylinder:'',
+                    pupilAxial:''
 
                 }, {
                     eyes: '右眼',
@@ -508,13 +527,31 @@
 
             },
 
+
             exportReport(){
+                if(this.surveyName==null){
+                    this.$message({
+                        type:'error',
+                        message:'请选择普查'
+                    })
+                    return;
+                }
                 let para={
                     studentId:this.stuId,
-                    surveyName:this.surveyName;
+                    surveyName:this.surveyName
                 }
               getPersonalReport(para).then(res=>{
-
+                console.log(res.data);
+                  const blob = new Blob([res.data]);//处理文档流
+                  const fileName = this.editForm.stuName+'视力报告.pdf';
+                  const elink = document.createElement('a');
+                  elink.download = fileName;
+                  elink.style.display = 'none';
+                  elink.href = URL.createObjectURL(blob);
+                  document.body.appendChild(elink);
+                  elink.click();
+                  URL.revokeObjectURL(elink.href); // 释放URL 对象
+                  document.body.removeChild(elink);
 
               })
 
@@ -526,10 +563,12 @@
                 this.shortsight[0].pupilAxial=this.record.result[0].pupilAxial;
                 this.shortsight[0].pupilCylinder=this.record.result[0].pupilCylinder;
                 this.shortsight[0].pupilSphere=this.record.result[0].pupilSphere;
+                this.shortsight[0].glassEyesight=this.record.result[0].glassEyesight;
                 this.shortsight[1].ucva=this.record.result[1].ucva;
                 this.shortsight[1].pupilAxial=this.record.result[1].pupilAxial;
                 this.shortsight[1].pupilCylinder=this.record.result[1].pupilCylinder;
                 this.shortsight[1].pupilSphere=this.record.result[1].pupilSphere;
+                this.shortsight[1].glassEyesight=this.record.result[1].glassEyesight;
 
                 this.lightcheck[0].manualSphere=this.record.result[0].manualSphere;
                 this.lightcheck[0].manualCylinder=this.record.result[0].manualCylinder;
@@ -538,6 +577,9 @@
                 this.lightcheck[0].computerSphere=this.record.result[0].computerSphere;
                 this.lightcheck[0].computerCylinder=this.record.result[0].computerCylinder;
                 this.lightcheck[0].computerAxial=this.record.result[0].computerAxial;
+                this.lightcheck[0].pupilSphere=this.record.result[0].pupilSphere;
+                this.lightcheck[0].pupilCylinder=this.record.result[0].pupilCylinder;
+                this.lightcheck[0].pupilAxial=this.record.result[0].pupilAxial;
                 this.lightcheck[1].manualSphere=this.record.result[1].manualSphere;
                 this.lightcheck[1].manualCylinder=this.record.result[1].manualCylinder;
                 this.lightcheck[1].manualCva=this.record.result[1].manualCva;
@@ -545,6 +587,10 @@
                 this.lightcheck[1].computerSphere=this.record.result[1].computerSphere;
                 this.lightcheck[1].computerCylinder=this.record.result[1].computerCylinder;
                 this.lightcheck[1].computerAxial=this.record.result[1].computerAxial;
+                this.lightcheck[1].pupilSphere=this.record.result[1].pupilSphere;
+                this.lightcheck[1].pupilCylinder=this.record.result[1].pupilCylinder;
+                this.lightcheck[1].pupilAxial=this.record.result[1].pupilAxial;
+
 
 
                 this.lightcheck2[0].axial=this.record.result[0].axial;
@@ -553,6 +599,7 @@
                 this.lightcheck2[0].k1Curvature=this.record.result[0].k1Curvature;
                 this.lightcheck2[0].k2Axial=this.record.result[0].k2Axial;
                 this.lightcheck2[0].k2Curvature=this.record.result[0].k2Curvature;
+
 
 
                 this.lightcheck2[1].axial=this.record.result[1].axial;

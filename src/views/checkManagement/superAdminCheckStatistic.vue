@@ -82,6 +82,7 @@
             <span  >{{this.inspectiondate}}</span>
           </el-col>
         </el-row>
+      <div :hidden="isIns">
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="4" >
             <span  >学校所在地</span>
@@ -104,6 +105,7 @@
             <span  >{{studentno}}人</span>
           </el-col>
         </el-row>
+      </div>
       </el-form>
 
       <el-table
@@ -119,14 +121,24 @@
                 align="center">
         </el-table-column>
         <el-table-column
-                prop="poorsightrate"
-                label="视力不良率(裸眼视力低于正常水平)%"
+                prop="normalDegree"
+                label="视力正常%"
                 show-overflow-tooltip align="center">
         </el-table-column>
 
         <el-table-column
-                prop="shortsightrate"
-                label="(视力不良，且屈光读书低于-0.50)%"
+                prop="firstDegree"
+                label="轻度不良%"
+                show-overflow-tooltip align="center">
+        </el-table-column>
+        <el-table-column
+                prop="secondDegree"
+                label="中度不良%"
+                show-overflow-tooltip align="center">
+        </el-table-column>
+        <el-table-column
+                prop="thirdDegree"
+                label="重度不良%"
                 show-overflow-tooltip align="center">
         </el-table-column>
       </el-table>
@@ -180,53 +192,81 @@
             <div id="warning" ref="warning"></div>
           </div>
         </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="24" align="left">
-            <span style="font-size: large">关于预警分级</span>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="24" align="left">
-            <span style="font-size: large">一级预警（视力正常且屈光正常）</span>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="24" align="left">
-            <span style="font-size: large">非近视学生，这部分学生应该做好预防近视工作</span>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="24" align="left">
-            <span style="font-size: large">二级预警（视力<5.0并且-6.00<=屈光度<-0.5）</span>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="24" align="left">
-            <span style="font-size: large">轻度或中度近视学生，这部分学生应该做好控制近视度数增长</span>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="24" align="left">
-            <span style="font-size: large">三级预警（视力<5.0并且屈光度<-6.00）</span>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="24" align="left">
-            <span style="font-size: large">高度近视学生，这部分学生应时刻关注眼健康情况，防止眼底病变发生</span>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="24" align="left">
-            <span style="font-size: large">预警分布情况</span>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="24" align="left">
-            <span style="font-size: large">各预警等级人数占比</span>
-          </el-col>
-        </el-row>
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="24" align="left">-->
+<!--            <span style="font-size: large">关于预警分级</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="24" align="left">-->
+<!--            <span style="font-size: large">一级预警（视力正常且屈光正常）</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="24" align="left">-->
+<!--            <span style="font-size: large">非近视学生，这部分学生应该做好预防近视工作</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="24" align="left">-->
+<!--            <span style="font-size: large">二级预警（视力<5.0并且-6.00<=屈光度<-0.5）</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="24" align="left">-->
+<!--            <span style="font-size: large">轻度或中度近视学生，这部分学生应该做好控制近视度数增长</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="24" align="left">-->
+<!--            <span style="font-size: large">三级预警（视力<5.0并且屈光度<-6.00）</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="24" align="left">-->
+<!--            <span style="font-size: large">高度近视学生，这部分学生应时刻关注眼健康情况，防止眼底病变发生</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="24" align="left">-->
+<!--            <span style="font-size: large">预警分布情况</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="24" align="left">-->
+<!--            <span style="font-size: large">各预警等级人数占比</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
       </el-form>
     </div>
+      <div :hidden="showIns" class="retrieval  criteria Style">
+        <el-form :model="form" label-width="160px">
+          <el-row type="flex" class="row-bg" justify="right">
+              <span style="font-size: large">视力不良变化趋势</span>
+          </el-row>
+          <el-row type="flex" class="row-bg" justify="right">
+            &nbsp; &nbsp; <div class="retrieval  criteria Style">
+              <div id="trend2" ref="trend2"></div>
+            </div>
+          </el-row>
+          <el-breadcrumb separator=">" class="bread-title" >
+            <el-breadcrumb-item style="font-size: xx-large" >学校类型统计</el-breadcrumb-item>
+          </el-breadcrumb>
+          <el-row type="flex" class="row-bg" justify="right">
+            &nbsp; &nbsp; <div class="retrieval  criteria Style">
+            <div id="schoolStatistic" ref="schoolStatistic"></div>
+          </div>
+          </el-row>
+          <el-breadcrumb separator=">" class="bread-title" >
+            <el-breadcrumb-item style="font-size: xx-large" >学校统计</el-breadcrumb-item>
+          </el-breadcrumb>
+          <el-row type="flex" class="row-bg" justify="right">
+            &nbsp; &nbsp; <div class="retrieval  criteria Style">
+            <div id="schoolListStatistic" ref="schoolListStatistic"></div>
+          </div>
+          </el-row>
+        </el-form>
+      </div>
     <div :hidden="showschooloverall" class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
@@ -318,19 +358,19 @@
       <el-form :model="form" label-width="160px">
 
         <el-row type="flex" class="row-bg" justify="right">
-          <span style="font-size: x-large">男女生近视率</span>
+          <span style="font-size: x-large">男女生视力情况</span>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
-          <div class="retrieval  criteria Style">
-            <div id="gender">
-              <el-row type="flex" class="row-bg" justify="right">
-                <span  style="font-size: x-large">男生近视率       {{this.maleshortrate*100}}%</span>
-              </el-row>
-              <el-row type="flex" class="row-bg" justify="right">
-                <span  style="font-size: x-large">女生近视率        {{this.femaleshortrate*100}}%</span>
-              </el-row>
-            </div>
-          </div>
+<!--          <div class="retrieval  criteria Style">-->
+<!--            <div id="gender">-->
+<!--              <el-row type="flex" class="row-bg" justify="right">-->
+<!--                <span  style="font-size: x-large">男生近视率       {{this.maleshortrate*100}}%</span>-->
+<!--              </el-row>-->
+<!--              <el-row type="flex" class="row-bg" justify="right">-->
+<!--                <span  style="font-size: x-large">女生近视率        {{this.femaleshortrate*100}}%</span>-->
+<!--              </el-row>-->
+<!--            </div>-->
+<!--          </div>-->
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
           <div class="retrieval  criteria Style">
             <div id="genderstatistic" ref="genderstatistic"></div>
@@ -357,7 +397,7 @@
             <span style="font-size: large">视力不良且屈光度低于-0.5</span>
           </el-col>
           <el-col :span="12" >
-            <span style="font-size: large">视力不良率，近视率</span>
+            <span style="font-size: large">视力不良变化趋势</span>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
@@ -374,9 +414,9 @@
           <el-col :span="12" align="left">
             <span style="font-size: x-large">预警分布情况</span>
           </el-col>
-          <el-col :span="12" >
-            <span  style="font-size: x-large">各班级近视率</span>
-          </el-col>
+<!--          <el-col :span="12" >-->
+<!--            <span  style="font-size: x-large">各班级近视率</span>-->
+<!--          </el-col>-->
         </el-row>
 <!--        <el-row type="flex" class="row-bg" justify="right">-->
 <!--          <el-col :span="5" align="left">-->
@@ -388,9 +428,9 @@
             <div id="gradewarning" ref="gradewarning"></div>
           </div>
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
-          <div class="retrieval  criteria Style" >
-            <div id="specificgradestatistic" ref="specificgradestatistic"></div>
-          </div>
+<!--          <div class="retrieval  criteria Style" >-->
+<!--            <div id="specificgradestatistic" ref="specificgradestatistic"></div>-->
+<!--          </div>-->
         </el-row>
       </el-form>
     </div>
@@ -423,6 +463,20 @@
     data() {
       return {
         grades:[],
+        surveyNameList:[],
+        firstDegreeList:null,
+        secondDegreeList:null,
+        thirdDegreeList:null,
+        firstDegreeListBySchoolType:null,
+        secondDegreeListBySchoolType:null,
+        thirdDegreeListBySchoolType:null,
+        firstDegreeListBySchool:null,
+        secondDegreeListBySchool:null,
+        thirdDegreeListBySchool:null,
+
+        firstSexDegreeList:null,
+        secondSexDegreeList:null,
+        thirdSexDegreeList:null,
         gradeslist:[],
         classeslist:[],
         shortratelist2:[],
@@ -435,6 +489,9 @@
         chart6:'',
         chart7:'',
         chart8:'',
+        chart9:'',
+        chart10:'',
+        chart11:'',
         schoolsNameList:[],
         showclassname:false,
 
@@ -478,8 +535,10 @@
         schoolplace:'',
         smalltable:[{
           coveragerate:null,
-          poorsightrate:null,
-          shortsightrate:null
+          firstDegree:null,
+          secondDegree:null,
+          thirdDegree:null,
+          normalDegree:null
         }],
         maleshortcnt:0,
         schooltype:'',
@@ -490,6 +549,7 @@
         page: 1,
         listLoading: false,
         sels: [],//列表选中列
+        showIns:true,
 
         editFormVisible: false,//编辑界面是否显示
         editLoading: false,
@@ -498,6 +558,7 @@
             { required: true, message: '请输入姓名', trigger: 'blur' }
           ]
         },
+        isIns:true,
         //编辑界面数据
         editForm: {
           id: 0,
@@ -508,6 +569,7 @@
           addr: ''
         },
         isschool:false,
+        schoolListByIns:null,
        coveragecount:'',
         form:{
           classes:'',
@@ -726,6 +788,7 @@
 
       },
       handlereset(){
+        this.showIns=true;
       this.selectForm.surveyName=null;
         this.selectForm.classNo=null;
         this.selectForm.gradeNo=null;
@@ -741,6 +804,9 @@
     this.showclassname=false;
         this.gradelist=[];
         this.classlist=[];
+        if(this.selectForm.institutionId!=null) {
+          this.getSurveyWithoutCondition();
+        }
         // this.schoolist=[];
       },
       remoteMethod(query) {
@@ -757,6 +823,23 @@
         } else {
           this.schools = [];
         }
+      },
+
+      getSurveyWithoutCondition(){
+
+
+        getSurveyList(this.selectForm).then(res=>{
+          this.allsurveys=res.data.result.items;
+          this.surveylist=[];
+          for(let i=0;i<this.allsurveys.length;i++){
+            let survey ={
+              value:this.allsurveys[i].surveyName,
+              label:this.allsurveys[i].surveyName
+            }
+            this.surveylist.push(survey);
+          }
+        })
+
       },
 
         drawColumnChart() {
@@ -880,49 +963,103 @@
             return;
           }
           let coverage=res.data.result.coverageRate;
-          let shortsight=res.data.result.shortSightRate;
-          let poorsight=res.data.result.poorSightRate;
+          let firstDegree=res.data.result.warningRes.firstDegree;
+          let secondDegree=res.data.result.warningRes.secondDegree;
+          let thirdDegree=res.data.result.warningRes.thirdDegree;
+          let normalDegree=res.data.result.warningRes.normalDegree;
           this.smalltable[0].coveragerate=coverage*100;
-          this.smalltable[0].shortsightrate=shortsight*100;
-          this.smalltable[0].poorsightrate=poorsight*100;
+          this.smalltable[0].firstDegree=firstDegree*100;
+          this.smalltable[0].secondDegree=secondDegree*100;
+          this.smalltable[0].thirdDegree=thirdDegree*100;
+          this.smalltable[0].normalDegree=normalDegree*100;
           this.poorsightcount=res.data.result.poorSightCount;
           this.shortsightcount=res.data.result.shortSightCount;
           this.coveragecount=res.data.result.coverageCount;
-          this.firstwarning=res.data.result.warning.firstDegreeCount;
-          this.secondwarning=res.data.result.warning.secondDegreeCount;
-          this.thirdwarning=res.data.result.warning.thirdDegreeCount;
-          this.maleshortrate=res.data.result.shortSightRateByMale;
+          this.firstwarning=res.data.result.warningRes.firstDegreeCount;
+          this.secondwarning=res.data.result.warningRes.secondDegreeCount;
+          this.thirdwarning=res.data.result.warningRes.thirdDegreeCount;
+          this.firstSexDegreeList=[];
+          this.secondSexDegreeList=[];
+          this.thirdSexDegreeList=[];
+          this.firstDegreeListBySchoolType=[];
+          this.secondDegreeListBySchoolType=[];
+          this.thirdDegreeListBySchoolType=[];
+          this.firstDegreeListBySchool=[];
+          this.secondDegreeListBySchool=[];
+          this.thirdDegreeListBySchool=[];
+          this.schoolListByIns=[];
+          this.firstSexDegreeList.push(res.data.result.warningResByMale.firstDegreeCount);
+          this.secondSexDegreeList.push(res.data.result.warningResByMale.secondDegreeCount);
+          this.thirdSexDegreeList.push(res.data.result.warningResByMale.thirdDegreeCount);
+          this.firstSexDegreeList.push(res.data.result.warningResByFemale.firstDegreeCount);
+          this.secondSexDegreeList.push(res.data.result.warningResByFemale.secondDegreeCount);
+          this.thirdSexDegreeList.push(res.data.result.warningResByFemale.thirdDegreeCount);
+
+          if(res.data.result.typeList!=null&&res.data.result.typeList.length==3) {
+            this.firstDegreeListBySchoolType.push(res.data.result.typeList[0].warningRes.firstDegreeCount);
+            this.firstDegreeListBySchoolType.push(res.data.result.typeList[1].warningRes.firstDegreeCount);
+            this.firstDegreeListBySchoolType.push(res.data.result.typeList[2].warningRes.firstDegreeCount);
+            this.secondDegreeListBySchoolType.push(res.data.result.typeList[0].warningRes.secondDegreeCount);
+            this.secondDegreeListBySchoolType.push(res.data.result.typeList[1].warningRes.secondDegreeCount);
+            this.secondDegreeListBySchoolType.push(res.data.result.typeList[2].warningRes.secondDegreeCount);
+            this.thirdDegreeListBySchoolType.push(res.data.result.typeList[0].warningRes.thirdDegreeCount);
+            this.thirdDegreeListBySchoolType.push(res.data.result.typeList[1].warningRes.thirdDegreeCount);
+            this.thirdDegreeListBySchoolType.push(res.data.result.typeList[2].warningRes.thirdDegreeCount);
+          }
+          if(res.data.result.schoolList!=null&&res.data.result.schoolList.length>=0) {
+                for(let i=0;i<res.data.result.schoolList.length;i++){
+                    this.schoolListByIns.push(res.data.result.schoolList[i].schoolName);
+                     this.firstDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.firstDegreeCount);
+                  this.secondDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.secondDegreeCount);
+                  this.thirdDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.thirdDegreeCount);
+                }
+          }
+
           this.femaleshortrate=res.data.result.shortSightRateByFemale;
           this.poorsightcount=res.data.result.poorSightCount;
           this.inspectiondate=res.data.result.inspectionDate;
           let allgrades=[];
-          let shortlist=[];
+          let firstdegreelist=[];
+          let seconddegreelist=[];
+          let thirddegreelist=[];
           this.grades=res.data.result.gradeList;
-          for(let i=0;i<this.grades.length;i++) {
-            allgrades.push(this.grades[i].gradeNo);
-            shortlist.push(this.grades[i].shortSightRate*100);
+          if(this.grades!=null) {
+            for (let i = 0; i < this.grades.length; i++) {
+              allgrades.push(this.grades[i].gradeNo);
+              firstdegreelist.push(this.grades[i].warningRes.firstDegreeCount);
+              seconddegreelist.push(this.grades[i].warningRes.secondDegreeCount);
+              thirddegreelist.push(this.grades[i].warningRes.thirdDegreeCount);
+            }
           }
           this.gradeslist=allgrades;
-          this.shortratelist=shortlist;
-          this.classes=res.data.result.classList[0];
-          this.allclasses=res.data.result.classList;
+          this.firstDegreeList=firstdegreelist;
+          this.secondDegreeList=seconddegreelist;
+          this.thirdDegreeList=thirddegreelist;
+          // this.classes=res.data.result.classList[0];
+          // this.allclasses=res.data.result.classList;
 
           let allclasses=[];
           let shortlist2=[];
-          for(let i=0;i<this.classes.length;i++){
-             allclasses.push(this.classes[i].classNo);
-             shortlist2.push(this.classes[i].shortSightRate*100);
-          }
-          this.classeslist=allclasses;
-          this.shortratelist2=shortlist2;
-          let poor=[];
-          let short=[];
+          // for(let i=0;i<this.classes.length;i++){
+          //    allclasses.push(this.classes[i].classNo);
+          //    shortlist2.push(this.classes[i].shortSightRate*100);
+          // }
+          // this.classeslist=allclasses;
+          // this.shortratelist2=shortlist2;
+          let first=[];
+          let second=[];
+          let third=[];
+          let surveys=[];
           for(let i=0;i<res.data.result.resList.length;i++){
-            poor.push(res.data.result.resList[i].poorSightRate*100);
-            short.push(res.data.result.resList[i].shortSightRate*100);
+            first.push(res.data.result.resList[i].warningRes.firstDegree*100);
+            second.push(res.data.result.resList[i].warningRes.secondDegree*100);
+            third.push(res.data.result.resList[i].warningRes.thirdDegree*100);
+            surveys.push(res.data.result.resList[i].surveyName);
           }
-          this.poorsightlist=poor;
-          this.shortsightlist=short;
+          this.firstDegreeList2=first;
+          this.secondDegreeList2=second;
+          this.thirdDegreeList2=third;
+          this.surveyNameList=surveys;
           console.log(this.poorsightlist);
           console.log(this.shortsightlist)
         })
@@ -933,10 +1070,22 @@
             type:'error',
             message:'请选择普查'
           })
-          return
+          return;
+        }
+        if(this.selectForm.schoolId==null&&this.selectForm.surveyName!=null){
+          var institute = sessionStorage.getItem('institute');
+          institute = JSON.parse(institute);
+          this.nowschool=institute.insDetail.insName;
+          this.ishidden=false;
+          this.isIns=true;
+          this.showschooloverall=false;
+          this.showIns=false;
+          this.initChart();
+
         }
         if(this.selectForm.schoolId!=null&&this.selectForm.surveyName!=null){
-
+          this.isIns=false;
+          this.showIns=true;
           this.ishidden=false;
           if(this.selectForm.gradeNo!=null) {
             let val=this.selectForm.gradeNo;
@@ -1184,90 +1333,208 @@
             }
           ]
         });
+        var option = {
+          color: ['#003366', '#006699', '#4cabce', '#e5323e'],
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow'
+            }
+          },
+          legend: {
+            data: ['Forest', 'Steppe', 'Desert', 'Wetland']
+          },
+          toolbox: {
+            show: true,
+            orient: 'vertical',
+            left: 'right',
+            top: 'center',
+            feature: {
+              mark: {show: true},
+              dataView: {show: true, readOnly: false},
+              magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+              restore: {show: true},
+              saveAsImage: {show: true}
+            }
+          },
+          calculable: true,
+          xAxis: [
+            {
+              type: 'category',
+              axisTick: {show: false},
+              data:this.gradeslist
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value'
+            }
+          ],
+          series: [
+            {
+              name: '一级视力不良',
+              type: 'bar',
+              barGap: 0,
+              data: this.firstDegreeList
+            },
+            {
+              name: '二级视力不良',
+              type: 'bar',
+
+              data: this.secondDegreeList
+            },
+            {
+              name: '三级视力不良',
+              type: 'bar',
+              data: this.thirdDegreeList
+            }
+          ]
+        };
 
         this.chart3=echarts.init(this.$refs.gradestatistic);
-        this.chart3.setOption({
-          color: ['#3398DB'],
-          tooltip : {
-            trigger: 'axis',
-            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-            }
-          },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          xAxis : [
-            {
-              type : 'category',
-              data : this.gradeslist,
-              axisTick: {
-                alignWithLabel: true
-              }
-            }
-          ],
-          yAxis : [
-            {
-              type : 'value',
-              axisLabel: {
-                formatter: '{value}%'
-              }
-            }
-          ],
-          series : [
-            {
-              name:'直接访问',
-              type:'bar',
-              barWidth: '60%',
-              data:this.shortratelist
-            }
-          ]
+        this.chart3.setOption(option);
+        // this.chart3.setOption({
+        //   color: ['#3398DB'],
+        //   tooltip : {
+        //     trigger: 'axis',
+        //     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+        //       type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        //     }
+        //   },
+        //   grid: {
+        //     left: '3%',
+        //     right: '4%',
+        //     bottom: '3%',
+        //     containLabel: true
+        //   },
+        //   xAxis : [
+        //     {
+        //       type : 'category',
+        //       data : this.gradeslist,
+        //       axisTick: {
+        //         alignWithLabel: true
+        //       }
+        //     }
+        //   ],
+        //   yAxis : [
+        //     {
+        //       type : 'value',
+        //       axisLabel: {
+        //         formatter: '{value}%'
+        //       }
+        //     }
+        //   ],
+        //   series : [
+        //     {
+        //       name:'直接访问',
+        //       type:'bar',
+        //       barWidth: '60%',
+        //       data:this.shortratelist
+        //     }
+        //   ]
+        //
+        // });
 
-        });
-        this.chart4=echarts.init(this.$refs.genderstatistic);
-        this.chart4.setOption({
-          color: ['#3398DB'],
-          tooltip : {
+
+        var option2 = {
+          color: ['#003366', '#006699', '#4cabce', '#e5323e'],
+          tooltip: {
             trigger: 'axis',
-            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            axisPointer: {
+              type: 'shadow'
             }
           },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
+          legend: {
+            data: ['Forest', 'Steppe', 'Desert', 'Wetland']
           },
-          xAxis : [
+          toolbox: {
+            show: true,
+            orient: 'vertical',
+            left: 'right',
+            top: 'center',
+            feature: {
+              mark: {show: true},
+              dataView: {show: true, readOnly: false},
+              magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+              restore: {show: true},
+              saveAsImage: {show: true}
+            }
+          },
+          calculable: true,
+          xAxis: [
             {
-              type : 'category',
-              data : ['男生', '女生'],
-              axisTick: {
-                alignWithLabel: true
-              }
+              type: 'category',
+              axisTick: {show: false},
+              data:['男','女']
             }
           ],
-          yAxis : [
+          yAxis: [
             {
-              type : 'value',
-              axisLabel: {
-                formatter: '{value}%'
-              }
+              type: 'value'
             }
           ],
-          series : [
+          series: [
             {
-              name:'直接访问',
-              type:'bar',
-              barWidth: '60%',
-              data:[this.maleshortrate*100, this.femaleshortrate*100]
+              name: '一级视力不良',
+              type: 'bar',
+              barGap: 0,
+              data: this.firstSexDegreeList
+            },
+            {
+              name: '二级视力不良',
+              type: 'bar',
+
+              data: this.secondSexDegreeList
+            },
+            {
+              name: '三级视力不良',
+              type: 'bar',
+              data: this.thirdSexDegreeList
             }
           ]
-        });
+        };
+        this.chart4=echarts.init(this.$refs.genderstatistic);
+        this.chart4.setOption(option2);
+        // this.chart4.setOption({
+        //   color: ['#3398DB'],
+        //   tooltip : {
+        //     trigger: 'axis',
+        //     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+        //       type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        //     }
+        //   },
+        //   grid: {
+        //     left: '3%',
+        //     right: '4%',
+        //     bottom: '3%',
+        //     containLabel: true
+        //   },
+        //   xAxis : [
+        //     {
+        //       type : 'category',
+        //       data : ['男生', '女生'],
+        //       axisTick: {
+        //         alignWithLabel: true
+        //       }
+        //     }
+        //   ],
+        //   yAxis : [
+        //     {
+        //       type : 'value',
+        //       axisLabel: {
+        //         formatter: '{value}%'
+        //       }
+        //     }
+        //   ],
+        //   series : [
+        //     {
+        //       name:'直接访问',
+        //       type:'bar',
+        //       barWidth: '60%',
+        //       data:[this.maleshortrate*100, this.femaleshortrate*100]
+        //     }
+        //   ]
+        // });
         this.chart5=echarts.init(this.$refs.specificgrade);
         this.chart5.setOption({
           tooltip: {
@@ -1354,51 +1621,50 @@
           ]
 
         });
-        this.chart7=echarts.init(this.$refs.specificgradestatistic);
-        this.chart7.setOption({
-          color: ['#3398DB'],
-          tooltip : {
-            trigger: 'axis',
-            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-            }
-          },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          xAxis : [
-            {
-              type : 'category',
-              data : this.classeslist,
-              axisTick: {
-                alignWithLabel: true
-              }
-            }
-          ],
-          yAxis : [
-            {
-              type : 'value',
-              axisLabel: {
-                formatter: '{value}%'
-              }
-            }
-          ],
-          series : [
-            {
-              name:'直接访问',
-              type:'bar',
-              barWidth: '60%',
-              data: this.shortratelist2
-            }
-          ]
-        });
+        // this.chart7=echarts.init(this.$refs.specificgradestatistic);
+        // this.chart7.setOption({
+        //   color: ['#3398DB'],
+        //   tooltip : {
+        //     trigger: 'axis',
+        //     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+        //       type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        //     }
+        //   },
+        //   grid: {
+        //     left: '3%',
+        //     right: '4%',
+        //     bottom: '3%',
+        //     containLabel: true
+        //   },
+        //   xAxis : [
+        //     {
+        //       type : 'category',
+        //       data : this.classeslist,
+        //       axisTick: {
+        //         alignWithLabel: true
+        //       }
+        //     }
+        //   ],
+        //   yAxis : [
+        //     {
+        //       type : 'value',
+        //       axisLabel: {
+        //         formatter: '{value}%'
+        //       }
+        //     }
+        //   ],
+        //   series : [
+        //     {
+        //       name:'直接访问',
+        //       type:'bar',
+        //       barWidth: '60%',
+        //       data: this.shortratelist2
+        //     }
+        //   ]
+        // });
 
 
-        this.chart8=echarts.init(this.$refs.trend);
-        this.chart8.setOption({
+        var option3 = {
           tooltip : {
             trigger: 'axis',
             axisPointer: {
@@ -1409,7 +1675,7 @@
             }
           },
           legend: {
-            data:['视力不良率','近视率']
+            data:['轻度不良','中度不良','重度不良']
           },
           toolbox: {
             feature: {
@@ -1426,32 +1692,235 @@
             {
               type : 'category',
               boundaryGap : false,
-              data:[]
+              data : this.surveyNameList
             }
           ],
           yAxis : [
             {
-              type : 'value',
-              axisLabel: {
-                formatter: '{value}%'
-              }
+              type : 'value'
             }
           ],
           series : [
             {
-              name:'视力不良率',
+              name:'轻度不良',
               type:'line',
               stack: '总量',
-              data:this.poorsightlist
+              areaStyle: {normal: {}},
+              data:this.firstDegreeList2
             },
             {
-              name:'近视率',
+              name:'中度不良',
               type:'line',
               stack: '总量',
-              data:this.shortsightlist
+              areaStyle: {normal: {}},
+              data:this.secondDegreeList2
+            },
+            {
+              name:'重度不良',
+              type:'line',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'top'
+                }
+              },
+              areaStyle: {normal: {}},
+              data:this.thirdDegreeList2
             }
           ]
-        });
+        };
+
+
+
+        this.chart8=echarts.init(this.$refs.trend);
+        this.chart9=echarts.init(this.$refs.trend2);
+        this.chart8.setOption(option3);
+        this.chart9.setOption(option3);
+
+
+        var option4 = {
+          color: ['#003366', '#006699', '#4cabce', '#e5323e'],
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow'
+            }
+          },
+          legend: {
+            data: ['Forest', 'Steppe', 'Desert', 'Wetland']
+          },
+          toolbox: {
+            show: true,
+            orient: 'vertical',
+            left: 'right',
+            top: 'center',
+            feature: {
+              mark: {show: true},
+              dataView: {show: true, readOnly: false},
+              magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+              restore: {show: true},
+              saveAsImage: {show: true}
+            }
+          },
+          calculable: true,
+          xAxis: [
+            {
+              type: 'category',
+              axisTick: {show: false},
+              data:['小学','初中','高中']
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value'
+            }
+          ],
+          series: [
+            {
+              name: '一级视力不良',
+              type: 'bar',
+              barGap: 0,
+              data: this.firstDegreeListBySchoolType
+            },
+            {
+              name: '二级视力不良',
+              type: 'bar',
+
+              data: this.secondDegreeListBySchoolType
+            },
+            {
+              name: '三级视力不良',
+              type: 'bar',
+              data: this.thirdDegreeListBySchoolType
+            }
+          ]
+        };
+        this.chart10=echarts.init(this.$refs.schoolStatistic);
+        this.chart10.setOption(option4);
+        var option5 = {
+          color: ['#003366', '#006699', '#4cabce', '#e5323e'],
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow'
+            }
+          },
+          legend: {
+            data: ['Forest', 'Steppe', 'Desert', 'Wetland']
+          },
+          toolbox: {
+            show: true,
+            orient: 'vertical',
+            left: 'right',
+            top: 'center',
+            feature: {
+              mark: {show: true},
+              dataView: {show: true, readOnly: false},
+              magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+              restore: {show: true},
+              saveAsImage: {show: true}
+            }
+          },
+          calculable: true,
+          xAxis: [
+            {
+              type: 'category',
+              axisTick: {show: false},
+              data:this.schoolListByIns
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value'
+            }
+          ],
+          series: [
+            {
+              name: '一级视力不良',
+              type: 'bar',
+              barGap: 0,
+              data: this.firstDegreeListBySchool
+            },
+            {
+              name: '二级视力不良',
+              type: 'bar',
+
+              data: this.secondDegreeListBySchool
+            },
+            {
+              name: '三级视力不良',
+              type: 'bar',
+              data: this.thirdDegreeListBySchool
+            }
+          ]
+        };
+        this.chart11=echarts.init(this.$refs.schoolListStatistic);
+        this.chart11.setOption(option5);
+
+        // this.chart8.setOption({
+        //   tooltip : {
+        //     trigger: 'axis',
+        //     axisPointer: {
+        //       type: 'cross',
+        //       label: {
+        //         backgroundColor: '#6a7985'
+        //       }
+        //     }
+        //   },
+        //   legend: {
+        //     data:['轻度不良','中度不良','重度不良']
+        //   },
+        //   toolbox: {
+        //     feature: {
+        //       saveAsImage: {}
+        //     }
+        //   },
+        //   grid: {
+        //     left: '3%',
+        //     right: '4%',
+        //     bottom: '3%',
+        //     containLabel: true
+        //   },
+        //   xAxis : [
+        //     {
+        //       type : 'category',
+        //       boundaryGap : false,
+        //       data:this.surveyNameList
+        //     }
+        //   ],
+        //   yAxis : [
+        //     {
+        //       type : 'value',
+        //       axisLabel: {
+        //         formatter: '{value}%'
+        //       }
+        //     }
+        //   ],
+        //   series : [
+        //     {
+        //       name:'轻度不良',
+        //       type:'line',
+        //       stack: '总量',
+        //       areaStyle: {},
+        //       data:this.firstDegreeList2
+        //     },
+        //     {
+        //       name:'中度不良',
+        //       type:'line',
+        //       stack: '总量',
+        //       areaStyle: {},
+        //       data:this.secondDegreeList2
+        //     },
+        //     {
+        //       name:'重度不良',
+        //       type:'line',
+        //       stack: '总量',
+        //       areaStyle: {},
+        //       data:this.thirdDegreeList2
+        //     }
+        //   ]
+        // });
 
 
       },
@@ -1487,6 +1956,7 @@
         institute = JSON.parse(institute);
         this.selectForm.institutionId=institute.insDetail.id;
         //this.selectForm.type=user.type;
+        this.getSurveyWithoutCondition();
       }
       else{
         this.isschool=true;
@@ -1547,6 +2017,14 @@
     width: 400px;
     height: 400px;
   }
+  #schoolStatistic{
+    width: 1080px;
+    height: 400px;
+  }
+  #schoolListStatistic{
+    width: 1080px;
+    height: 400px;
+  }
   #gender{
     width: 400px;
     height: 400px;
@@ -1556,6 +2034,10 @@
     height: 400px;
   }
   #trend{
+    width: 400px;
+    height: 400px;
+  }
+  #trend2{
     width: 400px;
     height: 400px;
   }

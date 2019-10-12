@@ -3,7 +3,7 @@ import dev from '../../config/dev.env'
 
 let base = '';
 
-axios.defaults.baseURL="http://112.124.10.207:8080";
+axios.defaults.baseURL="https://www.suporeiot.cn:8085";
 
 export const requestLogin = params => { return axios.post(`/api/user/login`, params).then(res => res.data); };
 
@@ -56,7 +56,15 @@ export const getSurveyCode = params => { return axios.post(`/api/student/generat
 
 export const getStatisticsDetail = params => { return axios.get(`/api/statistics/getStatisticByDetail`, {params:params}); };
 
-export const getPersonalReport = params => { return axios.get(`/api/student/getPersonalReport`, {params:params}); };
+export const getPersonalReport = params => { return axios({
+    headers: {
+        'Content-Type':'application/json'
+    },
+    responseType: 'blob', //一定要写
+    method: 'get',
+    url:'/api/student/getPersonalReport',
+    params:params
+}) };
 
 export const getInstituteDetail = params => { return axios.get(`/api/institution/getInstitutionDetail`, { params: params }); };
 
