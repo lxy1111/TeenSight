@@ -44,6 +44,13 @@
           </el-button>
         </el-form-item>
 
+        <el-form-item v-if="!hidedelete">
+          <el-button class="reset-student" type="primary" round @click="doUpgrade">
+            <span style="font-size: 0.9rem;font-family: PingFang SC;">
+              一键升班
+            </span>
+          </el-button>
+        </el-form-item>
 
 
       </el-form>
@@ -292,7 +299,7 @@
     editUser,
     addUser,
     getStudentsList,
-    addStudents, removeStudent, getStudentCode, getSurveyList, getSurveyCode, getSchoolListPage
+    addStudents, removeStudent, getStudentCode, getSurveyList, getSurveyCode, getSchoolListPage, upgrade
   } from '../../api/api';
 
 
@@ -306,6 +313,7 @@
       return {
         myid:'',
         isIns:false,
+        ischeckins:false,
         selectForm:{
           page:1,
           pageSize:10,
@@ -607,6 +615,33 @@
         })
         return false
       },
+
+      doUpgrade(){
+
+
+           let para= {
+             schoolId:null,
+             institutionId:null
+           }
+          if(this.isIns){
+            para.institutionId=this.myid;
+          }else {
+            para.schoolId=this.myid;
+          }
+        this.$confirm('确认升班吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          upgrade(para).then(res=>{
+
+            this.$message({
+              message: '升班成功',
+              type: 'success'
+            });
+            this.getStudentsList();
+
+          })
+        });
+      },
       // 文件读取后执行
       handleSuccess({ results, header }) {
         this.tableData = results
@@ -838,6 +873,7 @@
             var insinfo = sessionStorage.getItem('institute');
             insinfo=JSON.parse(insinfo);
             var id=insinfo.insDetail.id;
+            this.myid=id;
             var para={
               page:1,
               pageSize:1000000,

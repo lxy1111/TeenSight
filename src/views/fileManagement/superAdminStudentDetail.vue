@@ -205,7 +205,7 @@
                     >
                     </el-table-column>
                     <el-table-column
-                            prop="k1Axial"
+                            prop="axial"
                             label="轴位"
                             show-overflow-tooltip align="center"
                     >
@@ -374,7 +374,9 @@
                     computerAxial:'',
                     pupilSphere:'',
                     pupilCylinder:'',
-                    pupilAxial:''
+                    pupilAxial:'',
+                    axial:'',
+                    distance:''
 
                 }, {
                     eyes: '右眼',
@@ -384,7 +386,12 @@
                     manualAxial:'',
                     computerSphere:'',
                     computerCylinder:'',
-                    computerAxial:''
+                    computerAxial:'',
+                    pupilSphere:'',
+                    pupilCylinder:'',
+                    pupilAxial:'',
+                    axial:'',
+                    distance:''
 
                 }],
                 form:{
@@ -413,7 +420,8 @@
                   k1Axial:'',
                  k1Curvature:'',
                 k2Axial:'',
-                 k2Curvature:''
+                 k2Curvature:'',
+                    axial:''
 
                 }, {
                     eyes: '右眼',
@@ -422,7 +430,8 @@
                     k1Axial:'',
                     k1Curvature:'',
                     k2Axial:'',
-                    k2Curvature:''
+                    k2Curvature:'',
+                    axial:''
                 }],
                 //新增界面数据
                 addForm: {
@@ -580,6 +589,8 @@
                 this.lightcheck[0].pupilSphere=this.record.result[0].pupilSphere;
                 this.lightcheck[0].pupilCylinder=this.record.result[0].pupilCylinder;
                 this.lightcheck[0].pupilAxial=this.record.result[0].pupilAxial;
+                this.lightcheck[0].distance=this.record.result[0].distance;
+
                 this.lightcheck[1].manualSphere=this.record.result[1].manualSphere;
                 this.lightcheck[1].manualCylinder=this.record.result[1].manualCylinder;
                 this.lightcheck[1].manualCva=this.record.result[1].manualCva;
@@ -590,7 +601,7 @@
                 this.lightcheck[1].pupilSphere=this.record.result[1].pupilSphere;
                 this.lightcheck[1].pupilCylinder=this.record.result[1].pupilCylinder;
                 this.lightcheck[1].pupilAxial=this.record.result[1].pupilAxial;
-
+                this.lightcheck[1].distance=this.record.result[1].distance;
 
 
                 this.lightcheck2[0].axial=this.record.result[0].axial;
@@ -599,6 +610,7 @@
                 this.lightcheck2[0].k1Curvature=this.record.result[0].k1Curvature;
                 this.lightcheck2[0].k2Axial=this.record.result[0].k2Axial;
                 this.lightcheck2[0].k2Curvature=this.record.result[0].k2Curvature;
+                this.lightcheck2[0].axial=this.record.result[0].axial;
 
 
 
@@ -608,6 +620,7 @@
                 this.lightcheck2[1].k1Curvature=this.record.result[1].k1Curvature;
                 this.lightcheck2[1].k2Axial=this.record.result[1].k2Axial;
                 this.lightcheck2[1].k2Curvature=this.record.result[1].k2Curvature;
+                this.lightcheck2[1].axial=this.record.result[1].axial;
 
 
             },

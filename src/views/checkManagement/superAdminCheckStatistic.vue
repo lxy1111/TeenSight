@@ -62,24 +62,29 @@
     <div :hidden="ishidden" class="retrieval  criteria Style">
       <el-form :model="form" label-width="160px">
         <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="4" >
+          <el-col :span="12" >
             <span style="font-size: xx-large" >{{nowschool}}</span>
-          </el-col>
-          <el-col :span="4">
             <span v-if="showgradename" style="font-size: xx-large" >{{nowgrade}}</span>
-          </el-col>
-          <el-col :span="4">
             <span v-if="showclassname" style="font-size: xx-large" >{{nowclass}}班</span>
+            <span  style="font-size: xx-large" >视力报告</span>
           </el-col>
+<!--          <el-col :span="4">-->
+<!--            <span v-if="showgradename" style="font-size: xx-large" >{{nowgrade}}</span>-->
+<!--          </el-col>-->
+<!--          <el-col :span="4">-->
+<!--            <span v-if="showclassname" style="font-size: xx-large" >{{nowclass}}班</span>-->
+<!--          </el-col>-->
 
+<!--            <span  style="font-size: xx-large" >视力报告</span>-->
 
         </el-row>
+        <br>
         <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="4" >
-            <span  >视力统计情况</span>
+          <el-col :span="2" >
+            <span  >时间</span>
           </el-col>
-          <el-col :span="4" >
-            <span  >{{this.inspectiondate}}</span>
+          <el-col :span="6" >
+            <span  >{{this.selectForm.surveyName}}</span>
           </el-col>
         </el-row>
       <div :hidden="isIns">
@@ -115,6 +120,11 @@
               tooltip-effect="dark"
               style="width: 100%">
         <el-table-column
+                prop="type"
+                show-overflow-tooltip
+                align="center">
+        </el-table-column>
+        <el-table-column
                 prop="coveragerate"
                 label="筛查覆盖率(筛查参与情况)%"
                 show-overflow-tooltip
@@ -122,23 +132,23 @@
         </el-table-column>
         <el-table-column
                 prop="normalDegree"
-                label="视力正常%"
+                label="视力正常(5.0(1.0)及以上)"
                 show-overflow-tooltip align="center">
         </el-table-column>
 
         <el-table-column
                 prop="firstDegree"
-                label="轻度不良%"
+                label="轻度不良(4.8(0.6)-4.9(0.8))"
                 show-overflow-tooltip align="center">
         </el-table-column>
         <el-table-column
                 prop="secondDegree"
-                label="中度不良%"
+                label="中度不良(4.5(0.3)-4.7(0.5))"
                 show-overflow-tooltip align="center">
         </el-table-column>
         <el-table-column
                 prop="thirdDegree"
-                label="重度不良%"
+                label="重度不良(4.5(0.3)以下"
                 show-overflow-tooltip align="center">
         </el-table-column>
       </el-table>
@@ -172,7 +182,7 @@
             <span style="font-size: x-large">近视率</span>
           </el-col>
           <el-col :span="12" >
-            <span style="font-size: x-large">预警分布情况</span>
+            <span style="font-size: x-large">视力分布情况</span>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
@@ -180,7 +190,7 @@
             <span style="font-size: large">视力不良且屈光度低于-0.5</span>
           </el-col>
           <el-col :span="17">
-            <span style="font-size: large">各预警等级人数占比</span>
+            <span style="font-size: large">视力不良等级人数占比</span>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
@@ -412,7 +422,7 @@
 
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12" align="left">
-            <span style="font-size: x-large">预警分布情况</span>
+            <span style="font-size: x-large">视力分布情况</span>
           </el-col>
 <!--          <el-col :span="12" >-->
 <!--            <span  style="font-size: x-large">各班级近视率</span>-->
@@ -456,17 +466,22 @@
     getStatisticsBySchool,
     getSurveyList,
     getStatisticsDetail,
-    getSchoolInfo
+    getSchoolInfo, getSurveyName
   } from '../../api/api';
 
   export default {
     data() {
       return {
         grades:[],
+        normalDegree:null,
+        firstDegree:null,
+        secondDegree:null,
+        thirdDegree:null,
         surveyNameList:[],
         firstDegreeList:null,
         secondDegreeList:null,
         thirdDegreeList:null,
+        normalDegreeList:null,
         firstDegreeListBySchoolType:null,
         secondDegreeListBySchoolType:null,
         thirdDegreeListBySchoolType:null,
@@ -477,6 +492,7 @@
         firstSexDegreeList:null,
         secondSexDegreeList:null,
         thirdSexDegreeList:null,
+        normalSexDegreeList:null,
         gradeslist:[],
         classeslist:[],
         shortratelist2:[],
@@ -534,12 +550,22 @@
         femaleshortrate:0,
         schoolplace:'',
         smalltable:[{
+          type:"比率",
           coveragerate:null,
           firstDegree:null,
           secondDegree:null,
           thirdDegree:null,
           normalDegree:null
-        }],
+        },
+          {
+            type:"人数",
+            coveragerate:null,
+            firstDegree:null,
+            secondDegree:null,
+            thirdDegree:null,
+            normalDegree:null
+
+          }],
         maleshortcnt:0,
         schooltype:'',
         studentno:'',
@@ -772,13 +798,13 @@
           }
         })
 
-        getSurveyList(this.selectForm).then(res=>{
-          this.allsurveys=res.data.result.items;
+        getSurveyName().then(res=>{
+          this.allsurveys=res.data.result;
           this.surveylist=[];
           for(let i=0;i<this.allsurveys.length;i++){
             let survey ={
-              value:this.allsurveys[i].surveyName,
-              label:this.allsurveys[i].surveyName
+              value:this.allsurveys[i],
+              label:this.allsurveys[i]
             }
             this.surveylist.push(survey);
           }
@@ -828,13 +854,13 @@
       getSurveyWithoutCondition(){
 
 
-        getSurveyList(this.selectForm).then(res=>{
-          this.allsurveys=res.data.result.items;
+        getSurveyName(this.selectForm).then(res=>{
+          this.allsurveys=res.data.result;
           this.surveylist=[];
           for(let i=0;i<this.allsurveys.length;i++){
             let survey ={
-              value:this.allsurveys[i].surveyName,
-              label:this.allsurveys[i].surveyName
+              value:this.allsurveys[i],
+              label:this.allsurveys[i]
             }
             this.surveylist.push(survey);
           }
@@ -963,37 +989,60 @@
             return;
           }
           let coverage=res.data.result.coverageRate;
-          let firstDegree=res.data.result.warningRes.firstDegree;
-          let secondDegree=res.data.result.warningRes.secondDegree;
-          let thirdDegree=res.data.result.warningRes.thirdDegree;
-          let normalDegree=res.data.result.warningRes.normalDegree;
+          let firstDegree=res.data.result.warningRes.firstDegreeCount;
+          let secondDegree=res.data.result.warningRes.secondDegreeCount;
+          let thirdDegree=res.data.result.warningRes.thirdDegreeCount;
+          let normalDegree=res.data.result.warningRes.normalDegreeCount;
+
+          this.firstDegree=firstDegree;
+          this.secondDegree=secondDegree;
+          this.thirdDegree=thirdDegree;
+          this.normalDegree=normalDegree;
+
+          let coveragecnt=res.data.result.coverageCount;
+          let firstDegreecnt=res.data.result.warningRes.firstDegreeCount;
+          let secondDegreecnt=res.data.result.warningRes.secondDegreeCount;
+          let thirdDegreecnt=res.data.result.warningRes.thirdDegreeCount;
+          let normalDegreecnt=res.data.result.warningRes.normalDegreeCount;
           this.smalltable[0].coveragerate=coverage*100;
           this.smalltable[0].firstDegree=firstDegree*100;
           this.smalltable[0].secondDegree=secondDegree*100;
           this.smalltable[0].thirdDegree=thirdDegree*100;
           this.smalltable[0].normalDegree=normalDegree*100;
+
+          this.smalltable[1].coveragerate=coveragecnt*100;
+          this.smalltable[1].firstDegree=firstDegreecnt*100;
+          this.smalltable[1].secondDegree=secondDegreecnt*100;
+          this.smalltable[1].thirdDegree=thirdDegreecnt*100;
+          this.smalltable[1].normalDegree=normalDegreecnt*100;
           this.poorsightcount=res.data.result.poorSightCount;
           this.shortsightcount=res.data.result.shortSightCount;
           this.coveragecount=res.data.result.coverageCount;
           this.firstwarning=res.data.result.warningRes.firstDegreeCount;
           this.secondwarning=res.data.result.warningRes.secondDegreeCount;
           this.thirdwarning=res.data.result.warningRes.thirdDegreeCount;
+          this.normalwarning=res.data.result.warningRes.normalDegreeCount;
           this.firstSexDegreeList=[];
           this.secondSexDegreeList=[];
           this.thirdSexDegreeList=[];
+          this.normalSexDegreeList=[];
           this.firstDegreeListBySchoolType=[];
           this.secondDegreeListBySchoolType=[];
           this.thirdDegreeListBySchoolType=[];
+          this.normalDegreeListBySchoolType=[];
           this.firstDegreeListBySchool=[];
           this.secondDegreeListBySchool=[];
           this.thirdDegreeListBySchool=[];
+          this.normalDegreeListBySchool=[];
           this.schoolListByIns=[];
           this.firstSexDegreeList.push(res.data.result.warningResByMale.firstDegreeCount);
           this.secondSexDegreeList.push(res.data.result.warningResByMale.secondDegreeCount);
           this.thirdSexDegreeList.push(res.data.result.warningResByMale.thirdDegreeCount);
+          this.normalSexDegreeList.push(res.data.result.warningResByMale.normalDegreeCount)
           this.firstSexDegreeList.push(res.data.result.warningResByFemale.firstDegreeCount);
           this.secondSexDegreeList.push(res.data.result.warningResByFemale.secondDegreeCount);
           this.thirdSexDegreeList.push(res.data.result.warningResByFemale.thirdDegreeCount);
+          this.normalSexDegreeList.push(res.data.result.warningResByFemale.normalDegreeCount)
 
           if(res.data.result.typeList!=null&&res.data.result.typeList.length==3) {
             this.firstDegreeListBySchoolType.push(res.data.result.typeList[0].warningRes.firstDegreeCount);
@@ -1005,6 +1054,10 @@
             this.thirdDegreeListBySchoolType.push(res.data.result.typeList[0].warningRes.thirdDegreeCount);
             this.thirdDegreeListBySchoolType.push(res.data.result.typeList[1].warningRes.thirdDegreeCount);
             this.thirdDegreeListBySchoolType.push(res.data.result.typeList[2].warningRes.thirdDegreeCount);
+            this.normalDegreeListBySchoolType.push(res.data.result.typeList[0].warningRes.normalDegreeCount);
+            this.normalDegreeListBySchoolType.push(res.data.result.typeList[1].warningRes.normalDegreeCount);
+            this.normalDegreeListBySchoolType.push(res.data.result.typeList[2].warningRes.normalDegreeCount);
+
           }
           if(res.data.result.schoolList!=null&&res.data.result.schoolList.length>=0) {
                 for(let i=0;i<res.data.result.schoolList.length;i++){
@@ -1012,6 +1065,7 @@
                      this.firstDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.firstDegreeCount);
                   this.secondDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.secondDegreeCount);
                   this.thirdDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.thirdDegreeCount);
+                  this.normalDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.normalDegreeCount);
                 }
           }
 
@@ -1022,6 +1076,7 @@
           let firstdegreelist=[];
           let seconddegreelist=[];
           let thirddegreelist=[];
+          let normaldegreelist=[];
           this.grades=res.data.result.gradeList;
           if(this.grades!=null) {
             for (let i = 0; i < this.grades.length; i++) {
@@ -1029,12 +1084,15 @@
               firstdegreelist.push(this.grades[i].warningRes.firstDegreeCount);
               seconddegreelist.push(this.grades[i].warningRes.secondDegreeCount);
               thirddegreelist.push(this.grades[i].warningRes.thirdDegreeCount);
+              normaldegreelist.push(this.grades[i].warningRes.normalDegreeCount);
+
             }
           }
           this.gradeslist=allgrades;
           this.firstDegreeList=firstdegreelist;
           this.secondDegreeList=seconddegreelist;
           this.thirdDegreeList=thirddegreelist;
+          this.normalDegreeList=normaldegreelist;
           // this.classes=res.data.result.classList[0];
           // this.allclasses=res.data.result.classList;
 
@@ -1049,16 +1107,19 @@
           let first=[];
           let second=[];
           let third=[];
+          let normal=[];
           let surveys=[];
           for(let i=0;i<res.data.result.resList.length;i++){
             first.push(res.data.result.resList[i].warningRes.firstDegree*100);
             second.push(res.data.result.resList[i].warningRes.secondDegree*100);
             third.push(res.data.result.resList[i].warningRes.thirdDegree*100);
+            normal.push(res.data.result.resList[i].warningRes.normalDegree*100);
             surveys.push(res.data.result.resList[i].surveyName);
           }
           this.firstDegreeList2=first;
           this.secondDegreeList2=second;
           this.thirdDegreeList2=third;
+          this.normalDegreeList2=normal;
           this.surveyNameList=surveys;
           console.log(this.poorsightlist);
           console.log(this.shortsightlist)
@@ -1075,7 +1136,7 @@
         if(this.selectForm.schoolId==null&&this.selectForm.surveyName!=null){
           var institute = sessionStorage.getItem('institute');
           institute = JSON.parse(institute);
-          this.nowschool=institute.insDetail.insName;
+          this.nowschool=institute.insDetail.province+institute.insDetail.city+institute.insDetail.county;
           this.ishidden=false;
           this.isIns=true;
           this.showschooloverall=false;
@@ -1299,7 +1360,7 @@
           legend: {
             orient: 'vertical',
             x: 'left',
-            data:['一级预警','二级预警','三级预警']
+            data:['视力正常','轻度不良','中度不良','重度不良']
           },
           series: [
             {
@@ -1326,9 +1387,10 @@
                 }
               },
               data:[
-                {value:this.firstwarning, name:'一级预警'},
-                {value:this.secondwarning, name:'二级预警'},
-                {value:this.thirdwarning, name:'三级预警'}
+                {value:this.normalDegree, name:'视力正常'},
+                {value:this.firstDegree, name:'轻度不良'},
+                {value:this.secondDegree, name:'中度不良'},
+                {value:this.thirdDegree, name:'重度不良'}
               ]
             }
           ]
@@ -1372,21 +1434,26 @@
           ],
           series: [
             {
-              name: '一级视力不良',
+              name: '轻度视力不良',
               type: 'bar',
               barGap: 0,
               data: this.firstDegreeList
             },
             {
-              name: '二级视力不良',
+              name: '中度视力不良',
               type: 'bar',
 
               data: this.secondDegreeList
             },
             {
-              name: '三级视力不良',
+              name: '重度不力不良',
               type: 'bar',
               data: this.thirdDegreeList
+            },
+            {
+              name: '视力正常',
+              type: 'bar',
+              data: this.normalDegreeList
             }
           ]
         };
@@ -1475,21 +1542,27 @@
           ],
           series: [
             {
-              name: '一级视力不良',
+              name: '轻度视力不良',
               type: 'bar',
               barGap: 0,
               data: this.firstSexDegreeList
             },
             {
-              name: '二级视力不良',
+              name: '中度视力不良',
               type: 'bar',
 
               data: this.secondSexDegreeList
             },
             {
-              name: '三级视力不良',
+              name: '重度视力不良',
               type: 'bar',
               data: this.thirdSexDegreeList
+            }
+            ,
+            {
+              name: '视力正常',
+              type: 'bar',
+              data: this.normalSexDegreeList
             }
           ]
         };
@@ -1586,7 +1659,7 @@
           legend: {
             orient: 'vertical',
             x: 'left',
-            data:['一级预警','二级预警','三级预警']
+            data:['轻度视力不良','中度视力不良','重度视力不良','视力正常']
           },
           series: [
             {
@@ -1613,9 +1686,10 @@
                 }
               },
               data:[
-                {value:this.firstwarning, name:'一级预警'},
-                {value:this.secondwarning, name:'二级预警'},
-                {value:this.thirdwarning, name:'三级预警'}
+                {value:this.firstwarning, name:'轻度视力不良'},
+                {value:this.secondwarning, name:'中度视力不良'},
+                {value:this.thirdwarning, name:'重度视力不良'},
+                {value:this.normalwarning, name:'视力正常'}
               ]
             }
           ]
@@ -1675,7 +1749,7 @@
             }
           },
           legend: {
-            data:['轻度不良','中度不良','重度不良']
+            data:['轻度不良','中度不良','重度不良','视力正常']
           },
           toolbox: {
             feature: {
@@ -1702,6 +1776,13 @@
           ],
           series : [
             {
+              name:'视力正常',
+              type:'line',
+              stack: '总量',
+              areaStyle: {normal: {}},
+              data:this.normalDegreeList2
+            },
+            {
               name:'轻度不良',
               type:'line',
               stack: '总量',
@@ -1715,6 +1796,7 @@
               areaStyle: {normal: {}},
               data:this.secondDegreeList2
             },
+
             {
               name:'重度不良',
               type:'line',
@@ -1778,21 +1860,26 @@
           ],
           series: [
             {
-              name: '一级视力不良',
+              name: '轻度视力不良',
               type: 'bar',
               barGap: 0,
               data: this.firstDegreeListBySchoolType
             },
             {
-              name: '二级视力不良',
+              name: '中度视力不良',
               type: 'bar',
 
               data: this.secondDegreeListBySchoolType
             },
             {
-              name: '三级视力不良',
+              name: '重度视力不良',
               type: 'bar',
               data: this.thirdDegreeListBySchoolType
+            },
+            {
+              name: '视力正常',
+              type: 'bar',
+              data: this.normalDegreeListBySchoolType
             }
           ]
         };
@@ -1837,21 +1924,27 @@
           ],
           series: [
             {
-              name: '一级视力不良',
+              name: '轻度视力不良',
               type: 'bar',
               barGap: 0,
               data: this.firstDegreeListBySchool
             },
             {
-              name: '二级视力不良',
+              name: '中度视力不良',
               type: 'bar',
 
               data: this.secondDegreeListBySchool
             },
             {
-              name: '三级视力不良',
+              name: '重度视力不良',
               type: 'bar',
               data: this.thirdDegreeListBySchool
+            }
+            ,
+            {
+              name: '视力正常',
+              type: 'bar',
+              data: this.normalDegreeListBySchool
             }
           ]
         };

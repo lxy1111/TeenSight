@@ -71,7 +71,7 @@
     <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
         <el-form-item label="普查名称" prop="name">
-          <el-input v-model="editForm.surveyName" auto-complete="off"></el-input>
+          <el-input v-model="editForm.surveyName" disabled="true"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="是否结束">
           <el-select v-model="editForm.finish" placeholder="请选择">

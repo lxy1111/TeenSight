@@ -5,6 +5,9 @@ let base = '';
 
 axios.defaults.baseURL="https://www.suporeiot.cn:8085";
 
+
+export const upgrade = params => { return axios.post(`/api/teacher/upgrade`, params).then(res => res.data); };
+
 export const requestLogin = params => { return axios.post(`/api/user/login`, params).then(res => res.data); };
 
 export const removeInstitute = params => { return axios.post(`/api/institution/removeInstitution`, params).then(res => res.data); };
@@ -49,6 +52,8 @@ export const getSchoolListPage = params => { return axios.get('/api/school/getSc
 export const getInstitutionList = params => { return axios.get(`/api/institution/getInstitutionList`, { params: params }); };
 
 export const getSurveyList = params => { return axios.get(`/api/survey/getSurveyList`, { params: params }); };
+
+export const getSurveyName = params => { return axios.get(`/api/survey/getSurveyName`, { params: params }); };
 
 export const getClassByschool = params => { return axios.get(`/api/teacher/classQuery`, { params: params }); };
 
