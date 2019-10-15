@@ -1102,7 +1102,18 @@
           this.grades=res.data.result.gradeList;
           if(this.grades!=null) {
             for (let i = 0; i < this.grades.length; i++) {
-              allgrades.push(this.grades[i].gradeNo);
+                if(this.grades[i].type==3) {
+                    allgrades.push('小学'+this.grades[i].gradeNo+'年级');
+                }else if(this.grades[i].type==4) {
+                    if (this.grades[i].gradeNo == 0) {
+                        allgrades.push('初中预备班');
+                    } else {
+                        allgrades.push('初中' + this.grades[i].gradeNo + '年级');
+                    }
+                }else if(this.grades[i].type==5){
+                    allgrades.push('高中'+this.grades[i].gradeNo+'年级');
+
+                }
               firstdegreelist.push(this.grades[i].warningRes.firstDegreeCount);
               seconddegreelist.push(this.grades[i].warningRes.secondDegreeCount);
               thirddegreelist.push(this.grades[i].warningRes.thirdDegreeCount);
