@@ -151,6 +151,16 @@
                 label="重度不良(4.5(0.3)以下"
                 show-overflow-tooltip align="center">
         </el-table-column>
+        <el-table-column
+                prop="poorSightRate"
+                label="近视"
+                show-overflow-tooltip align="center">
+        </el-table-column>
+        <el-table-column
+                prop="normalSightRate"
+                label="非近视"
+                show-overflow-tooltip align="center">
+        </el-table-column>
       </el-table>
     </div>
     <div :hidden="showschooloverall" class="retrieval  criteria Style">
@@ -488,7 +498,7 @@
         firstDegreeListBySchool:null,
         secondDegreeListBySchool:null,
         thirdDegreeListBySchool:null,
-
+        shortList:null,
         firstSexDegreeList:null,
         secondSexDegreeList:null,
         thirdSexDegreeList:null,
@@ -555,7 +565,9 @@
           firstDegree:null,
           secondDegree:null,
           thirdDegree:null,
-          normalDegree:null
+          normalDegree:null,
+          poorSightRate:null,
+          normalSightRate:null,
         },
           {
             type:"人数",
@@ -563,7 +575,9 @@
             firstDegree:null,
             secondDegree:null,
             thirdDegree:null,
-            normalDegree:null
+            normalDegree:null,
+            poorSightRate:null,
+            normalSightRate:null,
 
           }],
         maleshortcnt:0,
@@ -1010,14 +1024,22 @@
           this.smalltable[0].thirdDegree=thirdDegree*100;
           this.smalltable[0].normalDegree=normalDegree*100;
 
+
           this.smalltable[1].coveragerate=coveragecnt*100;
           this.smalltable[1].firstDegree=firstDegreecnt*100;
           this.smalltable[1].secondDegree=secondDegreecnt*100;
           this.smalltable[1].thirdDegree=thirdDegreecnt*100;
           this.smalltable[1].normalDegree=normalDegreecnt*100;
+          let poorsightrate=res.data.result.shortSightRate*100;
+          let normalsightrate=100-poorsightrate;
           this.poorsightcount=res.data.result.poorSightCount;
           this.shortsightcount=res.data.result.shortSightCount;
           this.coveragecount=res.data.result.coverageCount;
+
+          this.smalltable[0].poorSightRate=poorsightrate;
+          this.smalltable[0].normalSightRate=normalsightrate;
+          this.smalltable[1].poorSightRate=this.shortsightcount;
+          this.smalltable[1].normalSightRate=this.coveragecount-this.shortsightcount;
           this.firstwarning=res.data.result.warningRes.firstDegreeCount;
           this.secondwarning=res.data.result.warningRes.secondDegreeCount;
           this.thirdwarning=res.data.result.warningRes.thirdDegreeCount;
@@ -1109,17 +1131,20 @@
           let third=[];
           let normal=[];
           let surveys=[];
+          let short=[];
           for(let i=0;i<res.data.result.resList.length;i++){
             first.push(res.data.result.resList[i].warningRes.firstDegree*100);
             second.push(res.data.result.resList[i].warningRes.secondDegree*100);
             third.push(res.data.result.resList[i].warningRes.thirdDegree*100);
             normal.push(res.data.result.resList[i].warningRes.normalDegree*100);
+            short.push(res.data.result.resList[i].shortSightRate*100);
             surveys.push(res.data.result.resList[i].surveyName);
           }
           this.firstDegreeList2=first;
           this.secondDegreeList2=second;
           this.thirdDegreeList2=third;
           this.normalDegreeList2=normal;
+          this.shortList=short;
           this.surveyNameList=surveys;
           console.log(this.poorsightlist);
           console.log(this.shortsightlist)
@@ -1343,8 +1368,8 @@
                  }
                },
                data:[
-                 {value:this.poorsightcount, name:'近视率'},
-                 {value:this.coveragecount-this.poorsightcount, name:'非近视率'}
+                 {value:this.shortsightcount, name:'近视率'},
+                 {value:this.coveragecount-this.shortsightcount, name:'非近视率'}
                ]
              }
            ]
@@ -1749,7 +1774,7 @@
             }
           },
           legend: {
-            data:['轻度不良','中度不良','重度不良','视力正常']
+            data:['轻度不良','中度不良','重度不良','视力正常','近视率']
           },
           toolbox: {
             feature: {
@@ -1775,6 +1800,13 @@
             }
           ],
           series : [
+            {
+              name:'近视率',
+              type:'line',
+              stack: '总量',
+              areaStyle: {normal: {}},
+              data:this.shortList
+            },
             {
               name:'视力正常',
               type:'line',
@@ -2127,12 +2159,12 @@
     height: 400px;
   }
   #trend{
-    width: 400px;
-    height: 400px;
+    width: 1000px;
+    height: 600px;
   }
   #trend2{
-    width: 400px;
-    height: 400px;
+    width: 1000px;
+    height: 600px;
   }
   #gradewarning{
     width: 400px;
