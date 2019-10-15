@@ -1025,11 +1025,11 @@
           this.smalltable[0].normalDegree=normalDegree*100;
 
 
-          this.smalltable[1].coveragerate=coveragecnt*100;
-          this.smalltable[1].firstDegree=firstDegreecnt*100;
-          this.smalltable[1].secondDegree=secondDegreecnt*100;
-          this.smalltable[1].thirdDegree=thirdDegreecnt*100;
-          this.smalltable[1].normalDegree=normalDegreecnt*100;
+          this.smalltable[1].coveragerate=coveragecnt;
+          this.smalltable[1].firstDegree=firstDegreecnt;
+          this.smalltable[1].secondDegree=secondDegreecnt;
+          this.smalltable[1].thirdDegree=thirdDegreecnt;
+          this.smalltable[1].normalDegree=normalDegreecnt;
           let poorsightrate=res.data.result.shortSightRate*100;
           let normalsightrate=100-poorsightrate;
           this.poorsightcount=res.data.result.poorSightCount;
