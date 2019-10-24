@@ -55,6 +55,8 @@ export const getSurveyList = params => { return axios.get(`/api/survey/getSurvey
 
 export const getSurveyName = params => { return axios.get(`/api/survey/getSurveyName`, { params: params }); };
 
+export const getGrades = params => { return axios.get(`/api/teacher/gradeQuery`, { params: params }); };
+
 export const getClassByschool = params => { return axios.get(`/api/teacher/classQuery`, { params: params }); };
 
 export const getSurveyCode = params => { return axios.post(`/api/student/generateSurveyQrCode`, params).then(res=>res.data) };

@@ -96,7 +96,7 @@
             <span  >学校类型</span>
           </el-col>
           <el-col :span="4" >
-            <span  >学校人数</span>
+            <span  >人数</span>
           </el-col>
           <el-col :span="4" >
             <span  >时间</span>
@@ -276,7 +276,7 @@
 <!--        </el-row>-->
       </el-form>
     </div>
-      <div :hidden="showIns" class="retrieval  criteria Style">
+      <div :hidden="showIns||onlygrade" class="retrieval  criteria Style">
         <el-form :model="form" label-width="160px">
 <!--          <el-row type="flex" class="row-bg" justify="right">-->
 <!--              <span style="font-size: large">视力不良变化趋势</span>-->
@@ -304,7 +304,7 @@
           </el-row>
         </el-form>
       </div>
-    <div :hidden="showschooloverall" class="retrieval  criteria Style">
+    <div :hidden="showschooloverall||onlygrade" class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >年级统计</el-breadcrumb-item>
@@ -387,6 +387,7 @@
 <!--        </el-row>-->
 <!--      </el-form>-->
 <!--    </div>-->
+
     <div :hidden="showschooloverall" class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
@@ -415,7 +416,7 @@
         </el-row>
       </el-form>
     </div>
-    <div :hidden="showgradeoverall"  class="retrieval  criteria Style">
+    <div  :hidden="showgradeoverall"  class="retrieval  criteria Style">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item  style="font-size: xx-large" >{{nowgrade}} <span v-if="showclassname"  style="font-size: xx-large" >{{nowclass}}班</span></el-breadcrumb-item>
       </el-breadcrumb>
@@ -425,50 +426,52 @@
           <el-col :span="12" align="left">
             <span style="font-size: x-large">近视率</span>
           </el-col>
-          <el-col :span="12">
-            <span style="font-size: x-large">视力变化趋势</span>
+          <el-col :span="12" align="left">
+            <span style="font-size: x-large">视力分布情况</span>
           </el-col>
+
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12" align="left">
             <span style="font-size: large">视力不良且屈光度低于-0.5</span>
           </el-col>
+
+        </el-row>
+
+        <el-row type="flex" class="row-bg" justify="right">
+          <div class="retrieval  criteria Style">
+            <div id="specificgrade"  ref="specificgrade"></div>
+          </div>
+          <div class="retrieval  criteria Style">
+            <div id="gradewarning" ref="gradewarning"></div>
+          </div>
+          &nbsp; &nbsp; &nbsp; &nbsp;
+        </el-row>
+
+        <!--        <el-row type="flex" class="row-bg" justify="right">-->
+        <!--          <el-col :span="5" align="left">-->
+        <!--            <span style="font-size: large">视力不良且屈光度低于-0.5</span>-->
+        <!--          </el-col>-->
+        <!--        </el-row>-->
+
+        <el-row type="flex" class="row-bg" justify="right">
+          <el-col :span="12">
+            <span style="font-size: x-large">视力变化趋势</span>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12" >
             <span style="font-size: large">视力不良变化趋势</span>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
-          <div class="retrieval  criteria Style">
-            <div id="specificgrade"  ref="specificgrade"></div>
-          </div>
-          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
-          <div class="retrieval  criteria Style">
-            <div id="trend" ref="trend"></div>
-          </div>
+
+        <div class="retrieval  criteria Style">
+          <div id="trend" ref="trend"></div>
+        </div>
         </el-row>
 
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="12" align="left">
-            <span style="font-size: x-large">视力分布情况</span>
-          </el-col>
-<!--          <el-col :span="12" >-->
-<!--            <span  style="font-size: x-large">各班级近视率</span>-->
-<!--          </el-col>-->
-        </el-row>
-<!--        <el-row type="flex" class="row-bg" justify="right">-->
-<!--          <el-col :span="5" align="left">-->
-<!--            <span style="font-size: large">视力不良且屈光度低于-0.5</span>-->
-<!--          </el-col>-->
-<!--        </el-row>-->
-        <el-row type="flex" class="row-bg" justify="right">
-          <div class="retrieval  criteria Style">
-            <div id="gradewarning" ref="gradewarning"></div>
-          </div>
-          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
-<!--          <div class="retrieval  criteria Style" >-->
-<!--            <div id="specificgradestatistic" ref="specificgradestatistic"></div>-->
-<!--          </div>-->
-        </el-row>
+
       </el-form>
     </div>
     </div>
@@ -493,7 +496,7 @@
     getStatisticsBySchool,
     getSurveyList,
     getStatisticsDetail,
-    getSchoolInfo, getSurveyName
+    getSchoolInfo, getSurveyName, getGrades
   } from '../../api/api';
 
   export default {
@@ -575,6 +578,7 @@
           }
         ],
         maleshortrate:0,
+        onlygrade:false,
         femaleshortrate:0,
         schoolplace:'',
         smalltable:[{
@@ -656,6 +660,7 @@
         },
         allsurveys:[],
         surveylist:[],
+        gradeslist:[],
         selectForm:{
           page:1,
           pageSize:1000000,
@@ -866,7 +871,9 @@
         this.classlist=[];
         if(this.selectForm.institutionId!=null) {
           this.getSurveyWithoutCondition();
+          this.getGradesWithoutCondition();
         }
+        this.onlygrade=false;
         // this.schoolist=[];
       },
       remoteMethod(query) {
@@ -898,6 +905,77 @@
             }
             this.surveylist.push(survey);
           }
+        })
+
+      },
+      getGradesWithoutCondition(){
+
+
+        getGrades(this.selectForm).then(res=> {
+          let ans = res.data.result;
+          this.gradelist = [];
+          if (ans[3] != null) {
+            for (let i = 0; i < ans[3].length; i++) {
+              let gradeName = '';
+              if (ans[3][i] == 1) {
+                gradeName = "小学一年级";
+              } else if (ans[3][i] == 2) {
+                gradeName = "小学二年级"
+              } else if (ans[3][i] == 3) {
+                gradeName = "小学三年级"
+              } else if (ans[3][i] == 4) {
+                gradeName = "小学四年级"
+              } else if (ans[3][i] == 5) {
+                gradeName = "小学五年级"
+              } else if (ans[3][i] == 6) {
+                gradeName = "小学六年级"
+              }
+              let grade = {
+                value: ans[3][i],
+                label: gradeName
+              }
+              this.gradelist.push(grade);
+            }
+
+          }
+          else if(ans[4]!=null){
+            for (let i = 0; i < ans[4].length; i++) {
+              let gradeName = '';
+              if (ans[4][i] == 0) {
+                gradeName = "初中预备班";
+              } else if (ans[4][i] == 1) {
+                gradeName = "初中一年级"
+              } else if (ans[4][i] == 2) {
+                gradeName = "初中二年级"
+              } else if (ans[4][i] == 3) {
+                gradeName = "初中三年级"
+              }
+              let grade ={
+                value:ans[4][i],
+                label:gradeName
+              }
+              this.gradelist.push(grade)
+            }
+          }else if(ans[5]!=null){
+            for(let i=0;i<ans[5].length;i++){
+              let gradeName='';
+              if(ans[5][i]==1){
+                gradeName="高中一年级"
+              }else if(ans[5][i]==2){
+                gradeName="高中二年级"
+              }else if(ans[5][i]==3){
+                gradeName="高中三年级"
+              }
+              let grade ={
+                value:ans[5][i],
+                label:gradeName
+              }
+              this.gradelist.push(grade)
+            }
+
+
+          }
+
         })
 
       },
@@ -1022,6 +1100,7 @@
             this.handlereset();
             return;
           }
+          this.studentno=res.data.result.totalCount;
           let coverage=res.data.result.coverageRate;
           let firstDegree=res.data.result.warningRes.firstDegree;
           let secondDegree=res.data.result.warningRes.secondDegree;
@@ -1191,16 +1270,19 @@
           return;
         }
         if(this.selectForm.schoolId==null&&this.selectForm.surveyName!=null){
-          var institute = sessionStorage.getItem('institute');
-          institute = JSON.parse(institute);
-          this.nowschool=institute.insDetail.province+institute.insDetail.city+institute.insDetail.county;
-          this.ishidden=false;
-          this.isIns=true;
-          this.showschooloverall=false;
-          this.showIns=false;
-          this.initChart();
-
+          if(this.selectForm.gradeNo!=null){
+             this.onlygrade=true;
+          }
+            var institute = sessionStorage.getItem('institute');
+            institute = JSON.parse(institute);
+            this.nowschool = institute.insDetail.province + institute.insDetail.city + institute.insDetail.county;
+            this.ishidden = false;
+            this.isIns = true;
+            this.showschooloverall = false;
+            this.showIns = false;
+            this.initChart();
         }
+
         if(this.selectForm.schoolId!=null&&this.selectForm.surveyName!=null){
 
           this.isIns=false;
@@ -1239,8 +1321,7 @@
             this.showschooloverall = true;
             this.showgradeoverall=false;
             this.htmltitle+=this.nowgrade;
-          }
-          if(this.selectForm.classNo!=null){
+          }else if(this.selectForm.classNo!=null){
             this.nowclass=this.selectForm.classNo;
             this.showschooloverall=false;
             this.htmltitle+=this.nowclass+'班';
@@ -1263,7 +1344,7 @@
             if(res.data.result.schoolType==5){
               this.schooltype='高中'
             }
-            this.studentno=res.data.result.studentCount;
+          //  this.studentno=res.data.result.studentCount;
           })
           // getStatisticsDetail(this.selectForm).then(async  res=>{
           //     this.smalltable[0].coveragerate=res.data.result.coverageRate;
@@ -2124,6 +2205,7 @@
         this.selectForm.institutionId=institute.insDetail.id;
         //this.selectForm.type=user.type;
         this.getSurveyWithoutCondition();
+        this.getGradesWithoutCondition();
       }
       else{
         this.isschool=true;
