@@ -179,8 +179,10 @@
 
     <!--工具条-->
 
-     <el-dialog title="学生信息二维码"  style="border: 0;" :visible.sync="qrcodevisible" :close-on-click-modal="false">
-    <el-row  v-for="item in studentInfoCodeList">
+
+     <el-dialog title="学生信息二维码"   style="border: 0;" :visible.sync="qrcodevisible" :close-on-click-modal="false">
+       <div id="printArea">
+       <el-row  v-for="item in studentInfoCodeList">
       <el-row>
         <el-image
                 style="width: 100px; height: 100px;left:40%"
@@ -190,9 +192,17 @@
       <el-row >
         <span style="margin-left: 40%">学生姓名:{{item.req.stuName}}</span>
       </el-row>
+
     </el-row>
+       </div>
+       <el-row >
+         <el-button type="primary" style="margin-left: 42%" @click="clickPrinting">打印</el-button>
+       </el-row>
   </el-dialog>
+
+
     <el-dialog title="学生普查二维码"  style="border: 0;" :visible.sync="surveyqrcodevisible" :close-on-click-modal="false">
+    <div id="printArea2">
       <el-row  v-for="item in surveyqrcodelit">
         <el-row>
           <el-image
@@ -203,6 +213,10 @@
         <el-row >
           <span style="margin-left: 40%">学生姓名:{{item.req.stuName}}</span>
         </el-row>
+      </el-row>
+    </div>
+      <el-row >
+        <el-button type="primary" style="margin-left: 42%" @click="clickPrinting2">打印</el-button>
       </el-row>
     </el-dialog>
 
@@ -590,6 +604,29 @@
         this.getStudentsList();
       },
 
+       clickPrinting(){
+         let subOutputRankPrint = document.getElementById('printArea');
+         console.log(subOutputRankPrint.innerHTML);
+         let newContent =subOutputRankPrint.innerHTML;
+         let oldContent = document.body.innerHTML;
+         document.body.innerHTML = newContent;
+         window.print();
+         window.location.reload();
+         document.body.innerHTML = oldContent;
+         return false;
+       },
+
+      clickPrinting2(){
+        let subOutputRankPrint = document.getElementById('printArea2');
+        console.log(subOutputRankPrint.innerHTML);
+        let newContent =subOutputRankPrint.innerHTML;
+        let oldContent = document.body.innerHTML;
+        document.body.innerHTML = newContent;
+        window.print();
+        window.location.reload();
+        document.body.innerHTML = oldContent;
+        return false;
+      },
       turntocheck() {
         this.finishstep = 2;
         this.secondstep = false;
@@ -616,8 +653,36 @@
         return false
       },
 
-      doUpgrade(){
 
+
+
+      downloadIamge(imgsrc, name) {//下载图片地址和图片名
+        var image = new Image();
+        // 解决跨域 Canvas 污染问题
+        image.setAttribute("crossOrigin", "anonymous");
+        image.onload = function () {
+          var canvas = document.createElement("canvas");
+          canvas.width = image.width;
+          canvas.height = image.height;
+          var context = canvas.getContext("2d");
+          context.drawImage(image, 0, 0, image.width, image.height);
+          var url = canvas.toDataURL("image/png"); //得到图片的base64编码数据
+
+          var a = document.createElement("a"); // 生成一个a元素
+          var event = new MouseEvent("click"); // 创建一个单击事件
+          a.download = name || "photo"; // 设置图片名称
+          a.href = url; // 将生成的URL设置为a.href属性
+          a.dispatchEvent(event); // 触发a的单击事件
+        };
+        image.src = imgsrc;
+      },
+      downloadImages(){
+        for(var i=0;i<this.studentInfoCodeList.length;i++){
+                 this.downloadIamge(this.studentInfoCodeList[i].url,this.studentInfoCodeList[i].req.stuName);
+        }
+      },
+
+      doUpgrade(){
 
            let para= {
              schoolId:null,

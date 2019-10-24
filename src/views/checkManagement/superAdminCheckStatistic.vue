@@ -55,7 +55,7 @@
 <!--          <el-form-item><el-button type="primary"  round @click="refresh">刷新</el-button></el-form-item>-->
 
           <el-form-item><el-button type="primary"  round @click="handlereset">重置</el-button></el-form-item>
-          <el-form-item v-if="!ishidden"> <el-button type="primary" round  v-on:click="getPdf()">下载PDF报告</el-button></el-form-item>
+          <el-form-item v-if="!ishidden"> <el-button type="primary" round  v-on:click="getPdf(htmltitle)">下载PDF报告</el-button></el-form-item>
         </el-row>
       </el-form>
     <div class="retrieval  criteria Style" id="pdfDom">
@@ -79,14 +79,14 @@
 
         </el-row>
         <br>
-        <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="2" >
-            <span  >时间</span>
-          </el-col>
-          <el-col :span="6" >
-            <span  >{{this.selectForm.surveyName}}</span>
-          </el-col>
-        </el-row>
+<!--        <el-row type="flex" class="row-bg" justify="right">-->
+<!--          <el-col :span="2" >-->
+<!--            <span  >时间</span>-->
+<!--          </el-col>-->
+<!--          <el-col :span="6" >-->
+<!--            <span  >{{this.selectForm.surveyName}}</span>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
       <div :hidden="isIns">
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="4" >
@@ -98,6 +98,9 @@
           <el-col :span="4" >
             <span  >学校人数</span>
           </el-col>
+          <el-col :span="4" >
+            <span  >时间</span>
+          </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="4" >
@@ -108,6 +111,9 @@
           </el-col>
           <el-col :span="4" >
             <span  >{{studentno}}人</span>
+          </el-col>
+          <el-col :span="8" >
+            <span  >{{this.selectForm.surveyName}}</span>
           </el-col>
         </el-row>
       </div>
@@ -194,6 +200,7 @@
           <el-col :span="12" >
             <span style="font-size: x-large">视力分布情况</span>
           </el-col>
+
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="5" align="left">
@@ -210,6 +217,16 @@
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
           <div  class="retrieval  criteria Style">
             <div id="warning" ref="warning"></div>
+          </div>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="right">
+          <el-col :span="12">
+            <span style="font-size: x-large">视力变化趋势</span>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="right">
+          &nbsp; &nbsp; &nbsp; <div class="retrieval  criteria Style">
+            <div id="trend3" ref="trend3"></div>
           </div>
         </el-row>
 <!--        <el-row type="flex" class="row-bg" justify="right">-->
@@ -261,14 +278,14 @@
     </div>
       <div :hidden="showIns" class="retrieval  criteria Style">
         <el-form :model="form" label-width="160px">
-          <el-row type="flex" class="row-bg" justify="right">
-              <span style="font-size: large">视力不良变化趋势</span>
-          </el-row>
-          <el-row type="flex" class="row-bg" justify="right">
-            &nbsp; &nbsp; <div class="retrieval  criteria Style">
-              <div id="trend2" ref="trend2"></div>
-            </div>
-          </el-row>
+<!--          <el-row type="flex" class="row-bg" justify="right">-->
+<!--              <span style="font-size: large">视力不良变化趋势</span>-->
+<!--          </el-row>-->
+<!--          <el-row type="flex" class="row-bg" justify="right">-->
+<!--            &nbsp; &nbsp; <div class="retrieval  criteria Style">-->
+<!--              <div id="trend2" ref="trend2"></div>-->
+<!--            </div>-->
+<!--          </el-row>-->
           <el-breadcrumb separator=">" class="bread-title" >
             <el-breadcrumb-item style="font-size: xx-large" >学校类型统计</el-breadcrumb-item>
           </el-breadcrumb>
@@ -482,6 +499,7 @@
   export default {
     data() {
       return {
+        isGovern:false,
         grades:[],
         normalDegree:null,
         firstDegree:null,
@@ -599,6 +617,7 @@
           ]
         },
         isIns:true,
+        htmltitle:'',
         //编辑界面数据
         editForm: {
           id: 0,
@@ -738,6 +757,7 @@
         })
       },
       handleChange(val){
+
         this.gradelist=[];
         this.classlist=[];
         this.selectForm.surveyName=null;
@@ -812,7 +832,7 @@
           }
         })
 
-        getSurveyName().then(res=>{
+        getSurveyName(this.selectForm).then(res=>{
           this.allsurveys=res.data.result;
           this.surveylist=[];
           for(let i=0;i<this.allsurveys.length;i++){
@@ -1003,10 +1023,10 @@
             return;
           }
           let coverage=res.data.result.coverageRate;
-          let firstDegree=res.data.result.warningRes.firstDegreeCount;
-          let secondDegree=res.data.result.warningRes.secondDegreeCount;
-          let thirdDegree=res.data.result.warningRes.thirdDegreeCount;
-          let normalDegree=res.data.result.warningRes.normalDegreeCount;
+          let firstDegree=res.data.result.warningRes.firstDegree;
+          let secondDegree=res.data.result.warningRes.secondDegree;
+          let thirdDegree=res.data.result.warningRes.thirdDegree;
+          let normalDegree=res.data.result.warningRes.normalDegree;
 
           this.firstDegree=firstDegree;
           this.secondDegree=secondDegree;
@@ -1162,6 +1182,7 @@
         })
       },
       handlesearch(){
+        this.htmltitle=this.nowschool;
         if(this.selectForm.surveyName==null){
           this.$message({
             type:'error',
@@ -1181,6 +1202,7 @@
 
         }
         if(this.selectForm.schoolId!=null&&this.selectForm.surveyName!=null){
+
           this.isIns=false;
           this.showIns=true;
           this.ishidden=false;
@@ -1216,12 +1238,16 @@
             }
             this.showschooloverall = true;
             this.showgradeoverall=false;
-          }else if(this.selectForm.classNo!=null){
+            this.htmltitle+=this.nowgrade;
+          }
+          if(this.selectForm.classNo!=null){
             this.nowclass=this.selectForm.classNo;
             this.showschooloverall=false;
+            this.htmltitle+=this.nowclass+'班';
           }else{
             this.showschooloverall=false;
           }
+          this.htmltitle+='视力报告';
 
           let para={
             schoolId:this.selectForm.schoolId
@@ -1248,6 +1274,7 @@
           //     this.coveragecount=res.data.result.coverageCount;
           // })
           this.initChart();
+
 
         }
 
@@ -1814,43 +1841,43 @@
             {
               name:'近视率',
               type:'line',
-              stack: '总量',
-              areaStyle: {normal: {}},
+              // stack: '总量',
+              // areaStyle: {normal: {}},
               data:this.shortList
             },
             {
               name:'视力正常',
               type:'line',
-              stack: '总量',
-              areaStyle: {normal: {}},
+              // stack: '总量',
+              // areaStyle: {normal: {}},
               data:this.normalDegreeList2
             },
             {
               name:'轻度不良',
               type:'line',
-              stack: '总量',
-              areaStyle: {normal: {}},
+              // stack: '总量',
+              // areaStyle: {normal: {}},
               data:this.firstDegreeList2
             },
             {
               name:'中度不良',
               type:'line',
-              stack: '总量',
-              areaStyle: {normal: {}},
+              // stack: '总量',
+              // areaStyle: {normal: {}},
               data:this.secondDegreeList2
             },
 
             {
               name:'重度不良',
               type:'line',
-              stack: '总量',
-              label: {
-                normal: {
-                  show: true,
-                  position: 'top'
-                }
-              },
-              areaStyle: {normal: {}},
+              // stack: '总量',
+              // label: {
+              //   normal: {
+              //     show: true,
+              //     position: 'top'
+              //   }
+              // },
+              // areaStyle: {normal: {}},
               data:this.thirdDegreeList2
             }
           ]
@@ -1859,10 +1886,11 @@
 
 
         this.chart8=echarts.init(this.$refs.trend);
-        this.chart9=echarts.init(this.$refs.trend2);
+        // this.chart9=echarts.init(this.$refs.trend2);
+        this.chart10=echarts.init(this.$refs.trend3);
         this.chart8.setOption(option3);
-        this.chart9.setOption(option3);
-
+        // this.chart9.setOption(option3);
+        this.chart10.setOption(option3);
 
         var option4 = {
           color: ['#003366', '#006699', '#4cabce', '#e5323e'],
@@ -2088,6 +2116,9 @@
       var user = sessionStorage.getItem('user');
       user=JSON.parse(user);
       if(user.type==1||user.type==2) {
+        if(user.type==1){
+          this.isGovern=true;
+        }
         var institute = sessionStorage.getItem('institute');
         institute = JSON.parse(institute);
         this.selectForm.institutionId=institute.insDetail.id;
@@ -2174,6 +2205,10 @@
     height: 600px;
   }
   #trend2{
+    width: 1000px;
+    height: 600px;
+  }
+  #trend3{
     width: 1000px;
     height: 600px;
   }

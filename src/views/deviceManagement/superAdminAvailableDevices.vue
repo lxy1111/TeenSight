@@ -529,8 +529,15 @@
         var schoolid=row.schoolId;
         var para={
           deviceId:deviceid,
-          schoolId:schoolid,
-          isBind:false
+          institutionId:null,
+          isBind:false,
+          schoolId:null
+        }
+        if(!this.isins){
+          var schoolid=row.schoolId;
+          para.schoolId=schoolid;
+        }else{
+          para.institutionId=this.insId;
         }
         bindDevice(para).then(res=>{
           if(!res.data.succeed){

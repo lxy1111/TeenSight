@@ -21,7 +21,6 @@ import globalvariable from './global'
 import htmlToPdf from "./common/js/htmlToPdf";
 
 Vue.use(htmlToPdf)
-
 Vue.prototype.$axios = axios
 Vue.use(ElementUI)
 Vue.use(VueRouter)
