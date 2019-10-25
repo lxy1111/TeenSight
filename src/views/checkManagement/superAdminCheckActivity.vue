@@ -510,7 +510,7 @@
 
       var user = sessionStorage.getItem('user');
       user=JSON.parse(user);
-      if(user.type==2){
+      if(user.type==2||user.type==1){
          this.isAdimin=false;
          this.isIns=true;
         var institute = sessionStorage.getItem('institute');

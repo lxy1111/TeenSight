@@ -211,13 +211,16 @@
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
+          <el-col :span="12" align="left">
           <div class="retrieval  criteria Style">
             <div id="schoolsight" ref="schoolsight"></div>
           </div>
-          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+          </el-col>
+          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <el-col :span="12" align="left">
           <div  class="retrieval  criteria Style">
             <div id="warning" ref="warning"></div>
           </div>
+        </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12">
@@ -439,12 +442,16 @@
         </el-row>
 
         <el-row type="flex" class="row-bg" justify="right">
+          <el-col :span="12" align="left">
           <div class="retrieval  criteria Style">
             <div id="specificgrade"  ref="specificgrade"></div>
           </div>
+          </el-col>
+          <el-col :span="12" align="left">
           <div class="retrieval  criteria Style">
             <div id="gradewarning" ref="gradewarning"></div>
           </div>
+          </el-col>
           &nbsp; &nbsp; &nbsp; &nbsp;
         </el-row>
 
@@ -1453,6 +1460,7 @@
       initChart(){
          this.chart=echarts.init(this.$refs.schoolsight);
          this.chart.setOption({
+           color: ['#9900FF','#00FF66'],
            tooltip: {
              trigger: 'item',
              formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1497,6 +1505,7 @@
 
         this.chart2=echarts.init(this.$refs.warning);
         this.chart2.setOption({
+          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
           tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1540,7 +1549,7 @@
           ]
         });
         var option = {
-          color: ['#003366', '#006699', '#4cabce', '#e5323e'],
+          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
           tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -1578,6 +1587,11 @@
           ],
           series: [
             {
+              name: '视力正常',
+              type: 'bar',
+              data: this.normalDegreeList
+            },
+            {
               name: '轻度视力不良',
               type: 'bar',
               barGap: 0,
@@ -1593,12 +1607,8 @@
               name: '重度不力不良',
               type: 'bar',
               data: this.thirdDegreeList
-            },
-            {
-              name: '视力正常',
-              type: 'bar',
-              data: this.normalDegreeList
             }
+
           ]
         };
 
@@ -1648,7 +1658,7 @@
 
 
         var option2 = {
-          color: ['#003366', '#006699', '#4cabce', '#e5323e'],
+          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
           tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -1686,6 +1696,11 @@
           ],
           series: [
             {
+              name: '视力正常',
+              type: 'bar',
+              data: this.normalSexDegreeList
+            },
+            {
               name: '轻度视力不良',
               type: 'bar',
               barGap: 0,
@@ -1703,11 +1718,7 @@
               data: this.thirdSexDegreeList
             }
             ,
-            {
-              name: '视力正常',
-              type: 'bar',
-              data: this.normalSexDegreeList
-            }
+
           ]
         };
         this.chart4=echarts.init(this.$refs.genderstatistic);
@@ -1754,6 +1765,7 @@
         // });
         this.chart5=echarts.init(this.$refs.specificgrade);
         this.chart5.setOption({
+          color: ['#9900FF','#00FF66' ],
           tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1796,6 +1808,7 @@
         });
         this.chart6=echarts.init(this.$refs.gradewarning);
         this.chart6.setOption({
+          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
           tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1803,7 +1816,7 @@
           legend: {
             orient: 'vertical',
             x: 'left',
-            data:['轻度视力不良','中度视力不良','重度视力不良','视力正常']
+            data:['视力正常','轻度视力不良','中度视力不良','重度视力不良']
           },
           series: [
             {
@@ -1883,6 +1896,7 @@
 
 
         var option3 = {
+          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e','#9900FF'],
           tooltip : {
             trigger: 'axis',
             axisPointer: {
@@ -1893,7 +1907,7 @@
             }
           },
           legend: {
-            data:['轻度不良','中度不良','重度不良','视力正常','近视率']
+            data:['视力正常','轻度不良','中度不良','重度不良','近视率']
           },
           toolbox: {
             feature: {
@@ -1919,13 +1933,7 @@
             }
           ],
           series : [
-            {
-              name:'近视率',
-              type:'line',
-              // stack: '总量',
-              // areaStyle: {normal: {}},
-              data:this.shortList
-            },
+
             {
               name:'视力正常',
               type:'line',
@@ -1960,7 +1968,14 @@
               // },
               // areaStyle: {normal: {}},
               data:this.thirdDegreeList2
-            }
+            },
+            {
+              name:'近视率',
+              type:'line',
+              // stack: '总量',
+              // areaStyle: {normal: {}},
+              data:this.shortList
+            },
           ]
         };
 
@@ -1974,7 +1989,7 @@
         this.chart10.setOption(option3);
 
         var option4 = {
-          color: ['#003366', '#006699', '#4cabce', '#e5323e'],
+          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
           tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -2038,7 +2053,7 @@
         this.chart10=echarts.init(this.$refs.schoolStatistic);
         this.chart10.setOption(option4);
         var option5 = {
-          color: ['#003366', '#006699', '#4cabce', '#e5323e'],
+          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
           tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -2076,6 +2091,11 @@
           ],
           series: [
             {
+              name: '视力正常',
+              type: 'bar',
+              data: this.normalDegreeListBySchool
+            },
+            {
               name: '轻度视力不良',
               type: 'bar',
               barGap: 0,
@@ -2093,11 +2113,7 @@
               data: this.thirdDegreeListBySchool
             }
             ,
-            {
-              name: '视力正常',
-              type: 'bar',
-              data: this.normalDegreeListBySchool
-            }
+
           ]
         };
         this.chart11=echarts.init(this.$refs.schoolListStatistic);
