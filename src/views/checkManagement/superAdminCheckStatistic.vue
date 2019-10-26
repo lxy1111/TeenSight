@@ -203,10 +203,10 @@
 
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
-          <el-col :span="5" align="left">
+          <el-col :span="12" align="left">
             <span style="font-size: large">视力不良且屈光度低于-0.5</span>
           </el-col>
-          <el-col :span="17">
+          <el-col :span="12">
             <span style="font-size: large">视力不良等级人数占比</span>
           </el-col>
         </el-row>
@@ -1460,7 +1460,7 @@
       initChart(){
          this.chart=echarts.init(this.$refs.schoolsight);
          this.chart.setOption({
-           color: ['#9900FF','#00FF66'],
+           color: ['#FFCC33','#FF9900'],
            tooltip: {
              trigger: 'item',
              formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1505,7 +1505,7 @@
 
         this.chart2=echarts.init(this.$refs.warning);
         this.chart2.setOption({
-          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
+          color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
           tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1549,7 +1549,7 @@
           ]
         });
         var option = {
-          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
+          color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
           tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -1658,7 +1658,7 @@
 
 
         var option2 = {
-          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
+          color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
           tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -1765,7 +1765,7 @@
         // });
         this.chart5=echarts.init(this.$refs.specificgrade);
         this.chart5.setOption({
-          color: ['#9900FF','#00FF66' ],
+          color: ['#FFCC33','#FF9900'],
           tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1808,7 +1808,7 @@
         });
         this.chart6=echarts.init(this.$refs.gradewarning);
         this.chart6.setOption({
-          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
+          color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
           tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1896,7 +1896,7 @@
 
 
         var option3 = {
-          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e','#9900FF'],
+          color: ['#FF9900', '#FFCC33', '#66CC00','#3399CC', '#e5323e'],
           tooltip : {
             trigger: 'axis',
             axisPointer: {
@@ -1989,7 +1989,7 @@
         this.chart10.setOption(option3);
 
         var option4 = {
-          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
+          color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
           tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -2053,7 +2053,7 @@
         this.chart10=echarts.init(this.$refs.schoolStatistic);
         this.chart10.setOption(option4);
         var option5 = {
-          color: ['#00FF66', '#3366FF', '#4cabce', '#e5323e'],
+          color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
           tooltip: {
             trigger: 'axis',
             axisPointer: {
