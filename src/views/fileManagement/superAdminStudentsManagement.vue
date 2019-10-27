@@ -790,6 +790,11 @@
                   console.log("login get success");
                   console.log(res);
                   this.students = res.data.result.items;
+                  for(let i=0;i<this.students.length;i++){
+                    if(this.students[i].remark!=null){
+                      this.students[i].gradeNo=this.students[i].remark;
+                    }
+                  }
                   this.total = res.data.result.totalNum;
                 })
                 .catch(failResponse => {
