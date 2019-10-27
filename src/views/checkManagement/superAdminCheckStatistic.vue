@@ -331,7 +331,84 @@
         <el-breadcrumb separator="" class="bread-title" >
           <el-breadcrumb-item  style="font-size: xx-large" >{{item.gradeNo}}年级</el-breadcrumb-item>
         </el-breadcrumb>
-
+          <el-row type="flex" class="row-bg" justify="right">
+            <el-col :span="4" >
+              <span  ></span>
+            </el-col>
+            <el-col :span="4" >
+              <span  >筛查覆盖率(筛查参与情况)%</span>
+            </el-col>
+            <el-col :span="4" >
+              <span  >视力正常(5.0(1.0)及以上)</span>
+            </el-col>
+            <el-col :span="4" >
+              <span  >轻度不良(4.8(0.6)-4.9(0.8))</span>
+            </el-col>
+            <el-col :span="4" >
+              <span  >中度不良(4.5(0.3)-4.7(0.5))</span>
+            </el-col>
+            <el-col :span="4" >
+              <span  >重度不良(4.5(0.3)以下</span>
+            </el-col>
+            <el-col :span="4" >
+              <span  >近视</span>
+            </el-col>
+            <el-col :span="4" >
+              <span  >非近视</span>
+            </el-col>
+          </el-row>
+          <el-row type="flex" class="row-bg" justify="right">
+            <el-col :span="3" >
+              <span style="text-align: center" >比率</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{item.coverageRate*100}}</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{item.warningRes.normalDegree*100}}</span>
+            </el-col>
+            <el-col :span="3" >
+            <span  >{{item.warningRes.firstDegree*100}}</span>
+          </el-col>
+            <el-col :span="3" >
+              <span  >{{item.warningRes.secondDegree*100}}</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{item.warningRes.thirdDegree*100}}</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{item.shortSightRate*100}}</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{100-item.shortSightRate*100}}</span>
+            </el-col>
+          </el-row>
+          <el-row type="flex" class="row-bg" justify="right">
+            <el-col :span="3" >
+              <span style="text-align: center">人数</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{item.coverageCount}}</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{item.warningRes.normalDegreeCount}}</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{item.warningRes.firstDegreeCount}}</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{item.warningRes.secondDegreeCount}}</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{item.warningRes.thirdDegreeCount}}</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{item.shortSightCount}}</span>
+            </el-col>
+            <el-col :span="3" >
+              <span  >{{item.coverageCount-item.shortSightCount}}</span>
+            </el-col>
+          </el-row>
         <el-form :model="form" label-width="160px">
           <el-row type="flex" class="row-bg" justify="right">
             <el-col :span="12" align="left">
