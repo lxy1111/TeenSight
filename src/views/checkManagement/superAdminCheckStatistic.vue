@@ -650,11 +650,7 @@
             value:'性别-全部'
           }
         ],
-        gradesDetailList:[
-          {
-            gradeNo:''
-          }
-        ],
+        gradesDetailList:null,
         maleshortrate:0,
         onlygrade:false,
         femaleshortrate:0,
@@ -1535,203 +1531,208 @@
       },
 
       initChart(){
-         for(var i=0;i<this.gradesDetailList.length;i++){
-           let first=[];
-           let second=[];
-           let third=[];
-           let normal=[];
-           let surveys=[];
-           let short=[];
-           for(let i=0;i<this.gradesDetailList[i].resList.length;i++){
-             first.push(this.gradesDetailList[i].resList[i].warningRes.firstDegree*100);
-             second.push(this.gradesDetailList[i].resList[i].warningRes.secondDegree*100);
-             third.push(this.gradesDetailList[i].resList[i].warningRes.thirdDegree*100);
-             normal.push(this.gradesDetailList[i].resList[i].warningRes.normalDegree*100);
-             short.push(this.gradesDetailList[i].resList[i].shortSightRate*100);
-             surveys.push(this.gradesDetailList[i].resList[i].surveyName);
-           }
-           let firstDegreeList2=first;
-           let secondDegreeList2=second;
-           let thirdDegreeList2=third;
-           let normalDegreeList2=normal;
-           let shortList=short;
-           let surveyNameList=surveys;
-           let a = echarts.init(document.getElementById('poor'+this.gradesDetailList[i].gradeNo));
-           let b = echarts.init(document.getElementById('proportion'+this.gradesDetailList[i].gradeNo));
-           let c = echarts.init(document.getElementById('changetrend'+this.gradesDetailList[i].gradeNo));
-           a.setOption({
-             color: ['#FFCC33','#FF9900'],
-             tooltip: {
-               trigger: 'item',
-               formatter: "{a} <br/>{b}: {c} ({d}%)"
-             },
-             legend: {
-               orient: 'vertical',
-               x: 'left',
-               data:['近视率','非近视率']
-             },
-             series: [
-               {
-                 name:'访问来源',
-                 type:'pie',
-                 radius: ['50%', '70%'],
-                 avoidLabelOverlap: false,
-                 label: {
-                   normal: {
-                     show: false,
-                     position: 'center'
-                   },
-                   emphasis: {
-                     show: true,
-                     textStyle: {
-                       fontSize: '30',
-                       fontWeight: 'bold'
-                     }
-                   }
-                 },
-                 labelLine: {
-                   normal: {
-                     show: false
-                   }
-                 },
-                 data:[
-                   {value:this.gradesDetailList[i].shortSightCount, name:'近视率'},
-                   {value:this.gradesDetailList[i].coverageCount-this.gradesDetailList[i].shortSightCount, name:'非近视率'}
-                 ]
-               }
-             ]
-           });
-           b.setOption({
-             color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
-             tooltip: {
-               trigger: 'item',
-               formatter: "{a} <br/>{b}: {c} ({d}%)"
-             },
-             legend: {
-               orient: 'vertical',
-               x: 'left',
-               data:['视力正常','轻度不良','中度不良','重度不良']
-             },
-             series: [
-               {
-                 name:'访问来源',
-                 type:'pie',
-                 radius: ['50%', '70%'],
-                 avoidLabelOverlap: false,
-                 label: {
-                   normal: {
-                     show: false,
-                     position: 'center'
-                   },
-                   emphasis: {
-                     show: true,
-                     textStyle: {
-                       fontSize: '30',
-                       fontWeight: 'bold'
-                     }
-                   }
-                 },
-                 labelLine: {
-                   normal: {
-                     show: false
-                   }
-                 },
-                 data:[
-                   {value:this.gradesDetailList[i].warningRes.normalDegree, name:'视力正常'},
-                   {value:this.gradesDetailList[i].warningRes.firstDegree, name:'轻度不良'},
-                   {value:this.gradesDetailList[i].warningRes.secondDegree, name:'中度不良'},
-                   {value:this.gradesDetailList[i].warningRes.thirdDegree, name:'重度不良'}
-                 ]
-               }
-             ]
-           });
+        if(this.gradesDetailList!=null) {
+          for (var i = 0; i < this.gradesDetailList.length; i++) {
+            let first = [];
+            let second = [];
+            let third = [];
+            let normal = [];
+            let surveys = [];
+            let short = [];
+            for (let i = 0; i < this.gradesDetailList[i].resList.length; i++) {
+              first.push(this.gradesDetailList[i].resList[i].warningRes.firstDegree * 100);
+              second.push(this.gradesDetailList[i].resList[i].warningRes.secondDegree * 100);
+              third.push(this.gradesDetailList[i].resList[i].warningRes.thirdDegree * 100);
+              normal.push(this.gradesDetailList[i].resList[i].warningRes.normalDegree * 100);
+              short.push(this.gradesDetailList[i].resList[i].shortSightRate * 100);
+              surveys.push(this.gradesDetailList[i].resList[i].surveyName);
+            }
+            let firstDegreeList2 = first;
+            let secondDegreeList2 = second;
+            let thirdDegreeList2 = third;
+            let normalDegreeList2 = normal;
+            let shortList = short;
+            let surveyNameList = surveys;
+            let a = echarts.init(document.getElementById('poor' + this.gradesDetailList[i].gradeNo));
+            let b = echarts.init(document.getElementById('proportion' + this.gradesDetailList[i].gradeNo));
+            let c = echarts.init(document.getElementById('changetrend' + this.gradesDetailList[i].gradeNo));
+            a.setOption({
+              color: ['#FFCC33', '#FF9900'],
+              tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+              },
+              legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: ['近视率', '非近视率']
+              },
+              series: [
+                {
+                  name: '访问来源',
+                  type: 'pie',
+                  radius: ['50%', '70%'],
+                  avoidLabelOverlap: false,
+                  label: {
+                    normal: {
+                      show: false,
+                      position: 'center'
+                    },
+                    emphasis: {
+                      show: true,
+                      textStyle: {
+                        fontSize: '30',
+                        fontWeight: 'bold'
+                      }
+                    }
+                  },
+                  labelLine: {
+                    normal: {
+                      show: false
+                    }
+                  },
+                  data: [
+                    {value: this.gradesDetailList[i].shortSightCount, name: '近视率'},
+                    {
+                      value: this.gradesDetailList[i].coverageCount - this.gradesDetailList[i].shortSightCount,
+                      name: '非近视率'
+                    }
+                  ]
+                }
+              ]
+            });
+            b.setOption({
+              color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
+              tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+              },
+              legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: ['视力正常', '轻度不良', '中度不良', '重度不良']
+              },
+              series: [
+                {
+                  name: '访问来源',
+                  type: 'pie',
+                  radius: ['50%', '70%'],
+                  avoidLabelOverlap: false,
+                  label: {
+                    normal: {
+                      show: false,
+                      position: 'center'
+                    },
+                    emphasis: {
+                      show: true,
+                      textStyle: {
+                        fontSize: '30',
+                        fontWeight: 'bold'
+                      }
+                    }
+                  },
+                  labelLine: {
+                    normal: {
+                      show: false
+                    }
+                  },
+                  data: [
+                    {value: this.gradesDetailList[i].warningRes.normalDegree, name: '视力正常'},
+                    {value: this.gradesDetailList[i].warningRes.firstDegree, name: '轻度不良'},
+                    {value: this.gradesDetailList[i].warningRes.secondDegree, name: '中度不良'},
+                    {value: this.gradesDetailList[i].warningRes.thirdDegree, name: '重度不良'}
+                  ]
+                }
+              ]
+            });
 
-           var option = {
-             color: ['#FF9900', '#FFCC33', '#66CC00','#3399CC', '#e5323e'],
-             tooltip : {
-               trigger: 'axis',
-               axisPointer: {
-                 type: 'cross',
-                 label: {
-                   backgroundColor: '#6a7985'
-                 }
-               }
-             },
-             legend: {
-               data:['视力正常','轻度不良','中度不良','重度不良','近视率']
-             },
-             toolbox: {
-               feature: {
-                 saveAsImage: {}
-               }
-             },
-             grid: {
-               left: '3%',
-               right: '4%',
-               bottom: '3%',
-               containLabel: true
-             },
-             xAxis : [
-               {
-                 type : 'category',
-                 boundaryGap : false,
-                 data : surveyNameList
-               }
-             ],
-             yAxis : [
-               {
-                 type : 'value'
-               }
-             ],
-             series : [
+            var option = {
+              color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC', '#e5323e'],
+              tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                  type: 'cross',
+                  label: {
+                    backgroundColor: '#6a7985'
+                  }
+                }
+              },
+              legend: {
+                data: ['视力正常', '轻度不良', '中度不良', '重度不良', '近视率']
+              },
+              toolbox: {
+                feature: {
+                  saveAsImage: {}
+                }
+              },
+              grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+              },
+              xAxis: [
+                {
+                  type: 'category',
+                  boundaryGap: false,
+                  data: surveyNameList
+                }
+              ],
+              yAxis: [
+                {
+                  type: 'value'
+                }
+              ],
+              series: [
 
-               {
-                 name:'视力正常',
-                 type:'line',
-                 // stack: '总量',
-                 // areaStyle: {normal: {}},
-                 data:normalDegreeList2
-               },
-               {
-                 name:'轻度不良',
-                 type:'line',
-                 // stack: '总量',
-                 // areaStyle: {normal: {}},
-                 data:firstDegreeList2
-               },
-               {
-                 name:'中度不良',
-                 type:'line',
-                 // stack: '总量',
-                 // areaStyle: {normal: {}},
-                 data:secondDegreeList2
-               },
+                {
+                  name: '视力正常',
+                  type: 'line',
+                  // stack: '总量',
+                  // areaStyle: {normal: {}},
+                  data: normalDegreeList2
+                },
+                {
+                  name: '轻度不良',
+                  type: 'line',
+                  // stack: '总量',
+                  // areaStyle: {normal: {}},
+                  data: firstDegreeList2
+                },
+                {
+                  name: '中度不良',
+                  type: 'line',
+                  // stack: '总量',
+                  // areaStyle: {normal: {}},
+                  data: secondDegreeList2
+                },
 
-               {
-                 name:'重度不良',
-                 type:'line',
-                 // stack: '总量',
-                 // label: {
-                 //   normal: {
-                 //     show: true,
-                 //     position: 'top'
-                 //   }
-                 // },
-                 // areaStyle: {normal: {}},
-                 data:thirdDegreeList2
-               },
-               {
-                 name:'近视率',
-                 type:'line',
-                 // stack: '总量',
-                 // areaStyle: {normal: {}},
-                 data:shortList
-               },
-             ]
-           };
+                {
+                  name: '重度不良',
+                  type: 'line',
+                  // stack: '总量',
+                  // label: {
+                  //   normal: {
+                  //     show: true,
+                  //     position: 'top'
+                  //   }
+                  // },
+                  // areaStyle: {normal: {}},
+                  data: thirdDegreeList2
+                },
+                {
+                  name: '近视率',
+                  type: 'line',
+                  // stack: '总量',
+                  // areaStyle: {normal: {}},
+                  data: shortList
+                },
+              ]
+            };
 
-           c.setOption(option);
-         }
+            c.setOption(option);
+          }
+        }
 
 
          this.chart=echarts.init(this.$refs.schoolsight);
