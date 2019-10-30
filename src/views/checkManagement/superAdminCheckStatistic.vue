@@ -307,6 +307,34 @@
           </el-row>
         </el-form>
       </div>
+        <div :hidden="showschooloverall&&showgradeoverall" class="retrieval  criteria Style">
+
+            <el-breadcrumb separator=">" class="bread-title" >
+                <el-breadcrumb-item style="font-size: xx-large" >性别统计</el-breadcrumb-item>
+            </el-breadcrumb>
+            <el-form :model="form" label-width="160px">
+
+                <el-row type="flex" class="row-bg" justify="right">
+                    <span style="font-size: x-large">男女生视力情况</span>
+                </el-row>
+                <el-row type="flex" class="row-bg" justify="right">
+                    <!--          <div class="retrieval  criteria Style">-->
+                    <!--            <div id="gender">-->
+                    <!--              <el-row type="flex" class="row-bg" justify="right">-->
+                    <!--                <span  style="font-size: x-large">男生近视率       {{this.maleshortrate*100}}%</span>-->
+                    <!--              </el-row>-->
+                    <!--              <el-row type="flex" class="row-bg" justify="right">-->
+                    <!--                <span  style="font-size: x-large">女生近视率        {{this.femaleshortrate*100}}%</span>-->
+                    <!--              </el-row>-->
+                    <!--            </div>-->
+                    <!--          </div>-->
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+                    <div class="retrieval  criteria Style">
+                        <div id="genderstatistic" ref="genderstatistic"></div>
+                    </div>
+                </el-row>
+            </el-form>
+        </div>
     <div :hidden="showschooloverall||onlygrade" class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
@@ -331,6 +359,7 @@
         <el-breadcrumb separator="" class="bread-title" >
           <el-breadcrumb-item  style="font-size: xx-large" >{{item.gradeNo}}年级</el-breadcrumb-item>
         </el-breadcrumb>
+            <el-form :model="form" label-width="160px">
           <el-row type="flex" class="row-bg" justify="right">
             <el-col :span="4" >
               <span  ></span>
@@ -409,6 +438,7 @@
               <span  >{{item.coverageCount-item.shortSightCount}}</span>
             </el-col>
           </el-row>
+            </el-form>
         <el-form :model="form" label-width="160px">
           <el-row type="flex" class="row-bg" justify="right">
             <el-col :span="12" align="left">
@@ -596,34 +626,7 @@
 
       </el-form>
     </div>
-      <div :hidden="showschooloverall&&showgradeoverall" class="retrieval  criteria Style">
 
-        <el-breadcrumb separator=">" class="bread-title" >
-          <el-breadcrumb-item style="font-size: xx-large" >性别统计</el-breadcrumb-item>
-        </el-breadcrumb>
-        <el-form :model="form" label-width="160px">
-
-          <el-row type="flex" class="row-bg" justify="right">
-            <span style="font-size: x-large">男女生视力情况</span>
-          </el-row>
-          <el-row type="flex" class="row-bg" justify="right">
-            <!--          <div class="retrieval  criteria Style">-->
-            <!--            <div id="gender">-->
-            <!--              <el-row type="flex" class="row-bg" justify="right">-->
-            <!--                <span  style="font-size: x-large">男生近视率       {{this.maleshortrate*100}}%</span>-->
-            <!--              </el-row>-->
-            <!--              <el-row type="flex" class="row-bg" justify="right">-->
-            <!--                <span  style="font-size: x-large">女生近视率        {{this.femaleshortrate*100}}%</span>-->
-            <!--              </el-row>-->
-            <!--            </div>-->
-            <!--          </div>-->
-            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
-            <div class="retrieval  criteria Style">
-              <div id="genderstatistic" ref="genderstatistic"></div>
-            </div>
-          </el-row>
-        </el-form>
-      </div>
     </div>
   </section>
 </template>
@@ -1425,9 +1428,6 @@
           return;
         }
         if(this.selectForm.schoolId==null&&this.selectForm.surveyName!=null){
-          if(this.selectForm.gradeNo!=null){
-             this.onlygrade=true;
-          }
             var institute = sessionStorage.getItem('institute');
             institute = JSON.parse(institute);
             this.nowschool = institute.insDetail.province + institute.insDetail.city + institute.insDetail.county;
@@ -1435,6 +1435,41 @@
             this.isIns = true;
             this.showschooloverall = false;
             this.showIns = false;
+            this.htmltitle=this.nowschool;
+            if(this.selectForm.gradeNo!=null){
+                this.onlygrade=true;
+                this.showgradename=true;
+                let val=this.selectForm.gradeNo;
+                if(val==1){
+                    this.nowgrade='一年级';
+                }
+                if(val==2){
+                    this.nowgrade='二年级'
+                }
+                if(val==3){
+                    this.nowgrade='三年级'
+                }
+                if(val==4){
+                    this.nowgrade='四年级'
+                }
+                if(val==5){
+                    this.nowgrade='五年级'
+                }
+                if(val==6){
+                    this.nowgrade='六年级'
+                }
+                if(val==7){
+                    this.nowgrade='七年级'
+                }
+                if(val==8){
+                    this.nowgrade='八年级'
+                }
+                if(val==9){
+                    this.nowgrade='九年级'
+                }
+                this.htmltitle+=this.nowgrade;
+            }
+
             this.initChart();
         }
 
@@ -1634,7 +1669,7 @@
             let b = echarts.init(document.getElementById('proportion' + this.gradesDetailList[i].gradeNo));
             let c = echarts.init(document.getElementById('changetrend' + this.gradesDetailList[i].gradeNo));
             a.setOption({
-              color: ['#FFCC33', '#FF9900'],
+              color: [ '#FF9900','#FFCC33'],
               tooltip: {
                 trigger: 'item',
                 formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1642,7 +1677,7 @@
               legend: {
                 orient: 'vertical',
                 x: 'left',
-                data: ['近视率', '非近视率']
+                data: ['非近视率','近视率' ]
               },
               series: [
                 {
@@ -1669,11 +1704,12 @@
                     }
                   },
                   data: [
+                      {
+                          value: this.gradesDetailList[i].coverageCount - this.gradesDetailList[i].shortSightCount,
+                          name: '非近视率'
+                      },
                     {value: this.gradesDetailList[i].shortSightCount, name: '近视率'},
-                    {
-                      value: this.gradesDetailList[i].coverageCount - this.gradesDetailList[i].shortSightCount,
-                      name: '非近视率'
-                    }
+
                   ]
                 }
               ]
@@ -1814,7 +1850,7 @@
 
          this.chart=echarts.init(this.$refs.schoolsight);
          this.chart.setOption({
-           color: ['#FFCC33','#FF9900'],
+           color: ['#FF9900','#FFCC33',],
            tooltip: {
              trigger: 'item',
              formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1822,7 +1858,7 @@
            legend: {
              orient: 'vertical',
              x: 'left',
-             data:['近视率','非近视率']
+             data:['非近视率','近视率']
            },
            series: [
              {
@@ -1849,8 +1885,9 @@
                  }
                },
                data:[
+                   {value:this.coveragecount-this.shortsightcount, name:'非近视率'},
                  {value:this.shortsightcount, name:'近视率'},
-                 {value:this.coveragecount-this.shortsightcount, name:'非近视率'}
+
                ]
              }
            ]
@@ -1894,10 +1931,10 @@
                 }
               },
               data:[
-                {value:this.normalDegree, name:'视力正常'},
-                {value:this.firstDegree, name:'轻度不良'},
-                {value:this.secondDegree, name:'中度不良'},
-                {value:this.thirdDegree, name:'重度不良'}
+                {value:this.normalwarning, name:'视力正常'},
+                {value:this.firstwarning, name:'轻度不良'},
+                {value:this.secondwarning, name:'中度不良'},
+                {value:this.thirdwarning, name:'重度不良'}
               ]
             }
           ]
@@ -2197,10 +2234,11 @@
                 }
               },
               data:[
+                  {value:this.normalwarning, name:'视力正常'},
                 {value:this.firstwarning, name:'轻度视力不良'},
                 {value:this.secondwarning, name:'中度视力不良'},
                 {value:this.thirdwarning, name:'重度视力不良'},
-                {value:this.normalwarning, name:'视力正常'}
+
               ]
             }
           ]
@@ -2289,21 +2327,21 @@
           series : [
 
             {
-              name:'视力正常',
+              name:'视力正常(%)',
               type:'line',
               // stack: '总量',
               // areaStyle: {normal: {}},
               data:this.normalDegreeList2
             },
             {
-              name:'轻度不良',
+              name:'轻度不良(%)',
               type:'line',
               // stack: '总量',
               // areaStyle: {normal: {}},
               data:this.firstDegreeList2
             },
             {
-              name:'中度不良',
+              name:'中度不良(%)',
               type:'line',
               // stack: '总量',
               // areaStyle: {normal: {}},
@@ -2311,7 +2349,7 @@
             },
 
             {
-              name:'重度不良',
+              name:'重度不良(%)',
               type:'line',
               // stack: '总量',
               // label: {
@@ -2324,7 +2362,7 @@
               data:this.thirdDegreeList2
             },
             {
-              name:'近视率',
+              name:'近视率(%)',
               type:'line',
               // stack: '总量',
               // areaStyle: {normal: {}},
@@ -2380,6 +2418,11 @@
             }
           ],
           series: [
+              {
+                  name: '视力正常',
+                  type: 'bar',
+                  data: this.normalDegreeListBySchoolType
+              },
             {
               name: '轻度视力不良',
               type: 'bar',
@@ -2397,11 +2440,7 @@
               type: 'bar',
               data: this.thirdDegreeListBySchoolType
             },
-            {
-              name: '视力正常',
-              type: 'bar',
-              data: this.normalDegreeListBySchoolType
-            }
+
           ]
         };
         this.chart10=echarts.init(this.$refs.schoolStatistic);
