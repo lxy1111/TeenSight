@@ -55,7 +55,7 @@
 <!--          <el-form-item><el-button type="primary"  round @click="refresh">刷新</el-button></el-form-item>-->
 
           <el-form-item><el-button type="primary"  round @click="handlereset">重置</el-button></el-form-item>
-          <el-form-item v-if="!ishidden"> <el-button type="primary" round  v-on:click="getPdf(htmltitle)">下载PDF报告</el-button></el-form-item>
+          <el-form-item v-if="!ishidden"> <el-button type="primary" round  v-on:click="getPdf2(htmltitle)">下载PDF报告</el-button></el-form-item>
         </el-row>
       </el-form>
     <div class="retrieval  criteria Style" id="pdfDom">
@@ -359,86 +359,135 @@
         <el-breadcrumb separator="" class="bread-title" >
           <el-breadcrumb-item  style="font-size: xx-large" >{{item.gradeNo}}年级</el-breadcrumb-item>
         </el-breadcrumb>
-            <el-form :model="form" label-width="160px">
-          <el-row type="flex" class="row-bg" justify="right">
-            <el-col :span="4" >
-              <span  ></span>
-            </el-col>
-            <el-col :span="4" >
-              <span  >筛查覆盖率(筛查参与情况)%</span>
-            </el-col>
-            <el-col :span="4" >
-              <span  >视力正常(5.0(1.0)及以上)</span>
-            </el-col>
-            <el-col :span="4" >
-              <span  >轻度不良(4.8(0.6)-4.9(0.8))</span>
-            </el-col>
-            <el-col :span="4" >
-              <span  >中度不良(4.5(0.3)-4.7(0.5))</span>
-            </el-col>
-            <el-col :span="4" >
-              <span  >重度不良(4.5(0.3)以下</span>
-            </el-col>
-            <el-col :span="4" >
-              <span  >近视</span>
-            </el-col>
-            <el-col :span="4" >
-              <span  >非近视</span>
-            </el-col>
-          </el-row>
-          <el-row type="flex" class="row-bg" justify="right">
-            <el-col :span="3" >
-              <span style="text-align: center" >比率</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{item.coverageRate*100}}</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{item.warningRes.normalDegree*100}}</span>
-            </el-col>
-            <el-col :span="3" >
-            <span  >{{item.warningRes.firstDegree*100}}</span>
-          </el-col>
-            <el-col :span="3" >
-              <span  >{{item.warningRes.secondDegree*100}}</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{item.warningRes.thirdDegree*100}}</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{item.shortSightRate*100}}</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{100-item.shortSightRate*100}}</span>
-            </el-col>
-          </el-row>
-          <el-row type="flex" class="row-bg" justify="right">
-            <el-col :span="3" >
-              <span style="text-align: center">人数</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{item.coverageCount}}</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{item.warningRes.normalDegreeCount}}</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{item.warningRes.firstDegreeCount}}</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{item.warningRes.secondDegreeCount}}</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{item.warningRes.thirdDegreeCount}}</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{item.shortSightCount}}</span>
-            </el-col>
-            <el-col :span="3" >
-              <span  >{{item.coverageCount-item.shortSightCount}}</span>
-            </el-col>
-          </el-row>
-            </el-form>
+          <el-table
+                  ref="multipleTable"
+                  :data="item.smallTable"
+                  border
+                  tooltip-effect="dark"
+                  style="width: 100%">
+            <el-table-column
+                    prop="type"
+                    show-overflow-tooltip
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="coverageRate"
+                    label="筛查覆盖率(筛查参与情况)%"
+                    show-overflow-tooltip
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="normalDegree"
+                    label="视力正常(5.0(1.0)及以上)"
+                    show-overflow-tooltip align="center">
+            </el-table-column>
+
+            <el-table-column
+                    prop="firstDegree"
+                    label="轻度不良(4.8(0.6)-4.9(0.8))"
+                    show-overflow-tooltip align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="secondDegree"
+                    label="中度不良(4.5(0.3)-4.7(0.5))"
+                    show-overflow-tooltip align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="thirdDegree"
+                    label="重度不良(4.5(0.3)以下"
+                    show-overflow-tooltip align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="shortSightRate"
+                    label="近视"
+                    show-overflow-tooltip align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="normalSightRate"
+                    label="非近视"
+                    show-overflow-tooltip align="center">
+            </el-table-column>
+          </el-table>
+<!--            <el-form :model="form" label-width="160px">-->
+<!--          <el-row type="flex" class="row-bg" justify="right">-->
+<!--            <el-col :span="4" >-->
+<!--              <span  ></span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="4" >-->
+<!--              <span  >筛查覆盖率(筛查参与情况)%</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="4" >-->
+<!--              <span  >视力正常(5.0(1.0)及以上)</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="4" >-->
+<!--              <span  >轻度不良(4.8(0.6)-4.9(0.8))</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="4" >-->
+<!--              <span  >中度不良(4.5(0.3)-4.7(0.5))</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="4" >-->
+<!--              <span  >重度不良(4.5(0.3)以下</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="4" >-->
+<!--              <span  >近视</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="4" >-->
+<!--              <span  >非近视</span>-->
+<!--            </el-col>-->
+<!--          </el-row>-->
+<!--          <el-row type="flex" class="row-bg" justify="right">-->
+<!--            <el-col :span="3" >-->
+<!--              <span style="text-align: center" >比率</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.coverageRate*100}}</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.warningRes.normalDegree*100}}</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--            <span  >{{item.warningRes.firstDegree*100}}</span>-->
+<!--          </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.warningRes.secondDegree*100}}</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.warningRes.thirdDegree*100}}</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.shortSightRate*100}}</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{100-item.shortSightRate*100}}</span>-->
+<!--            </el-col>-->
+<!--          </el-row>-->
+<!--          <el-row type="flex" class="row-bg" justify="right">-->
+<!--            <el-col :span="3" >-->
+<!--              <span style="text-align: center">人数</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.coverageCount}}</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.warningRes.normalDegreeCount}}</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.warningRes.firstDegreeCount}}</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.warningRes.secondDegreeCount}}</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.warningRes.thirdDegreeCount}}</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.shortSightCount}}</span>-->
+<!--            </el-col>-->
+<!--            <el-col :span="3" >-->
+<!--              <span  >{{item.coverageCount-item.shortSightCount}}</span>-->
+<!--            </el-col>-->
+<!--          </el-row>-->
+<!--            </el-form>-->
         <el-form :model="form" label-width="160px">
           <el-row type="flex" class="row-bg" justify="right">
             <el-col :span="12" align="left">
@@ -1288,6 +1337,7 @@
           this.poorsightcount=res.data.result.poorSightCount;
           this.shortsightcount=res.data.result.shortSightCount;
           this.coveragecount=res.data.result.coverageCount;
+          this.shortsightrate=poorsightrate;
 
           this.smalltable[0].poorSightRate=poorsightrate;
           this.smalltable[0].normalSightRate=normalsightrate;
@@ -1642,8 +1692,8 @@
         });
       },
 
-      initChart(){
-        if(this.gradesDetailList!=null) {
+      initChart() {
+        if (this.gradesDetailList != null) {
           for (var i = 0; i < this.gradesDetailList.length; i++) {
             let first = [];
             let second = [];
@@ -1669,7 +1719,7 @@
             let b = echarts.init(document.getElementById('proportion' + this.gradesDetailList[i].gradeNo));
             let c = echarts.init(document.getElementById('changetrend' + this.gradesDetailList[i].gradeNo));
             a.setOption({
-              color: [ '#FF9900','#FFCC33'],
+              color: ['#FF9900', '#FFCC33'],
               tooltip: {
                 trigger: 'item',
                 formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1677,7 +1727,8 @@
               legend: {
                 orient: 'vertical',
                 x: 'left',
-                data: ['非近视率','近视率' ]
+                data: ['非近视率: ' + (100 - this.gradesDetailList[i].shortSightRate * 100 + '%'),
+                  '近视率: ' + this.gradesDetailList[i].shortSightRate * 100 + '%']
               },
               series: [
                 {
@@ -1704,11 +1755,14 @@
                     }
                   },
                   data: [
-                      {
-                          value: this.gradesDetailList[i].coverageCount - this.gradesDetailList[i].shortSightCount,
-                          name: '非近视率'
-                      },
-                    {value: this.gradesDetailList[i].shortSightCount, name: '近视率'},
+                    {
+                      value: this.gradesDetailList[i].coverageCount - this.gradesDetailList[i].shortSightCount,
+                      name: '非近视率: ' + (100 - this.gradesDetailList[i].shortSightRate * 100) + '%'
+                    },
+                    {
+                      value: this.gradesDetailList[i].shortSightCount,
+                      name: '近视率: ' + this.gradesDetailList[i].shortSightRate * 100 + '%'
+                    },
 
                   ]
                 }
@@ -1723,7 +1777,7 @@
               legend: {
                 orient: 'vertical',
                 x: 'left',
-                data: ['视力正常', '轻度不良', '中度不良', '重度不良']
+                data: ['视力正常: ' + this.gradesDetailList[i].warningRes.normalDegree * 100 + '%', '轻度不良: ' + this.gradesDetailList[i].warningRes.firstDegree * 100 + '%', '中度不良: ' + this.gradesDetailList[i].warningRes.secondDegree * 100 + '%', '重度不良: ' + this.gradesDetailList[i].warningRes.thirdDegree * 100 + '%']
               },
               series: [
                 {
@@ -1750,10 +1804,22 @@
                     }
                   },
                   data: [
-                    {value: this.gradesDetailList[i].warningRes.normalDegree, name: '视力正常'},
-                    {value: this.gradesDetailList[i].warningRes.firstDegree, name: '轻度不良'},
-                    {value: this.gradesDetailList[i].warningRes.secondDegree, name: '中度不良'},
-                    {value: this.gradesDetailList[i].warningRes.thirdDegree, name: '重度不良'}
+                    {
+                      value: this.gradesDetailList[i].warningRes.normalDegreeCount,
+                      name: '视力正常: ' + this.gradesDetailList[i].warningRes.normalDegree * 100 + '%'
+                    },
+                    {
+                      value: this.gradesDetailList[i].warningRes.firstDegreeCount,
+                      name: '轻度不良: ' + this.gradesDetailList[i].warningRes.firstDegree * 100 + '%'
+                    },
+                    {
+                      value: this.gradesDetailList[i].warningRes.secondDegreeCount,
+                      name: '中度不良: ' + this.gradesDetailList[i].warningRes.secondDegree * 100 + '%'
+                    },
+                    {
+                      value: this.gradesDetailList[i].warningRes.thirdDegreeCount,
+                      name: '重度不良: ' + this.gradesDetailList[i].warningRes.thirdDegree * 100 + '%'
+                    }
                   ]
                 }
               ]
@@ -1848,55 +1914,9 @@
         }
 
 
-         this.chart=echarts.init(this.$refs.schoolsight);
-         this.chart.setOption({
-           color: ['#FF9900','#FFCC33',],
-           tooltip: {
-             trigger: 'item',
-             formatter: "{a} <br/>{b}: {c} ({d}%)"
-           },
-           legend: {
-             orient: 'vertical',
-             x: 'left',
-             data:['非近视率','近视率']
-           },
-           series: [
-             {
-               name:'访问来源',
-               type:'pie',
-               radius: ['50%', '70%'],
-               avoidLabelOverlap: false,
-               label: {
-                 normal: {
-                   show: false,
-                   position: 'center'
-                 },
-                 emphasis: {
-                   show: true,
-                   textStyle: {
-                     fontSize: '30',
-                     fontWeight: 'bold'
-                   }
-                 }
-               },
-               labelLine: {
-                 normal: {
-                   show: false
-                 }
-               },
-               data:[
-                   {value:this.coveragecount-this.shortsightcount, name:'非近视率'},
-                 {value:this.shortsightcount, name:'近视率'},
-
-               ]
-             }
-           ]
-         });
-
-
-        this.chart2=echarts.init(this.$refs.warning);
-        this.chart2.setOption({
-          color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
+        this.chart = echarts.init(this.$refs.schoolsight);
+        this.chart.setOption({
+          color: ['#FF9900', '#FFCC33',],
           tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -1904,12 +1924,12 @@
           legend: {
             orient: 'vertical',
             x: 'left',
-            data:['视力正常','轻度不良','中度不良','重度不良']
+            data: ['非近视率: ' + (100 - this.shortsightrate) + '%', '近视率: ' + this.shortsightrate + '%']
           },
           series: [
             {
-              name:'访问来源',
-              type:'pie',
+              name: '访问来源',
+              type: 'pie',
               radius: ['50%', '70%'],
               avoidLabelOverlap: false,
               label: {
@@ -1930,11 +1950,57 @@
                   show: false
                 }
               },
-              data:[
-                {value:this.normalwarning, name:'视力正常'},
-                {value:this.firstwarning, name:'轻度不良'},
-                {value:this.secondwarning, name:'中度不良'},
-                {value:this.thirdwarning, name:'重度不良'}
+              data: [
+                {value: this.coveragecount - this.shortsightcount, name: '非近视率: ' + (100 - this.shortsightrate) + '%'},
+                {value: this.shortsightcount, name: '近视率: ' + this.shortsightrate + '%'},
+
+              ]
+            }
+          ]
+        });
+
+
+        this.chart2 = echarts.init(this.$refs.warning);
+        this.chart2.setOption({
+          color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
+          tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+          },
+          legend: {
+            orient: 'vertical',
+            x: 'left',
+            data: ['视力正常: ' + this.normalDegree * 100 + '%', '轻度不良: ' + this.firstDegree * 100 + '%', '中度不良: ' + this.secondDegree * 100 + '%', '重度不良: ' + this.thirdDegree * 100 + '%']
+          },
+          series: [
+            {
+              name: '访问来源',
+              type: 'pie',
+              radius: ['50%', '70%'],
+              avoidLabelOverlap: false,
+              label: {
+                normal: {
+                  show: false,
+                  position: 'center'
+                },
+                emphasis: {
+                  show: true,
+                  textStyle: {
+                    fontSize: '30',
+                    fontWeight: 'bold'
+                  }
+                }
+              },
+              labelLine: {
+                normal: {
+                  show: false
+                }
+              },
+              data: [
+                {value: this.normalwarning, name: '视力正常: ' + this.normalDegree * 100 + '%'},
+                {value: this.firstwarning, name: '轻度不良: ' + this.firstDegree * 100 + '%'},
+                {value: this.secondwarning, name: '中度不良: ' + this.secondDegree * 100 + '%'},
+                {value: this.thirdwarning, name: '重度不良: ' + this.thirdDegree * 100 + '%'}
               ]
             }
           ]
@@ -1968,7 +2034,7 @@
             {
               type: 'category',
               axisTick: {show: false},
-              data:this.gradeslist
+              data: this.gradeslist
             }
           ],
           yAxis: [
@@ -2003,7 +2069,7 @@
           ]
         };
 
-        this.chart3=echarts.init(this.$refs.gradestatistic);
+        this.chart3 = echarts.init(this.$refs.gradestatistic);
         this.chart3.setOption(option);
         // this.chart3.setOption({
         //   color: ['#3398DB'],
@@ -2077,7 +2143,7 @@
             {
               type: 'category',
               axisTick: {show: false},
-              data:['男','女']
+              data: ['男', '女']
             }
           ],
           yAxis: [
@@ -2112,7 +2178,7 @@
 
           ]
         };
-        this.chart4=echarts.init(this.$refs.genderstatistic);
+        this.chart4 = echarts.init(this.$refs.genderstatistic);
         this.chart4.setOption(option2);
         // this.chart4.setOption({
         //   color: ['#3398DB'],
@@ -2154,9 +2220,9 @@
         //     }
         //   ]
         // });
-        this.chart5=echarts.init(this.$refs.specificgrade);
+        this.chart5 = echarts.init(this.$refs.specificgrade);
         this.chart5.setOption({
-          color: ['#FFCC33','#FF9900'],
+          color: ['#FFCC33', '#FF9900'],
           tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -2164,12 +2230,12 @@
           legend: {
             orient: 'vertical',
             x: 'left',
-            data:['近视率','非近视率']
+            data: ['近视率', '非近视率']
           },
           series: [
             {
-              name:'访问来源',
-              type:'pie',
+              name: '访问来源',
+              type: 'pie',
               radius: ['50%', '70%'],
               avoidLabelOverlap: false,
               label: {
@@ -2190,14 +2256,14 @@
                   show: false
                 }
               },
-              data:[
-                {value:this.poorsightcount, name:'近视率'},
-                {value:this.coveragecount-this.poorsightcount, name:'非近视率'}
+              data: [
+                {value: this.poorsightcount, name: '近视率'},
+                {value: this.coveragecount - this.poorsightcount, name: '非近视率'}
               ]
             }
           ]
         });
-        this.chart6=echarts.init(this.$refs.gradewarning);
+        this.chart6 = echarts.init(this.$refs.gradewarning);
         this.chart6.setOption({
           color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
           tooltip: {
@@ -2207,12 +2273,12 @@
           legend: {
             orient: 'vertical',
             x: 'left',
-            data:['视力正常','轻度视力不良','中度视力不良','重度视力不良']
+            data: ['视力正常', '轻度视力不良', '中度视力不良', '重度视力不良']
           },
           series: [
             {
-              name:'访问来源',
-              type:'pie',
+              name: '访问来源',
+              type: 'pie',
               radius: ['50%', '70%'],
               avoidLabelOverlap: false,
               label: {
@@ -2233,11 +2299,11 @@
                   show: false
                 }
               },
-              data:[
-                  {value:this.normalwarning, name:'视力正常'},
-                {value:this.firstwarning, name:'轻度视力不良'},
-                {value:this.secondwarning, name:'中度视力不良'},
-                {value:this.thirdwarning, name:'重度视力不良'},
+              data: [
+                {value: this.normalwarning, name: '视力正常'},
+                {value: this.firstwarning, name: '轻度视力不良'},
+                {value: this.secondwarning, name: '中度视力不良'},
+                {value: this.thirdwarning, name: '重度视力不良'},
 
               ]
             }
@@ -2288,8 +2354,8 @@
 
 
         var option3 = {
-          color: ['#FF9900', '#FFCC33', '#66CC00','#3399CC', '#e5323e'],
-          tooltip : {
+          color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC', '#e5323e'],
+          tooltip: {
             trigger: 'axis',
             axisPointer: {
               type: 'cross',
@@ -2299,7 +2365,7 @@
             }
           },
           legend: {
-            data:['视力正常','轻度不良','中度不良','重度不良','近视率']
+            data: ['视力正常', '轻度不良', '中度不良', '重度不良', '近视率']
           },
           toolbox: {
             feature: {
@@ -2312,45 +2378,45 @@
             bottom: '3%',
             containLabel: true
           },
-          xAxis : [
+          xAxis: [
             {
-              type : 'category',
-              boundaryGap : false,
-              data : this.surveyNameList
+              type: 'category',
+              boundaryGap: false,
+              data: this.surveyNameList
             }
           ],
-          yAxis : [
+          yAxis: [
             {
-              type : 'value'
+              type: 'value'
             }
           ],
-          series : [
+          series: [
 
             {
-              name:'视力正常(%)',
-              type:'line',
+              name: '视力正常(%)',
+              type: 'line',
               // stack: '总量',
               // areaStyle: {normal: {}},
-              data:this.normalDegreeList2
+              data: this.normalDegreeList2
             },
             {
-              name:'轻度不良(%)',
-              type:'line',
+              name: '轻度不良(%)',
+              type: 'line',
               // stack: '总量',
               // areaStyle: {normal: {}},
-              data:this.firstDegreeList2
+              data: this.firstDegreeList2
             },
             {
-              name:'中度不良(%)',
-              type:'line',
+              name: '中度不良(%)',
+              type: 'line',
               // stack: '总量',
               // areaStyle: {normal: {}},
-              data:this.secondDegreeList2
+              data: this.secondDegreeList2
             },
 
             {
-              name:'重度不良(%)',
-              type:'line',
+              name: '重度不良(%)',
+              type: 'line',
               // stack: '总量',
               // label: {
               //   normal: {
@@ -2359,23 +2425,22 @@
               //   }
               // },
               // areaStyle: {normal: {}},
-              data:this.thirdDegreeList2
+              data: this.thirdDegreeList2
             },
             {
-              name:'近视率(%)',
-              type:'line',
+              name: '近视率(%)',
+              type: 'line',
               // stack: '总量',
               // areaStyle: {normal: {}},
-              data:this.shortList
+              data: this.shortList
             },
           ]
         };
 
 
-
-        this.chart8=echarts.init(this.$refs.trend);
+        this.chart8 = echarts.init(this.$refs.trend);
         // this.chart9=echarts.init(this.$refs.trend2);
-        this.chart10=echarts.init(this.$refs.trend3);
+        this.chart10 = echarts.init(this.$refs.trend3);
         this.chart8.setOption(option3);
         // this.chart9.setOption(option3);
         this.chart10.setOption(option3);
@@ -2409,7 +2474,7 @@
             {
               type: 'category',
               axisTick: {show: false},
-              data:['小学','初中','高中']
+              data: ['小学', '初中', '高中']
             }
           ],
           yAxis: [
@@ -2418,11 +2483,11 @@
             }
           ],
           series: [
-              {
-                  name: '视力正常',
-                  type: 'bar',
-                  data: this.normalDegreeListBySchoolType
-              },
+            {
+              name: '视力正常',
+              type: 'bar',
+              data: this.normalDegreeListBySchoolType
+            },
             {
               name: '轻度视力不良',
               type: 'bar',
@@ -2440,10 +2505,9 @@
               type: 'bar',
               data: this.thirdDegreeListBySchoolType
             },
-
           ]
         };
-        this.chart10=echarts.init(this.$refs.schoolStatistic);
+        this.chart10 = echarts.init(this.$refs.schoolStatistic);
         this.chart10.setOption(option4);
         var option5 = {
           color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
@@ -2474,7 +2538,7 @@
             {
               type: 'category',
               axisTick: {show: false},
-              data:this.schoolListByIns
+              data: this.schoolListByIns
             }
           ],
           yAxis: [
@@ -2509,8 +2573,93 @@
 
           ]
         };
-        this.chart11=echarts.init(this.$refs.schoolListStatistic);
-        this.chart11.setOption(option5);
+
+        var schooloption = {
+          color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
+          tooltip : {
+            trigger: 'axis',
+            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+              type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+          },
+          legend: {
+            data: ['视力正常', '轻度视力不良','中度视力不良','重度视力不良']
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          xAxis:  {
+            type: 'value'
+          },
+          yAxis: {
+            type: 'category',
+            data: this.schoolListByIns,
+          },
+          series: [
+            {
+              name: '视力正常',
+              type: 'bar',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'inside'
+                }
+              },
+              data: this.normalDegreeListBySchool
+            },
+            {
+              name: '轻度视力不良',
+              type: 'bar',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'inside'
+                }
+              },
+              data:  this.firstDegreeListBySchool
+            },
+            {
+              name: '中度视力不良',
+              type: 'bar',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'inside'
+                }
+              },
+              data: this.secondDegreeListBySchool
+            },
+            {
+              name: '重度视力不良',
+              type: 'bar',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'inside'
+                }
+              },
+              data:  this.thirdDegreeListBySchool
+            }
+          ]
+        };
+
+        let chartName = echarts.init(document.getElementById('schoolListStatistic'));
+        chartName.setOption(schooloption);
+        let autoHeight = schooloption.yAxis.data.length * 30 + 150; // counst.length为柱状图的条数，即数据长度。35为我给每个柱状图的高度，50为柱状图x轴内容的高度(大概的)。
+        chartName.getDom().style.height = autoHeight + "px";
+        // chartName.getDom().childNodes[0].style.height = autoHeight + "px";
+        // chartName.getDom().childNodes[0].childNodes[0].setAttribute("height",autoHeight);
+        // chartName.getDom().childNodes[0].childNodes[0].style.height = autoHeight + "px";
+        chartName.resize();
+        // this.chart11=echarts.init(this.$refs.schoolListStatistic);
+        // this.chart11.setOption(schooloption);
 
         // this.chart8.setOption({
         //   tooltip : {
@@ -2681,7 +2830,7 @@
   }
   #schoolListStatistic{
     width: 1080px;
-    height: 400px;
+    /*height: 400px;*/
   }
   #gender{
     width: 400px;
