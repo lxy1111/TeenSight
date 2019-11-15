@@ -442,7 +442,7 @@
       addSubmit: function () {
         this.$refs.addForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm('确定学籍信息都已经输入完备，确定后进行新建普查', '提示', {}).then(() => {
               this.addLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.addForm);
