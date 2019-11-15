@@ -3,7 +3,7 @@ import dev from '../../config/dev.env'
 
 let base = '';
 
-axios.defaults.baseURL="https://www.suporeiot.cn:8085";
+axios.defaults.baseURL="http://www.suporeiot.cn:8085";
 
 
 export const upgrade = params => { return axios.post(`/api/teacher/upgrade`, params).then(res => res.data); };

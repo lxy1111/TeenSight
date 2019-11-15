@@ -12,7 +12,7 @@
 <script>
     import XLSX from 'xlsx'
     export default {
-        props: {
+         props: {
             beforeUpload: Function, // eslint-disable-line
             onSuccess: Function// eslint-disable-line
         },
