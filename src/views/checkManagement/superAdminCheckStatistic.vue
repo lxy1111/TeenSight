@@ -1388,10 +1388,10 @@
           if(res.data.result.schoolList!=null&&res.data.result.schoolList.length>=0) {
                 for(let i=0;i<res.data.result.schoolList.length;i++){
                     this.schoolListByIns.push(res.data.result.schoolList[i].schoolName);
-                     this.firstDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.firstDegreeCount);
-                  this.secondDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.secondDegreeCount);
-                  this.thirdDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.thirdDegreeCount);
-                  this.normalDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.normalDegreeCount);
+                     this.firstDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.firstDegree*100);
+                  this.secondDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.secondDegree*100);
+                  this.thirdDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.thirdDegree*100);
+                  this.normalDegreeListBySchool.push(res.data.result.schoolList[i].warningRes.normalDegree*100);
                 }
           }
 

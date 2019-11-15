@@ -177,8 +177,11 @@
 				if(user.type==0){
 					this.role='/superAdmin'
 				}
-				else if(user.type==1||user.type==2){
+				else if(user.type==2){
 					this.role='/institute'
+				}
+				else if(user.type==1){
+					this.role='/checkInstitute'
 				}
 				else if(user.type>=3){
 					this.role='/school'

@@ -147,7 +147,11 @@
                         }
                         sessionStorage.setItem('institute', JSON.stringify(institutiondetail));
                         sessionStorage.setItem('schools', JSON.stringify(schoollist));
-                        this.$router.push({path: '/institute/instituteSchoolManagement'});
+                        if(type==2) {
+                            this.$router.push({path: '/institute/instituteSchoolManagement'});
+                        }else if(type==1){
+                            this.$router.push({path: '/checkInstitute/instituteSchoolManagement'});
+                        }
                     })
 
                 }

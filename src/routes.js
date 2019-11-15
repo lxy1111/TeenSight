@@ -154,6 +154,33 @@ let routes = [
             { path: '/institute/instituteAvailableDevices', component: superAdminAvailableDevices, name: '可用设备' }
         ]
     },
+
+
+    {
+        path: '/checkInstitute',
+        component: Home,
+        name: '档案管理',
+        iconCls: 'el-icon-message',//图标样式class
+        children: [
+            { path: '/checkInstitute/instituteSchoolManagement', component: superAdminSchoolManagement, name: '学校信息' },
+            { path: '/checkInstitute/instituteGradeManagement', component: superAdminGradeManagement, name: '年级信息' },
+            { path: '/checkInstitute/instituteStudentsManagement', component: superAdminStudentsManagement, name: '学生信息' },
+            { path: '/checkInstitute/instituteStudentDetail', component: superAdminStudentDetail,hidden:true,name:'个人信息'},
+            { path: '/checkInstitute/instituteSightData', component: superAdminSightData,hidden:true,name:'屈光档案'},
+            { path: '/checkInstitute/instituteSightData', component: superAdminSightData,hidden:true,name:'历史记录'},
+        ]
+    },
+    {
+        path: '/checkInstitute',
+        component: Home,
+        name: '普查管理',
+        iconCls: 'fa fa-id-card-o',
+        children: [
+            { path: '/checkInstitute/instituteCheckStatistics', component: superAdminCheckStatistic, name: '普查统计' },
+            { path: '/checkInstitute/instituteCheckActivity', component: superAdminCheckActivity, name: '普查活动' }
+        ]
+    },
+
     {
         path: '/school',
         component: Home,
