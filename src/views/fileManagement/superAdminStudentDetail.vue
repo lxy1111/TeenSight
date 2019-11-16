@@ -235,6 +235,9 @@
                 <el-form-item label="年级">
                     <el-input :disabled="isAdmin" v-model="editForm.gradeNo" auto-complete="off"></el-input>
                 </el-form-item>
+                <el-form-item label="是否毕业">
+                    <el-input :disabled="isAdmin" v-model="editForm.remark" auto-complete="off"></el-input>
+                </el-form-item>
 
 
                 <el-form-item label="班级">
@@ -733,10 +736,17 @@
                             modifyStudents(para).then((res) => {
                                 this.editLoading = false;
                                 //NProgress.done();
-                                this.$message({
-                                    message: '提交成功',
-                                    type: 'success'
-                                });
+                                if(res.succeed!=true){
+                                    this.$message({
+                                        message: res.codeMessage,
+                                        type: 'success'
+                                    });
+                                }else {
+                                    this.$message({
+                                        message: '提交成功',
+                                        type: 'success'
+                                    });
+                                }
                                 this.$refs['editForm'].resetFields();
                                 this.editFormVisible = false;
                                 this.getUsers();
