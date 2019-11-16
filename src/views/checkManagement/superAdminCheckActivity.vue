@@ -96,7 +96,7 @@
         </el-form-item>
 
         <el-form-item label="备注">
-          <el-input type="textarea" v-model="editForm.remark"></el-input>
+          <el-input  type="textarea" v-model="editForm.remark"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -133,7 +133,7 @@
         </el-form-item>
 
         <el-form-item label="备注">
-          <el-input type="textarea" v-model="addForm.remark"></el-input>
+          <el-input type="textarea"  v-model="addForm.remark"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -463,7 +463,7 @@
                 //NProgress.done();
                 if(!res.succeed){
                   this.$message({
-                    message:'重复创建！',
+                    message:res.codeMessage,
                     type:'error'
                   })
                 }else {
