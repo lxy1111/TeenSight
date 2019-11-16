@@ -170,6 +170,7 @@
 		},
 		mounted() {
 			var user = sessionStorage.getItem('user');
+
 			if (user) {
 				user = JSON.parse(user);
 				this.sysUserName = user.name || '';
@@ -179,12 +180,21 @@
 				}
 				else if(user.type==2){
 					this.role='/institute'
+					var ins=sessionStorage.getItem('institute')
+					ins=JSON.parse(ins);
+					this.sysUserName=ins.insDetail.insName
 				}
 				else if(user.type==1){
 					this.role='/checkInstitute'
+					var ins=sessionStorage.getItem('institute')
+					ins=JSON.parse(ins);
+					this.sysUserName=ins.insDetail.insName
 				}
 				else if(user.type>=3){
+					var school=sessionStorage.getItem('schoolinfo')
+					school=JSON.parse(school)
 					this.role='/school'
+					this.sysUserName=school.schoolName
 				}
 			}
 		}

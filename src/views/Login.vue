@@ -47,7 +47,7 @@
 </template>
 
 <script>
-    import {getInstituteDetail, requestLogin} from '../api/api';
+    import {getInstituteDetail, getSchoolDetail, requestLogin} from '../api/api';
   import globalvariable from '../global'
   //import NProgress from 'nprogress'
   export default {
@@ -140,10 +140,10 @@
                     getInstituteDetail(para).then(res=>{
                          schoolList=res.data.result.schoolList;
                          let schoollist={
-                             schools : schoolList
+                             schools: schoolList
                          }
                         let institutiondetail={
-                            insDetail:res.data.result
+                            insDetail:res.data.result,
                         }
                         sessionStorage.setItem('institute', JSON.stringify(institutiondetail));
                         sessionStorage.setItem('schools', JSON.stringify(schoollist));
@@ -157,11 +157,19 @@
                 }
                 else {
                     let schoolid=data.result.schoolId;
-                    let schooinfo={
-                        schoolId:schoolid
-                    }
-                    sessionStorage.setItem('schoolinfo', JSON.stringify(schooinfo));
-                    this.$router.push({path: '/school/schoolGradeManagement'});
+
+                     let para={
+                        id:schoolid
+                     }
+                     getSchoolDetail(para).then(res=>{
+                         let schooinfo={
+                             schoolId:schoolid,
+                             schoolName:res.data.result.schoolName
+                         }
+                         sessionStorage.setItem('schoolinfo', JSON.stringify(schooinfo));
+                         this.$router.push({path: '/school/schoolGradeManagement'});
+
+                     })
                 }
               }
             });
