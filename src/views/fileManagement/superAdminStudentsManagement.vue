@@ -592,7 +592,6 @@
                      })
                    }
 
-
             this.getStudentsList();
                   }
           )
@@ -791,7 +790,7 @@
                   console.log(res);
                   this.students = res.data.result.items;
                   for(let i=0;i<this.students.length;i++){
-                    if(this.students[i].remark!=null){
+                    if(this.students[i].remark!=null&&this.students[i].remark.length>0){
                       this.students[i].gradeNo=this.students[i].remark;
                     }
                   }
