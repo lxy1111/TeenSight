@@ -739,7 +739,7 @@
                                 if(res.succeed!=true){
                                     this.$message({
                                         message: res.codeMessage,
-                                        type: 'success'
+                                        type: 'error'
                                     });
                                 }else {
                                     this.$message({

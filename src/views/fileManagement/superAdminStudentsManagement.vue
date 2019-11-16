@@ -587,7 +587,7 @@
                     console.log(res);
                    if(res.result!=true){
                      this.$message({
-                       message:'出错',
+                       message:res.codeMessage,
                        type:'error'
                      })
                    }
