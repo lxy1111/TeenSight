@@ -15,8 +15,8 @@
         <el-form-item prop="schoolPassword">
             <el-input class="login-input" type="password" v-model="ruleForm.schoolPassword" auto-complete="off" placeholder="设置您的登录密码"></el-input>
         </el-form-item>
-        <el-form-item prop="repeatPassword">
-            <el-input class="login-input" type="password" v-model="ruleForm.repeatPassword" auto-complete="off" placeholder="请再次输入您的登录密码"></el-input>
+        <el-form-item prop="repeatSchoolPassword">
+            <el-input class="login-input" type="password" v-model="ruleForm.repeatSchoolPassword" auto-complete="off" placeholder="请再次输入您的登录密码"></el-input>
         </el-form-item>
         <el-form-item prop="schoolPhone">
             <el-input class="login-input" type="text" v-model="ruleForm.schoolPhone" auto-complete="off" placeholder="请输入手机号"></el-input>
@@ -263,14 +263,15 @@
                         { required: true, message: '请输入密码', trigger: 'blur' },
                         //{ validator: validaePass2 }
                     ],
-                    repeatPassword: [
-                        { required: true, message: '请输入密码', trigger: 'blur' },
-                        //{ validator: validaePass2 }
-                    ],
                     schoolName: [
                         { required: true, message: '请输入学校名称', trigger: 'blur' },
                         //{ validator: validaePass2 }
                     ],
+                    repeatSchoolPassword: [
+                        { required: true, message: '请输入密码', trigger: 'blur' },
+                        //{ validator: validaePass2 }
+                    ],
+
                     schoolType: [
                         { required: true, message: '请选择学校类型', trigger: 'blur' },
                         //{ validator: validaePass2 }
@@ -448,7 +449,7 @@
             nextStep(){
                 this.schoolist=[];
                 this.$refs.ruleForm.validate((valid) => {
-                    if(this.ruleForm.schoolPassword!=this.ruleForm.repeatPassword){
+                    if(this.ruleForm.schoolPassword!=this.ruleForm.repeatSchoolPassword){
                         this.$message.error('两次输入密码不一致!');
                         return ;
                     }

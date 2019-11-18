@@ -316,6 +316,13 @@
           removeNotice(para).then((res) => {
             this.listLoading = false;
             //NProgress.done();
+            if(res.succeed==false){
+              this.$message({
+                message: res.codeMessage,
+                type: 'error'
+              });
+              return;
+            }
             this.$message({
               message: '删除成功',
               type: 'success'
@@ -377,6 +384,13 @@
               addNotice(para).then((res) => {
                 this.addLoading = false;
                 //NProgress.done();
+                if(res.succeed==false){
+                  this.$message({
+                    message: res.codeMessage,
+                    type: 'error'
+                  });
+                  return;
+                }
                 this.$message({
                   message: '提交成功',
                   type: 'success'
