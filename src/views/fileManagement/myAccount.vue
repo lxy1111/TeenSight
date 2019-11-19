@@ -362,7 +362,7 @@
                                 if(res.succeed!=true){
                                     this.$message({
                                         message: res.codeMessage,
-                                        type: 'success'
+                                        type: 'error'
                                     });
                                     return;
                                 }
@@ -391,7 +391,7 @@
                                 if(res.succeed!=true){
                                     this.$message({
                                         message: res.codeMessage,
-                                        type: 'success'
+                                        type: 'error'
                                     });
                                     return;
                                 }
@@ -420,7 +420,7 @@
                                 if(res.succeed!=true){
                                     this.$message({
                                         message: res.codeMessage,
-                                        type: 'success'
+                                        type: 'error'
                                     });
                                     return;
                                 }
