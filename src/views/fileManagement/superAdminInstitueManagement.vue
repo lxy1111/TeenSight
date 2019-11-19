@@ -73,7 +73,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
+        <el-pagination layout="prev, pager, next" :current-page.sync="page" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
         </el-pagination>
       </div>
     </div>
