@@ -1141,7 +1141,7 @@
             }
 
           }
-          else if(ans[4]!=null){
+           if(ans[4]!=null){
             for (let i = 0; i < ans[4].length; i++) {
               let gradeName = '';
               if (ans[4][i] == 0) {
@@ -1159,7 +1159,9 @@
               }
               this.gradelist.push(grade)
             }
-          }else if(ans[5]!=null){
+          }
+
+           if(ans[5]!=null){
             for(let i=0;i<ans[5].length;i++){
               let gradeName='';
               if(ans[5][i]==1){
