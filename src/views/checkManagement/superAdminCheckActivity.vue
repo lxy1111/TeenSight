@@ -324,6 +324,7 @@
       handleReset(){
         this.selectForm.surveyName=null;
         this.selectForm.schoolName=null;
+        this.page=1;
       },
       handleselect(){
         if(this.selectForm.schoolName==''){
@@ -332,6 +333,7 @@
         if(this.selectForm.surveyName==''){
           this.selectForm.surveyName=null;
         }
+        this.page=1;
         this.getSurveyList();
 
       },
@@ -426,6 +428,13 @@
               editSurvey(para).then((res) => {
                 this.editLoading = false;
                 //NProgress.done();
+                if(res.succeed!=true){
+                  this.$message({
+                    message: res.codeMessage,
+                    type: 'success'
+                  });
+                  return;
+                }
                 this.$message({
                   message: '提交成功',
                   type: 'success'

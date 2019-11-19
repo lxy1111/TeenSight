@@ -315,6 +315,7 @@
         this.selectForm.province=null;
         this.selectForm.city=null;
         this.selectForm.county=null;
+        this.page=1;
       },
       handleselect(){
         if(this.selectForm.schoolName==''){
@@ -335,6 +336,7 @@
         if(this.selectForm.schoolType==0){
             this.selectForm.schoolType=null;
         }
+        this.page=1;
         this.getSchoolsList();
       },
       selectProvince(data){
@@ -514,6 +516,14 @@
               editSchool(para).then((res) => {
                 this.editLoading = false;
                 //NProgress.done();
+
+                if(res.succeed!=true){
+                  this.$message({
+                    message: res.codeMessage,
+                    type: 'success'
+                  });
+                  return;
+                }
                 this.$message({
                   message: '提交成功',
                   type: 'success'

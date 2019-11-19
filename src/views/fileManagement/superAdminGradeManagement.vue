@@ -343,6 +343,7 @@
         this.selectForm.classNo=null;
         this.selectForm.gradeNo=null;
         this.selectForm.schoolName=null;
+        this.page=1;
       },
       handleselect(){
         if(this.selectForm.gradeNo==''){
@@ -357,6 +358,7 @@
         if(this.selectForm.schoolName==''){
           this.selectForm.schoolName=null;
         }
+        this.page=1;
       this.getTeachersList();
       },
       beforeUpload(file) {
@@ -414,7 +416,7 @@
                     console.log(res);
                     if(res.result!=true){
                       this.$message({
-                        message:'出错',
+                        message:res.codeMessage,
                         type:'error'
                       })
                     }
@@ -555,6 +557,13 @@
               editGrades(para).then((res) => {
                 this.editLoading = false;
                 //NProgress.done();
+                if(res.succeed!=true){
+                  this.$message({
+                    message: res.codeMessage,
+                    type: 'success'
+                  });
+                  return;
+                }
                 this.$message({
                   message: '修改成功',
                   type: 'success'

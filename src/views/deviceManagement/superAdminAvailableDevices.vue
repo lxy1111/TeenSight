@@ -353,6 +353,7 @@
         this.selectForm.deviceId=null;
         this.selectForm.deviceName=null;
         this.selectForm.schoolId=null;
+        this.page=1;
       },
       binddevice(){
         for(let i=0;i<this.schoollist.length;i++){
@@ -399,6 +400,7 @@
         if(this.selectForm.schoolId==''){
           this.selectForm.schoolId=null;
         }
+        this.page=1;
         this.getDevices();
       },
       remoteMethod(query) {

@@ -513,6 +513,13 @@
               editInstitutes(para).then((res) => {
                 this.editLoading = false;
                 //NProgress.done();
+                  if(res.succeed!=true){
+                      this.$message({
+                          message: res.codeMessage,
+                          type: 'success'
+                      });
+                      return;
+                  }
                 this.$message({
                   message: '提交成功',
                   type: 'success'

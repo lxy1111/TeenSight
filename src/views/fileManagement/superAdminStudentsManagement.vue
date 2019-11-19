@@ -447,7 +447,8 @@
         if(this.selectForm.gradeNo==''){
           this.selectForm.gradeNo=null;
         }
-       this.getStudentsList();
+        this.page=1;
+        this.getStudentsList();
       },
       generateSurveyCode(){
         let codelist=[];
@@ -510,6 +511,7 @@
         this.selectForm.classNo=null;
         this.selectForm.studentName=null;
         this.selectForm.schoolName=null;
+        this.page=1;
       },
       handlebeforeclose(){
         this.finishstep=0;
@@ -860,6 +862,13 @@
             editUser(para).then((res) => {
               this.editLoading = false;
               //NProgress.done();
+              if(res.succeed!=true){
+                this.$message({
+                  message: res.codeMessage,
+                  type: 'success'
+                });
+                return;
+              }
               this.$message({
                 message: '提交成功',
                 type: 'success'

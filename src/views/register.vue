@@ -311,7 +311,19 @@
                     ],
                     principal:[
                         {required: true, message: '请输入负责人', trigger: 'blur'}
-                    ]
+                    ],
+                    insName: [
+                        { required: true, message: '请输入名称', trigger: 'blur' },
+                        //{ validator: validaePass }
+                    ],
+                    schoolList:[
+                        { required: true, message: '请选择学校', trigger: 'blur' },
+                        //{ validator: validaePass }
+                    ],
+                    address:[
+                        { required: true, message: '请选择地址', trigger: 'blur' },
+                        //{ validator: validaePass }
+                    ],
                 },
                 checked: true
             };
