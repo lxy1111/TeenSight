@@ -451,7 +451,7 @@
       addSubmit: function () {
         this.$refs.addForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确定学籍信息都已经输入完备，确定后进行新建普查', '提示', {}).then(() => {
+            this.$confirm('请确定学籍信息变更都已经输入完备，新建普查后学籍变动将不会反映到该次普查！', '提示', {}).then(() => {
               this.addLoading = true;
               //NProgress.start();
               let para = Object.assign({}, this.addForm);

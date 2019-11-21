@@ -19,6 +19,7 @@ import myCharts from "./common/js/myCharts";
 import axios from 'axios'
 import globalvariable from './global'
 import htmlToPdf from "./common/js/htmlToPdf";
+import global from "./common/js/global";
 
 Vue.use(htmlToPdf)
 Vue.prototype.$axios = axios
@@ -28,6 +29,7 @@ Vue.use(Vuex)
 Vue.use(myCharts)
 Vue.use(VueResource);
 Vue.component('v-distpicker', VDistpicker)
+Vue.prototype.GLOBALVARIABLE=global;
 
 //NProgress.configure({ showSpinner: false });
 

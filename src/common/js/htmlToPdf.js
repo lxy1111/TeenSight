@@ -3,12 +3,16 @@
 import html2Canvas from 'html2canvas'
 import JsPDF from 'jspdf'
 
+import globalvariable from './global'
+
+
 export default{
     install (Vue, options) {
         Vue.prototype.getPdf2 = function (name) {
             html2Canvas(document.querySelector('#pdfDom'), {
                 allowTaint: true
             }).then(function (canvas) {
+
             var leftHeight = canvas.height;
 
             var a4Width = 595.28
@@ -104,14 +108,18 @@ export default{
                     console.log(err);
                 }
             }
+
+
            }
+
+
             )
         }
 
 
         Vue.prototype.getScanPdf = function (name) {
             var title = name;
-            html2Canvas(document.querySelector('#pdfDom2'), {
+            html2Canvas(document.querySelector('#pdfDom'), {
                 allowTaint: true
             }).then(function (canvas) {
                     let contentWidth = canvas.width

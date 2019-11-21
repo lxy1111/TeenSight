@@ -1,4 +1,4 @@
-<template>
+<template xmlns:page-break-inside="http://www.w3.org/1999/xhtml">
   <section>
     <!--工具条-->
 
@@ -23,7 +23,7 @@
 <!--            <img src="../../assets/img/search.png" @click="handlesearch">-->
 <!--          </el-form-item>-->
             <el-form-item prop="planeOnlineDateSecond" >
-              <el-select size="small" @change="handleGradeChange" v-model="selectForm.gradeNo" filterable placeholder="请选择年级">
+              <el-select size="small" @change="handleGradeChange" v-model="finalgradeNo" filterable placeholder="请选择年级">
                 <el-option
 
                         v-for="item in gradelist"
@@ -51,11 +51,51 @@
               </el-option>
             </el-select>
           </el-form-item>
+
+          <el-form-item v-if="!ishidden"> <el-button  v-loading.fullscreen.lock="fullscreenLoading"  type="primary" round  v-on:click="downloadpdf(htmltitle)">下载PDF报告</el-button></el-form-item>
+        </el-row>
+        <el-row>
+
+          <el-form-item prop="planeOnlineDateSecond" >
+            <el-select size="small" @change="handleprimaryschoolgrade" v-model="primarygrade" filterable placeholder="选择小学年级">
+              <el-option
+
+                      v-for="item in primarygradelist"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item prop="planeOnlineDateSecond" >
+            <el-select size="small" @change="handlesecondaryschoolgrade" v-model="secondarygrade" filterable placeholder="选择初中年级">
+              <el-option
+
+                      v-for="item in secondarygradelist"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item prop="planeOnlineDateSecond" >
+            <el-select size="small" @change="handlehighschoolgrade" v-model="highgrade" filterable placeholder="选择高中年级">
+              <el-option
+
+                      v-for="item in highgradelist"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            (此行功能只适用于只选择年级的普查)
+          </el-form-item>
           <el-form-item><el-button type="primary" round @click="handlesearch">查看报告</el-button></el-form-item>
-<!--          <el-form-item><el-button type="primary"  round @click="refresh">刷新</el-button></el-form-item>-->
+          <!--          <el-form-item><el-button type="primary"  round @click="refresh">刷新</el-button></el-form-item>-->
 
           <el-form-item><el-button type="primary"  round @click="handlereset">重置</el-button></el-form-item>
-          <el-form-item v-if="!ishidden"> <el-button type="primary" round  v-on:click="getPdf2(htmltitle)">下载PDF报告</el-button></el-form-item>
         </el-row>
       </el-form>
     <div class="retrieval  criteria Style" id="pdfDom">
@@ -169,6 +209,7 @@
         </el-table-column>
       </el-table>
     </div>
+      <br><br>
     <div :hidden="showschooloverall" class="retrieval  criteria Style">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >学校统计总览</el-breadcrumb-item>
@@ -213,12 +254,12 @@
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12" align="left">
           <div class="retrieval  criteria Style">
-            <div id="schoolsight" ref="schoolsight"></div>
+            <div style="page-break-inside: avoid" id="schoolsight" ref="schoolsight"></div>
           </div>
           </el-col>
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <el-col :span="12" align="left">
           <div  class="retrieval  criteria Style">
-            <div id="warning" ref="warning"></div>
+            <div style="page-break-inside: avoid" id="warning" ref="warning"></div>
           </div>
         </el-col>
         </el-row>
@@ -229,7 +270,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           &nbsp; &nbsp; &nbsp; <div class="retrieval  criteria Style">
-            <div id="trend3" ref="trend3"></div>
+            <div style="page-break-inside: avoid" id="trend3" ref="trend3"></div>
           </div>
         </el-row>
 <!--        <el-row type="flex" class="row-bg" justify="right">-->
@@ -294,7 +335,7 @@
           </el-breadcrumb>
           <el-row type="flex" class="row-bg" justify="right">
             &nbsp; &nbsp; <div class="retrieval  criteria Style">
-            <div id="schoolStatistic" ref="schoolStatistic"></div>
+            <div style="page-break-inside: avoid" id="schoolStatistic" ref="schoolStatistic"></div>
           </div>
           </el-row>
           <el-breadcrumb separator=">" class="bread-title" >
@@ -302,39 +343,12 @@
           </el-breadcrumb>
           <el-row type="flex" class="row-bg" justify="right">
             &nbsp; &nbsp; <div class="retrieval  criteria Style">
-            <div id="schoolListStatistic" ref="schoolListStatistic"></div>
+            <div style="page-break-inside: avoid" id="schoolListStatistic" ref="schoolListStatistic"></div>
           </div>
           </el-row>
         </el-form>
       </div>
-        <div :hidden="showschooloverall&&showgradeoverall" class="retrieval  criteria Style">
 
-            <el-breadcrumb separator=">" class="bread-title" >
-                <el-breadcrumb-item style="font-size: xx-large" >性别统计</el-breadcrumb-item>
-            </el-breadcrumb>
-            <el-form :model="form" label-width="160px">
-
-                <el-row type="flex" class="row-bg" justify="right">
-                    <span style="font-size: x-large">男女生视力情况</span>
-                </el-row>
-                <el-row type="flex" class="row-bg" justify="right">
-                    <!--          <div class="retrieval  criteria Style">-->
-                    <!--            <div id="gender">-->
-                    <!--              <el-row type="flex" class="row-bg" justify="right">-->
-                    <!--                <span  style="font-size: x-large">男生近视率       {{this.maleshortrate*100}}%</span>-->
-                    <!--              </el-row>-->
-                    <!--              <el-row type="flex" class="row-bg" justify="right">-->
-                    <!--                <span  style="font-size: x-large">女生近视率        {{this.femaleshortrate*100}}%</span>-->
-                    <!--              </el-row>-->
-                    <!--            </div>-->
-                    <!--          </div>-->
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
-                    <div class="retrieval  criteria Style">
-                        <div id="genderstatistic" ref="genderstatistic"></div>
-                    </div>
-                </el-row>
-            </el-form>
-        </div>
     <div :hidden="showschooloverall||onlygrade" class="retrieval  criteria Style">
 
       <el-breadcrumb separator=">" class="bread-title" >
@@ -348,7 +362,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <div class="retrieval  criteria Style">
-            <div id="gradestatistic" ref="gradestatistic"></div>
+            <div style="page-break-inside: avoid" id="gradestatistic" ref="gradestatistic"></div>
           </div>
         </el-row>
       </el-form>
@@ -508,12 +522,12 @@
           <el-row type="flex" class="row-bg" justify="right">
             <el-col :span="12" align="left">
               <div class="retrieval  criteria Style">
-                <div style="width: 400px;height: 400px;" :id="'poor'+item.gradeNo"  :ref="'poor'+item.gradeNo"></div>
+                <div  style="width: 400px;height: 400px;page-break-inside: avoid" :id="'poor'+item.gradeNo"  :ref="'poor'+item.gradeNo"></div>
               </div>
             </el-col>
             <el-col :span="12" align="left">
               <div class="retrieval  criteria Style">
-                <div style="width: 400px;height: 400px;" :id="'proportion'+item.gradeNo" :ref="'proportion'+item.gradeNo"></div>
+                <div  style="width: 400px;height: 400px;page-break-inside: avoid" :id="'proportion'+item.gradeNo" :ref="'proportion'+item.gradeNo"></div>
               </div>
             </el-col>
             &nbsp; &nbsp; &nbsp; &nbsp;
@@ -538,7 +552,7 @@
           <el-row type="flex" class="row-bg" justify="right">
 
             <div class="retrieval  criteria Style">
-              <div style="width: 1000px;height: 400px;" :id="'changetrend'+item.gradeNo" :ref="'changetrend'+item.gradeNo"></div>
+              <div  style="width: 1000px;height: 400px;page-break-inside: avoid" :id="'changetrend'+item.gradeNo" :ref="'changetrend'+item.gradeNo"></div>
             </div>
           </el-row>
 
@@ -638,12 +652,12 @@
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12" align="left">
           <div class="retrieval  criteria Style">
-            <div id="specificgrade"  ref="specificgrade"></div>
+            <div style="page-break-inside:avoid" id="specificgrade"  ref="specificgrade"></div>
           </div>
           </el-col>
           <el-col :span="12" align="left">
           <div class="retrieval  criteria Style">
-            <div id="gradewarning" ref="gradewarning"></div>
+            <div style="page-break-inside:avoid" id="gradewarning" ref="gradewarning"></div>
           </div>
           </el-col>
           &nbsp; &nbsp; &nbsp; &nbsp;
@@ -668,13 +682,39 @@
         <el-row type="flex" class="row-bg" justify="right">
 
         <div class="retrieval  criteria Style">
-          <div id="trend" ref="trend"></div>
+          <div style="page-break-inside:avoid" id="trend" ref="trend"></div>
         </div>
         </el-row>
-
-
       </el-form>
     </div>
+      <div :hidden="showschooloverall&&showgradeoverall" class="retrieval  criteria Style">
+
+        <el-breadcrumb separator=">" class="bread-title" >
+          <el-breadcrumb-item style="font-size: xx-large" >性别统计</el-breadcrumb-item>
+        </el-breadcrumb>
+        <el-form :model="form" label-width="160px">
+
+          <el-row type="flex" class="row-bg" justify="right">
+            <span style="font-size: x-large">男女生视力情况</span>
+          </el-row>
+          <el-row type="flex" class="row-bg" justify="right">
+            <!--          <div class="retrieval  criteria Style">-->
+            <!--            <div id="gender">-->
+            <!--              <el-row type="flex" class="row-bg" justify="right">-->
+            <!--                <span  style="font-size: x-large">男生近视率       {{this.maleshortrate*100}}%</span>-->
+            <!--              </el-row>-->
+            <!--              <el-row type="flex" class="row-bg" justify="right">-->
+            <!--                <span  style="font-size: x-large">女生近视率        {{this.femaleshortrate*100}}%</span>-->
+            <!--              </el-row>-->
+            <!--            </div>-->
+            <!--          </div>-->
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+            <div class="retrieval  criteria Style">
+              <div style="page-break-inside: avoid" id="genderstatistic" ref="genderstatistic"></div>
+            </div>
+          </el-row>
+        </el-form>
+      </div>
 
     </div>
   </section>
@@ -682,6 +722,7 @@
 
 <script>
   import util from '../../common/js/util'
+  import html2Canvas from 'html2canvas'
 
   import echarts from 'echarts'
   //import NProgress from 'nprogress'
@@ -700,10 +741,14 @@
     getStatisticsDetail,
     getSchoolInfo, getSurveyName, getGrades
   } from '../../api/api';
-
+  import htmlToPdf from "../../common/js/htmlToPdf";
+  import JsPDF from 'jspdf'
   export default {
     data() {
       return {
+        primarygradelist:[],
+        secondarygradelist:[],
+        highgradelist:[],
         isGovern:false,
         grades:[],
         normalDegree:null,
@@ -779,6 +824,7 @@
             value:'性别-全部'
           }
         ],
+        fullscreenLoading:false,
         gradesDetailList:null,
         maleshortrate:0,
         onlygrade:false,
@@ -823,6 +869,9 @@
             { required: true, message: '请输入姓名', trigger: 'blur' }
           ]
         },
+        primarygrade:null,
+        secondarygrade:null,
+        highgrade:null,
         isIns:true,
         htmltitle:'',
         //编辑界面数据
@@ -900,7 +949,8 @@
         nowclass:'',
         shortsightlist:[],
         poorsightlist:[],
-        inspectiondate:''
+        inspectiondate:'',
+        finalgradeNo:null,
       }
     },
     methods: {
@@ -911,6 +961,7 @@
       //  this.showgradeoverall=true;
       },
       handleGradeChange(val){
+        this.selectForm.gradeNo=this.finalgradeNo;
         this.classlist=[];
         if(!this.ishidden) {
           this.showgradename = true;
@@ -964,6 +1015,29 @@
           }
         })
       },
+      handleprimaryschoolgrade(){
+        this.selectForm.type=3;
+        this.selectForm.gradeNo=this.primarygrade;
+        this.secondarygradelist=null;
+        this.highgradelist=null;
+
+
+      },
+      handlesecondaryschoolgrade(){
+        this.selectForm.type=4;
+        this.selectForm.gradeNo=this.secondarygrade;
+        this.primarygradelist=null;
+        this.highgradelist=null;
+
+      },
+      handlehighschoolgrade(){
+        this.selectForm.type=5;
+        this.selectForm.gradeNo=this.highgrade;
+        this.primarygradelist=null;
+        this.secondarygradelist=null;
+
+      },
+
       handleChange(val){
 
         this.gradelist=[];
@@ -1032,6 +1106,8 @@
                 gradeName="高中三年级"
               }
             }
+
+
             let teacher ={
               value:this.allTeachers[i],
               label:gradeName
@@ -1055,7 +1131,23 @@
         })
 
       },
+
+      clickPrinting(){
+        let subOutputRankPrint = document.getElementById('printArea');
+        console.log(subOutputRankPrint.innerHTML);
+        let newContent =subOutputRankPrint.innerHTML;
+        let oldContent = document.body.innerHTML;
+        document.body.innerHTML = newContent;
+        window.print();
+        window.location.reload();
+        document.body.innerHTML = oldContent;
+        return false;
+      },
       handlereset(){
+        this.finalgradeNo=null;
+        this.primarygrade=null;
+        this.secondarygrade=null;
+        this.highgrade=null;
         this.showIns=true;
       this.selectForm.surveyName=null;
         this.selectForm.classNo=null;
@@ -1117,7 +1209,52 @@
         getGrades(this.selectForm).then(res=> {
           let ans = res.data.result;
           this.gradelist = [];
-          if (ans[3] != null) {
+          this.highgradelist=[];
+          this.secondarygradelist=[];
+          this.primarygradelist=[];
+          if(ans[5]!=null) {
+            for (let i = 0; i < ans[5].length; i++) {
+              let gradeName = '';
+              if (ans[5][i] == 1) {
+                gradeName = "高中一年级"
+              } else if (ans[5][i] == 2) {
+                gradeName = "高中二年级"
+              } else if (ans[5][i] == 3) {
+                gradeName = "高中三年级"
+              }
+
+              let grade = {
+                value: ans[5][i],
+                label: gradeName
+              }
+             // this.gradelist.push(grade)
+              this.highgradelist.push(grade)
+            }
+          }
+            if(ans[4]!=null){
+              for (let i = 0; i < ans[4].length; i++) {
+                let gradeName = '';
+                if (ans[4][i] == 0) {
+                  gradeName = "初中预备班";
+                } else if (ans[4][i] == 1) {
+                  gradeName = "初中一年级"
+                } else if (ans[4][i] == 2) {
+                  gradeName = "初中二年级"
+                } else if (ans[4][i] == 3) {
+                  gradeName = "初中三年级"
+                }
+                let grade ={
+                  value:ans[4][i],
+                  label:gradeName
+                }
+             //   this.gradelist.push(grade)
+                this.secondarygradelist.push(grade);
+              }
+
+            }
+
+
+            if (ans[3] != null) {
             for (let i = 0; i < ans[3].length; i++) {
               let gradeName = '';
               if (ans[3][i] == 1) {
@@ -1137,49 +1274,14 @@
                 value: ans[3][i],
                 label: gradeName
               }
-              this.gradelist.push(grade);
+             // this.gradelist.push(grade);
+              this.primarygradelist.push(grade);
             }
 
           }
-           if(ans[4]!=null){
-            for (let i = 0; i < ans[4].length; i++) {
-              let gradeName = '';
-              if (ans[4][i] == 0) {
-                gradeName = "初中预备班";
-              } else if (ans[4][i] == 1) {
-                gradeName = "初中一年级"
-              } else if (ans[4][i] == 2) {
-                gradeName = "初中二年级"
-              } else if (ans[4][i] == 3) {
-                gradeName = "初中三年级"
-              }
-              let grade ={
-                value:ans[4][i],
-                label:gradeName
-              }
-              this.gradelist.push(grade)
-            }
-          }
-
-           if(ans[5]!=null){
-            for(let i=0;i<ans[5].length;i++){
-              let gradeName='';
-              if(ans[5][i]==1){
-                gradeName="高中一年级"
-              }else if(ans[5][i]==2){
-                gradeName="高中二年级"
-              }else if(ans[5][i]==3){
-                gradeName="高中三年级"
-              }
-              let grade ={
-                value:ans[5][i],
-                label:gradeName
-              }
-              this.gradelist.push(grade)
-            }
 
 
-          }
+
 
         })
 
@@ -1492,32 +1594,62 @@
                 this.onlygrade=true;
                 this.showgradename=true;
                 let val=this.selectForm.gradeNo;
-                if(val==1){
-                    this.nowgrade='一年级';
+                let type=this.selectForm.type;
+                if(type==3) {
+                  if (val == 1) {
+                    this.nowgrade = '小学一年级';
+                  }
+                  if (val == 2) {
+                    this.nowgrade = '小学二年级'
+                  }
+                  if (val == 3) {
+                    this.nowgrade = '小学三年级'
+                  }
+                  if (val == 4) {
+                    this.nowgrade = '小学四年级'
+                  }
+                  if (val == 5) {
+                    this.nowgrade = '小学五年级'
+                  }
+                  if (val == 6) {
+                    this.nowgrade = '小学六年级'
+                  }
+                  if (val == 7) {
+                    this.nowgrade = '小学七年级'
+                  }
+                  if (val == 8) {
+                    this.nowgrade = '小学八年级'
+                  }
+                  if (val == 9) {
+                    this.nowgrade = '小学九年级'
+                  }
                 }
-                if(val==2){
-                    this.nowgrade='二年级'
+               else if(type==4) {
+                 if(val==0){
+                   this.nowgrade = '初中预备班';
+                 }
+                if (val == 1) {
+                  this.nowgrade = '初中一年级';
                 }
-                if(val==3){
-                    this.nowgrade='三年级'
+                if (val == 2) {
+                  this.nowgrade = '初中二年级'
                 }
-                if(val==4){
-                    this.nowgrade='四年级'
+                if (val == 3) {
+                  this.nowgrade = '初中三年级'
                 }
-                if(val==5){
-                    this.nowgrade='五年级'
-                }
-                if(val==6){
-                    this.nowgrade='六年级'
-                }
-                if(val==7){
-                    this.nowgrade='七年级'
-                }
-                if(val==8){
-                    this.nowgrade='八年级'
-                }
-                if(val==9){
-                    this.nowgrade='九年级'
+
+              }
+                else if(type==5) {
+                  if (val == 1) {
+                    this.nowgrade = '高中一年级';
+                  }
+                  if (val == 2) {
+                    this.nowgrade = '高中二年级'
+                  }
+                  if (val == 3) {
+                    this.nowgrade = '高中三年级'
+                  }
+
                 }
                 this.htmltitle+=this.nowgrade;
             }
@@ -1532,33 +1664,63 @@
           this.ishidden=false;
           if(this.selectForm.gradeNo!=null) {
             let val=this.selectForm.gradeNo;
+             let type=this.selectForm.type;
             this.showgradename=true;
-            if(val==1){
-              this.nowgrade='一年级';
+            if(type==3) {
+              if (val == 1) {
+                this.nowgrade = '小学一年级';
+              }
+              if (val == 2) {
+                this.nowgrade = '小学二年级'
+              }
+              if (val == 3) {
+                this.nowgrade = '小学三年级'
+              }
+              if (val == 4) {
+                this.nowgrade = '小学四年级'
+              }
+              if (val == 5) {
+                this.nowgrade = '小学五年级'
+              }
+              if (val == 6) {
+                this.nowgrade = '小学六年级'
+              }
+              if (val == 7) {
+                this.nowgrade = '小学七年级'
+              }
+              if (val == 8) {
+                this.nowgrade = '小学八年级'
+              }
+              if (val == 9) {
+                this.nowgrade = '小学九年级'
+              }
             }
-            if(val==2){
-              this.nowgrade='二年级'
+            else if(type==4) {
+              if(val==0){
+                this.nowgrade = '初中预备班';
+              }
+              if (val == 1) {
+                this.nowgrade = '初中一年级';
+              }
+              if (val == 2) {
+                this.nowgrade = '初中二年级'
+              }
+              if (val == 3) {
+                this.nowgrade = '初中三年级'
+              }
+
             }
-            if(val==3){
-              this.nowgrade='三年级'
-            }
-            if(val==4){
-              this.nowgrade='四年级'
-            }
-            if(val==5){
-              this.nowgrade='五年级'
-            }
-            if(val==6){
-              this.nowgrade='六年级'
-            }
-            if(val==7){
-              this.nowgrade='七年级'
-            }
-            if(val==8){
-              this.nowgrade='八年级'
-            }
-            if(val==9){
-              this.nowgrade='九年级'
+            else if(type==5) {
+              if (val == 1) {
+                this.nowgrade = '高中一年级';
+              }
+              if (val == 2) {
+                this.nowgrade = '高中二年级'
+              }
+              if (val == 3) {
+                this.nowgrade = '高中三年级'
+              }
+
             }
             this.showschooloverall = true;
             this.showgradeoverall=false;
@@ -1604,6 +1766,7 @@
         }
 
       },
+
       //显示编辑界面
       handleEdit: function (index, row) {
         this.editFormVisible = true;
@@ -1770,6 +1933,7 @@
                 }
               ]
             });
+
             b.setOption({
               color: ['#FF9900', '#FFCC33', '#66CC00', '#3399CC'],
               tooltip: {
@@ -1960,6 +2124,7 @@
             }
           ]
         });
+
 
 
         this.chart2 = echarts.init(this.$refs.warning);
@@ -2727,6 +2892,120 @@
         //   ]
         // });
 
+
+      },
+      downloadpdf(name){
+
+        this.fullscreenLoading=true;
+
+        html2Canvas(document.querySelector('#pdfDom'), {
+          allowTaint: true
+        }).then(function (canvas) {
+
+                  var leftHeight = canvas.height;
+
+                  var a4Width = 595.28
+                  var a4Height = 841.89
+                  //一页pdf显示html页面生成的canvas高度;
+                  var a4HeightRef = Math.floor(canvas.width / a4Width * a4Height);
+
+                  //pdf页面偏移
+                  var position = 0;
+
+                  var pageData = canvas.toDataURL('image/jpeg', 1.0);
+
+                  var pdf = new JsPDF('x', 'pt', 'a4');
+                  var index = 1,
+                          canvas1 = document.createElement('canvas'),
+                          height;
+                  pdf.setDisplayMode('fullwidth', 'continuous', 'FullScreen');
+
+                  var pdfName = name;
+
+                  function createImpl(canvas) {
+                    if (leftHeight > 0) {
+                      index++;
+
+                      var checkCount = 0;
+                      if (leftHeight > a4HeightRef) {
+                        var i = position + a4HeightRef;
+                        for (i = position + a4HeightRef; i >= position; i--) {
+                          var isWrite = true
+                          for (var j = 0; j < canvas.width; j++) {
+                            var c = canvas.getContext('2d').getImageData(j, i, 1, 1).data
+
+                            if (c[0] != 0xff || c[1] != 0xff || c[2] != 0xff) {
+                              isWrite = false
+                              break
+                            }
+                          }
+                          if (isWrite) {
+                            checkCount++
+                            if (checkCount >= 10) {
+                              break
+                            }
+                          } else {
+                            checkCount = 0
+                          }
+                        }
+                        height = Math.round(i - position) || Math.min(leftHeight, a4HeightRef);
+                        if (height <= 0) {
+                          height = a4HeightRef;
+                        }
+                      } else {
+                        height = leftHeight;
+                      }
+
+                      canvas1.width = canvas.width;
+                      canvas1.height = height;
+
+                      // console.log(index, 'height:', height, 'pos', position);
+
+                      var ctx = canvas1.getContext('2d');
+                      ctx.drawImage(canvas, 0, position, canvas.width, height, 0, 0, canvas.width, height);
+
+                      var pageHeight = Math.round(a4Width / canvas.width * height);
+                      // pdf.setPageSize(null, pageHeight)
+                      if (position != 0) {
+                        pdf.addPage();
+                      }
+                      pdf.addImage(canvas1.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, a4Width, a4Width / canvas1.width * height);
+                      leftHeight -= height;
+                      position += height;
+                      // $('.pdfProgress').text(index + 1);
+                      // $('.pdfTotal').text(index + Math.ceil(leftHeight / a4HeightRef));
+                      if (leftHeight > 0) {
+                        setTimeout(createImpl, 1, canvas);
+                      } else {
+                        pdf.save(pdfName + '.pdf');
+                        // $('.pdfTip').remove();
+                      }
+                    }
+                  }
+
+                  //当内容未超过pdf一页显示的范围，无需分页
+                  if (leftHeight < a4HeightRef) {
+                    pdf.addImage(pageData, 'JPEG', 0, 0, a4Width, a4Width / canvas.width * leftHeight);
+                    pdf.save(pdfName + '.pdf')
+                  } else {
+                    try {
+                      pdf.deletePage(0);
+                      // $('.pdfTip').show();
+                      // $('.pdfTotal').text(index + Math.ceil(leftHeight / a4HeightRef));
+                      setTimeout(createImpl, 1, canvas);
+                    } catch (err) {
+                      console.log(err);
+                    }
+                  }
+
+                }
+
+
+        )
+
+        setTimeout(() => {
+          this.fullscreenLoading = false;
+        }, 5000);
 
       },
       getSchools(){
