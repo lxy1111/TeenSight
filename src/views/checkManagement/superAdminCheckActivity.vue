@@ -381,11 +381,13 @@
           let deviceList=res.data.result.items;
           this.devices=[];
           for(let i=0;i<deviceList.length;i++){
-            let item={
-              value: deviceList[i].id,
-              label:deviceList[i].deviceId
+            if(deviceList[i].isBind==1) {
+              let item = {
+                value: deviceList[i].id,
+                label: deviceList[i].deviceId
+              }
+              this.devices.push(item);
             }
-            this.devices.push(item);
           }
           let para2={
             page:1,
@@ -395,11 +397,13 @@
           getDeviceList(para2).then(res=>{
             let deviceList2=res.data.result.items;
             for(let i=0;i<deviceList2.length;i++){
-              let item={
-                value: deviceList2[i].id,
-                label:deviceList2[i].deviceId
+              if(deviceList2[i].isBind==1) {
+                let item = {
+                  value: deviceList2[i].id,
+                  label: deviceList2[i].deviceId
+                }
+                this.devices.push(item);
               }
-              this.devices.push(item);
             }
 
           })
@@ -554,11 +558,13 @@
           let deviceList=res.data.result.items;
           this.devices=[];
           for(let i=0;i<deviceList.length;i++){
-            let item={
-              value: deviceList[i].id,
-              label:deviceList[i].deviceId
+            if(deviceList[i].isBind==1) {
+              let item = {
+                value: deviceList[i].id,
+                label: deviceList[i].deviceId
+              }
+              this.devices.push(item);
             }
-            this.devices.push(item);
           }
         })
         getSchoolListPage(this.selectForm)
