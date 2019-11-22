@@ -369,10 +369,13 @@
       },
       //显示编辑界面
       handleEdit: function (index, row) {
+        var institute = sessionStorage.getItem('institute');
+        institute = JSON.parse(institute);
         let para = {
           page: 1,
           pageSize: 1000000,
-          schoolId:row.schoolId
+          schoolId:row.schoolId,
+
         };
         getDeviceList(para).then(res=>{
           let deviceList=res.data.result.items;
@@ -384,6 +387,22 @@
             }
             this.devices.push(item);
           }
+          let para2={
+            page:1,
+            pageSize:1000000,
+            institutionId:institute.insDetail.id
+          }
+          getDeviceList(para2).then(res=>{
+            let deviceList2=res.data.result.items;
+            for(let i=0;i<deviceList2.length;i++){
+              let item={
+                value: deviceList2[i].id,
+                label:deviceList2[i].deviceId
+              }
+              this.devices.push(item);
+            }
+
+          })
         })
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);

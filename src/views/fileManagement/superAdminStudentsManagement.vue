@@ -463,6 +463,13 @@
           schoolId:this.myid
         }
         getSurveyList(para2).then(res=>{
+          if(res.succeed!=true){
+            this.$message({
+              message:'无普查数据',
+              type:'error'
+            })
+            return;
+          }
           let surveyid=res.data.result.items[0].id;
           let para={
             idList:codelist,
@@ -482,6 +489,13 @@
       },
       generateStudentCode(){
           let codelist=[];
+          if(this.multipleselection.length==0){
+            this.$message({
+              message:'未选择学生',
+              type:'error'
+            })
+            return
+          }
           for(let i=0;i<this.multipleselection.length;i++){
             let id=this.multipleselection[i].id;
             codelist.push(id);
@@ -492,6 +506,13 @@
           getStudentCode(para).then((res)=>{
 
             console.log(res);
+            if(res.succeed!=true){
+              this.$message({
+                message:'无普查数据',
+                type:'error'
+              })
+              return
+            }
             this.$message({
               message:'成功',
               type:'success'
