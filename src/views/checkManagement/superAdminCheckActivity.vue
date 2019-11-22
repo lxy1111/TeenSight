@@ -600,11 +600,13 @@
           let deviceList=res.data.result.items;
           this.devices=[];
           for(let i=0;i<deviceList.length;i++){
-            let item={
-              value: deviceList[i].id,
-              label:deviceList[i].deviceId
+            if(deviceList[i].isBind==1) {
+              let item = {
+                value: deviceList[i].id,
+                label: deviceList[i].deviceId
+              }
+              this.devices.push(item);
             }
-            this.devices.push(item);
           }
         })
       }else{
