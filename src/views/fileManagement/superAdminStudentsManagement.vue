@@ -463,7 +463,7 @@
           schoolId:this.myid
         }
         getSurveyList(para2).then(res=>{
-          if(res.succeed!=true){
+          if(res.data.succeed!=true){
             this.$message({
               message:'无普查数据',
               type:'error'
@@ -477,6 +477,13 @@
           };
         getSurveyCode(para).then((res)=>{
           console.log(res);
+          if(!res.succeed){
+            this.$message({
+              message:'无普查数据',
+              type:'error'
+            })
+            return;
+          }
           this.$message({
             message:'成功',
             type:'success'

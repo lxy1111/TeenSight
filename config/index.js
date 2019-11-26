@@ -31,7 +31,7 @@ module.exports = {
     proxyTable: {
       '/api': {
         // 测试环境
-        target: 'http://wwww.suporeiot.cn:8085',  // 接口域名
+        target: 'https://wwww.suporeiot.cn:8085',  // 接口域名
         changeOrigin: true,  //是否跨域
       }
     },

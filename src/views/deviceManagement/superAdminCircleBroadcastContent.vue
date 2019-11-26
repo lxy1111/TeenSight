@@ -118,7 +118,7 @@
   export default {
     data() {
       return {
-        baseurl:"http://www.suporeiot.cn:8085",
+        baseurl:"https://www.suporeiot.cn:8085",
         uploadurl:'/api/common/createChart',
         circlebroadcast:[],
         filters: {
