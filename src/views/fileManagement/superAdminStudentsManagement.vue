@@ -182,18 +182,20 @@
 
      <el-dialog title="学生信息二维码"   style="border: 0;" :visible.sync="qrcodevisible" :close-on-click-modal="false">
        <div id="printArea">
-       <el-row  v-for="item in studentInfoCodeList">
+     <div  v-for="item in studentInfoCodeList" style="width: 210px; height: 200px; display: inline-block; text-align: center">
+       <!--预览页面三个一排：210px，打印页面三个一排：232px-->
+
       <el-row>
         <el-image
-                style="width: 100px; height: 100px;left:40%"
+                style="width: 100px; height: 100px"
                 :src="item.url">
         </el-image>
       </el-row>
       <el-row >
-        <span style="margin-left: 40%">学生姓名:{{item.req.stuName}}</span>
+        <span style="">学生姓名:{{item.req.stuName}}</span>
       </el-row>
 
-    </el-row>
+    </div>
        </div>
        <el-row >
          <el-button type="primary" style="margin-left: 42%" @click="clickPrinting">打印</el-button>
@@ -203,17 +205,18 @@
 
     <el-dialog title="学生普查二维码"  style="border: 0;" :visible.sync="surveyqrcodevisible" :close-on-click-modal="false">
     <div id="printArea2">
-      <el-row  v-for="item in surveyqrcodelit">
+      <div  v-for="item in surveyqrcodelit" style="width: 33%; height: 200px; display: inline-block; text-align: center">
+        <!--预览页面三个一排：210px，打印页面三个一排：232px-->
         <el-row>
           <el-image
-                  style="width: 100px; height: 100px;left:40%"
+                  style="width: 100px; height: 100px"
                   :src="item.url">
           </el-image>
         </el-row>
         <el-row >
-          <span style="margin-left: 40%">学生姓名:{{item.req.stuName}}</span>
+          <span style="">学生姓名:{{item.req.stuName}}</span>
         </el-row>
-      </el-row>
+      </div>
     </div>
       <el-row >
         <el-button type="primary" style="margin-left: 42%" @click="clickPrinting2">打印</el-button>

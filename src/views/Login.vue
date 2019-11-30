@@ -123,6 +123,7 @@
                 }
                 sessionStorage.setItem('user', JSON.stringify(user));
                 let type=data.result.type;
+                console.log("usertype:!!!!!!");
                 console.log(type);
                 if(type==0) {
                     globalvariable.setHideSuperAdmin(true);

@@ -55,7 +55,7 @@
           <el-form-item v-if="!ishidden"> <el-button  v-loading.fullscreen.lock="fullscreenLoading"  type="primary" round  v-on:click="downloadpdf(htmltitle)">下载PDF报告</el-button></el-form-item>
         </el-row>
         <el-row>
-
+        <div v-if="notforschool">
           <el-form-item prop="planeOnlineDateSecond" >
             <el-select size="small" @change="handleprimaryschoolgrade" v-model="primarygrade" filterable placeholder="选择小学年级">
               <el-option
@@ -92,6 +92,7 @@
           <el-form-item>
             (此行功能只适用于只选择年级的普查)
           </el-form-item>
+        </div>
           <el-form-item><el-button type="primary" round @click="handlesearch">查看报告</el-button></el-form-item>
           <!--          <el-form-item><el-button type="primary"  round @click="refresh">刷新</el-button></el-form-item>-->
 
@@ -723,7 +724,6 @@
 <script>
   import util from '../../common/js/util'
   import html2Canvas from 'html2canvas'
-
   import echarts from 'echarts'
   //import NProgress from 'nprogress'
   import {
@@ -951,6 +951,7 @@
         poorsightlist:[],
         inspectiondate:'',
         finalgradeNo:null,
+        notforschool:true
       }
     },
     methods: {
@@ -958,6 +959,7 @@
         this.showclassname=true;
         this.nowclass=val;
         this.selectForm.surveyName=null;
+
       //  this.showgradeoverall=true;
       },
       handleGradeChange(val){
@@ -1020,7 +1022,7 @@
         this.selectForm.gradeNo=this.primarygrade;
         this.secondarygradelist=null;
         this.highgradelist=null;
-
+        console.log("!!!!!");
 
       },
       handlesecondaryschoolgrade(){
@@ -3035,6 +3037,9 @@
     mounted() {
       var user = sessionStorage.getItem('user');
       user=JSON.parse(user);
+      if(user.type==3){
+          this.notforschool=false;
+      }
       if(user.type==1||user.type==2) {
         if(user.type==1){
           this.isGovern=true;
