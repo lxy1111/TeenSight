@@ -126,7 +126,16 @@
                         label="瞳距"
                         show-overflow-tooltip align="center"
                 >
+
                 </el-table-column>
+                <el-table-column
+                        prop="diopter"
+                        label="等效球镜"
+                        show-overflow-tooltip align="center"
+                >
+
+                </el-table-column>
+
 <!--                </el-table-column>-->
 <!--                <el-table-column-->
 <!--                        label="睫状肌麻痹验光(人工检影)"-->
