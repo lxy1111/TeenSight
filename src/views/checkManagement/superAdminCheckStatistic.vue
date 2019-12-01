@@ -52,7 +52,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="!ishidden"> <el-button  v-loading.fullscreen.lock="fullscreenLoading"  type="primary" round  v-on:click="downloadpdf(htmltitle)">下载PDF报告</el-button></el-form-item>
+          <el-form-item v-if="!ishidden"> <el-button  v-loading.fullscreen.lock="fullscreenLoading"  type="primary" round  v-on:click="getPdf3(htmltitle)">下载PDF报告</el-button></el-form-item>
         </el-row>
         <el-row>
         <div v-if="notforschool">
@@ -100,7 +100,7 @@
         </el-row>
       </el-form>
     <div class="retrieval  criteria Style" id="pdfDom">
-    <div :hidden="ishidden" class="retrieval  criteria Style">
+    <div :hidden="ishidden" class="pdfbody">
       <el-form :model="form" label-width="160px">
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12" >
@@ -210,8 +210,7 @@
         </el-table-column>
       </el-table>
     </div>
-      <br><br>
-    <div :hidden="showschooloverall" class="retrieval  criteria Style">
+    <div :hidden="showschooloverall" class="pdfbody2">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >学校统计总览</el-breadcrumb-item>
       </el-breadcrumb>
@@ -321,7 +320,7 @@
 <!--        </el-row>-->
       </el-form>
     </div>
-      <div :hidden="showIns||onlygrade" class="retrieval  criteria Style">
+      <div :hidden="showIns||onlygrade" class="pdfbody2">
         <el-form :model="form" label-width="160px">
 <!--          <el-row type="flex" class="row-bg" justify="right">-->
 <!--              <span style="font-size: large">视力不良变化趋势</span>-->
@@ -350,7 +349,7 @@
         </el-form>
       </div>
 
-    <div :hidden="showschooloverall||onlygrade" class="retrieval  criteria Style">
+    <div :hidden="showschooloverall||onlygrade" class="pdfbody">
 
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >年级统计</el-breadcrumb-item>
@@ -371,6 +370,7 @@
 
       <div   :hidden="showschooloverall"  class="retrieval  criteria Style">
         <el-row v-for="item in gradesDetailList">
+          <div class="pdfbody2">
         <el-breadcrumb separator="" class="bread-title" >
           <el-breadcrumb-item  style="font-size: xx-large" >{{item.gradeNo}}年级</el-breadcrumb-item>
         </el-breadcrumb>
@@ -503,7 +503,7 @@
 <!--            </el-col>-->
 <!--          </el-row>-->
 <!--            </el-form>-->
-        <el-form :model="form" label-width="160px">
+          <div>
           <el-row type="flex" class="row-bg" justify="right">
             <el-col :span="12" align="left">
               <span style="font-size: x-large">近视率</span>
@@ -519,7 +519,8 @@
             </el-col>
 
           </el-row>
-
+          </div>
+           <div>
           <el-row type="flex" class="row-bg" justify="right">
             <el-col :span="12" align="left">
               <div class="retrieval  criteria Style">
@@ -533,13 +534,14 @@
             </el-col>
             &nbsp; &nbsp; &nbsp; &nbsp;
           </el-row>
-
+           </div>
           <!--        <el-row type="flex" class="row-bg" justify="right">-->
           <!--          <el-col :span="5" align="left">-->
           <!--            <span style="font-size: large">视力不良且屈光度低于-0.5</span>-->
           <!--          </el-col>-->
           <!--        </el-row>-->
-
+          </div>
+          <div class="pdfbody">
           <el-row type="flex" class="row-bg" justify="right">
             <el-col :span="12">
               <span style="font-size: x-large">视力变化趋势</span>
@@ -552,13 +554,10 @@
           </el-row>
           <el-row type="flex" class="row-bg" justify="right">
 
-            <div class="retrieval  criteria Style">
-              <div  style="width: 1000px;height: 400px;page-break-inside: avoid" :id="'changetrend'+item.gradeNo" :ref="'changetrend'+item.gradeNo"></div>
-            </div>
+              <div  style="width:1000px;height: 310px" :id="'changetrend'+item.gradeNo" :ref="'changetrend'+item.gradeNo"></div>
           </el-row>
+          </div>
 
-
-        </el-form>
         </el-row>
       </div>
 
@@ -628,7 +627,7 @@
 <!--    </div>-->
 
 
-    <div  :hidden="showgradeoverall"  class="retrieval  criteria Style">
+    <div  :hidden="showgradeoverall"  class="pdfbody2">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item  style="font-size: xx-large" >{{nowgrade}} <span v-if="showclassname"  style="font-size: xx-large" >{{nowclass}}班</span></el-breadcrumb-item>
       </el-breadcrumb>
@@ -688,7 +687,7 @@
         </el-row>
       </el-form>
     </div>
-      <div :hidden="showschooloverall&&showgradeoverall" class="retrieval  criteria Style">
+      <div :hidden="showschooloverall&&showgradeoverall" class="pdfbody">
 
         <el-breadcrumb separator=">" class="bread-title" >
           <el-breadcrumb-item style="font-size: xx-large" >性别统计</el-breadcrumb-item>
@@ -1146,6 +1145,7 @@
         return false;
       },
       handlereset(){
+        this.gradesDetailList=[];
         this.finalgradeNo=null;
         this.primarygrade=null;
         this.secondarygrade=null;
@@ -3128,15 +3128,15 @@
   }
   #trend{
     width: 1000px;
-    height: 600px;
+    height: 400px;
   }
   #trend2{
     width: 1000px;
-    height: 600px;
+    height: 400px;
   }
   #trend3{
     width: 1000px;
-    height: 600px;
+    height: 400px;
   }
   #gradewarning{
     width: 400px;
@@ -3149,5 +3149,11 @@
   .el-form-item__label {
     margin-right: 0.5rem;
     margin-left: 0.5rem;
+  }
+  .pdfbody{
+    height:130mm;
+  }
+  .pdfbody2{
+    height:310mm;
   }
 </style>

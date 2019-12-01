@@ -183,6 +183,7 @@
 </template>
 
 <script>
+
   import util from '../../common/js/util'
   import axios from 'axios';
   //import NProgress from 'nprogress'
