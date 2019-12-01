@@ -170,19 +170,62 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" v-if="this.path!='superAdmin'" @click.native="generateStudentCode">生成学生二维码</el-button>
-        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" v-if="this.path!='superAdmin'" @click.native="generateSurveyCode" >生成普查二维码</el-button>
+        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" v-if="this.path!='superAdmin'" @click.native="generateStudentCode1">生成一字形学生二维码</el-button>
+        <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" v-if="this.path!='superAdmin'" @click.native="generateSurveyCode1" >生成一字形普查二维码</el-button>
+          <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" v-if="this.path!='superAdmin'" @click.native="generateStudentCode">生成井字形学生二维码</el-button>
+          <el-button style="margin-left: 2rem; margin-top: 1rem;" type="primary" v-if="this.path!='superAdmin'" @click.native="generateSurveyCode" >生成井字形普查二维码</el-button>
         <el-pagination :current-page.sync="page" layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
         </el-pagination>
       </div>
     </div>
 
     <!--工具条-->
+      <el-dialog title="学生信息二维码"   style="border: 0;" :visible.sync="qrcodevisible1" :close-on-click-modal="false">
+          <div id="printArea3">
+              <div  v-for="item in studentInfoCodeList" style="width: 100%; text-align: center">
+                  <!--预览页面三个一排：210px，打印页面三个一排：232px-->
 
+                  <el-row>
+                      <el-image
+                              style="width: 100px; height: 100px"
+                              :src="item.url">
+                      </el-image>
+                  </el-row>
+                  <el-row >
+                      <span style="">学生姓名:{{item.req.stuName}}</span>
+                  </el-row>
+
+              </div>
+          </div>
+          <el-row >
+              <el-button type="primary" style="margin-left: 45%" @click="clickPrinting3">打印</el-button>
+          </el-row>
+      </el-dialog>
+
+
+      <el-dialog title="学生普查二维码"  style="border: 0;" :visible.sync="surveyqrcodevisible1" :close-on-click-modal="false">
+          <div id="printArea4">
+              <div  v-for="item in surveyqrcodelit" style="width: 100%; text-align: center">
+                  <!--预览页面三个一排：210px，打印页面三个一排：232px-->
+                  <el-row>
+                      <el-image
+                              style="width: 100px; height: 100px"
+                              :src="item.url">
+                      </el-image>
+                  </el-row>
+                  <el-row >
+                      <span style="">学生姓名:{{item.req.stuName}}</span>
+                  </el-row>
+              </div>
+          </div>
+          <el-row >
+              <el-button type="primary" style="margin-left: 45%" @click="clickPrinting4">打印</el-button>
+          </el-row>
+      </el-dialog>
 
      <el-dialog title="学生信息二维码"   style="border: 0;" :visible.sync="qrcodevisible" :close-on-click-modal="false">
        <div id="printArea">
-     <div  v-for="item in studentInfoCodeList" style="width: 210px; height: 200px; display: inline-block; text-align: center">
+     <div  v-for="item in studentInfoCodeList" style="width: 33%; height: 200px; display: inline-block; text-align: center">
        <!--预览页面三个一排：210px，打印页面三个一排：232px-->
 
       <el-row>
@@ -198,14 +241,14 @@
     </div>
        </div>
        <el-row >
-         <el-button type="primary" style="margin-left: 42%" @click="clickPrinting">打印</el-button>
+         <el-button type="primary" style="margin-left: 45%" @click="clickPrinting">打印</el-button>
        </el-row>
   </el-dialog>
 
 
     <el-dialog title="学生普查二维码"  style="border: 0;" :visible.sync="surveyqrcodevisible" :close-on-click-modal="false">
     <div id="printArea2">
-      <div  v-for="item in surveyqrcodelit" style="width: 33%; height: 200px; display: inline-block; text-align: center">
+      <div  v-for="item in surveyqrcodelit" style="width: 33%; height:200px; display: inline-block; text-align: center">
         <!--预览页面三个一排：210px，打印页面三个一排：232px-->
         <el-row>
           <el-image
@@ -219,7 +262,7 @@
       </div>
     </div>
       <el-row >
-        <el-button type="primary" style="margin-left: 42%" @click="clickPrinting2">打印</el-button>
+        <el-button type="primary" style="margin-left: 45%" @click="clickPrinting2">打印</el-button>
       </el-row>
     </el-dialog>
 
@@ -357,6 +400,7 @@
         batchAddVisible: false,
         path: '',
         hidedelete: false,
+        surveyqrcodevisible1:false,
         surveyqrcodevisible:false,
         students: [],
         filters: {
@@ -381,6 +425,7 @@
         ],
         studentInfoCodeList:[],
         surveyqrcodelit:[],
+        qrcodevisible1:false,
         qrcodevisible:false,
         gendervalue: '性别-全部',
         users: [],
@@ -497,6 +542,85 @@
         })
         })
       },
+        generateSurveyCode1(){
+            let codelist=[];
+            for(let i=0;i<this.multipleselection.length;i++){
+                let id=this.multipleselection[i].id;
+                codelist.push(id);
+            }
+
+            let para2={
+                page:1,
+                pageSize:10,
+                schoolId:this.myid
+            }
+            getSurveyList(para2).then(res=>{
+                if(res.data.succeed!=true){
+                    this.$message({
+                        message:'无普查数据',
+                        type:'error'
+                    })
+                    return;
+                }
+                let surveyid=res.data.result.items[0].id;
+                let para={
+                    idList:codelist,
+                    surveyId:surveyid
+                };
+                getSurveyCode(para).then((res)=>{
+                    console.log(res);
+                    if(!res.succeed){
+                        this.$message({
+                            message:'无普查数据',
+                            type:'error'
+                        })
+                        return;
+                    }
+                    this.$message({
+                        message:'成功',
+                        type:'success'
+                    })
+                    this.surveyqrcodevisible1=true;
+                    this.surveyqrcodelit=res.result;
+
+                })
+            })
+        },
+        generateStudentCode1(){
+            let codelist=[];
+            if(this.multipleselection.length==0){
+                this.$message({
+                    message:'未选择学生',
+                    type:'error'
+                })
+                return
+            }
+            for(let i=0;i<this.multipleselection.length;i++){
+                let id=this.multipleselection[i].id;
+                codelist.push(id);
+            }
+            let para={
+                codeList:codelist
+            };
+            getStudentCode(para).then((res)=>{
+
+                console.log(res);
+                if(res.succeed!=true){
+                    this.$message({
+                        message:'无普查数据',
+                        type:'error'
+                    })
+                    return
+                }
+                this.$message({
+                    message:'成功',
+                    type:'success'
+                })
+                this.qrcodevisible1=true;
+                this.studentInfoCodeList=res.result;
+            })
+
+        },
       generateStudentCode(){
           let codelist=[];
           if(this.multipleselection.length==0){
@@ -659,6 +783,28 @@
         document.body.innerHTML = oldContent;
         return false;
       },
+        clickPrinting3(){
+            let subOutputRankPrint = document.getElementById('printArea3');
+            console.log(subOutputRankPrint.innerHTML);
+            let newContent =subOutputRankPrint.innerHTML;
+            let oldContent = document.body.innerHTML;
+            document.body.innerHTML = newContent;
+            window.print();
+            window.location.reload();
+            document.body.innerHTML = oldContent;
+            return false;
+        },
+        clickPrinting4(){
+            let subOutputRankPrint = document.getElementById('printArea4');
+            console.log(subOutputRankPrint.innerHTML);
+            let newContent =subOutputRankPrint.innerHTML;
+            let oldContent = document.body.innerHTML;
+            document.body.innerHTML = newContent;
+            window.print();
+            window.location.reload();
+            document.body.innerHTML = oldContent;
+            return false;
+        },
       turntocheck() {
         this.finishstep = 2;
         this.secondstep = false;
