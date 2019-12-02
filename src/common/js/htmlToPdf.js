@@ -8,7 +8,66 @@ import globalvariable from './global'
 
 export default{
     install (Vue, options) {
+        Vue.prototype.getPdf3 = function (title, id = 'pdfDom', scale = 1, changeHeight = 0) {
+            const canvas = document.createElement('canvas');
+            const ele = document.querySelector(`#${id}`); // must set tag width
+
+            const width = ele.offsetWidth;
+            const height = ele.offsetHeight + changeHeight;
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+
+            canvas.getContext('2d').scale(scale, scale);
+
+            const opts = {
+                scale,
+                canvas,
+                logging: true,
+                // imageTimeout: 0,
+                width,
+                height,
+                useCORS: true // 【重要】开启跨域配置
+                // allowTaint: true, // 允许跨域图片
+                // taintTest: false // 是否在渲染前测试图片
+            };
+            html2Canvas(ele, opts).then(function (canvas) {
+                    // document.getElementById('printBodyPage').appendChild(canvas);
+                    let contentWidth = canvas.width / scale;
+                    let contentHeight = canvas.height / scale;
+                    let pageHeight = contentWidth / 592.28 * 841.89;
+                    let leftHeight = contentHeight;
+                    let position = 0;
+                    let imgWidth = 595.28;
+                    let imgHeight = 592.28 / contentWidth * contentHeight;
+                    let pageData = canvas.toDataURL('image/jpeg', 1.0);
+                    // let PDF = new JsPDF('', 'pt', 'a4');
+                    let PDF = new JsPDF({
+                        orientation: '',
+                        unit: 'pt',
+                        format: 'a4'
+                    });
+                    if (leftHeight < pageHeight) {
+                        PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                    } else {
+                        while (leftHeight > 0) {
+                            PDF.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight);
+                            leftHeight -= pageHeight;
+                            position -= 841.89;
+                            if (leftHeight > 0) {
+                                PDF.addPage();
+                            }
+                        }
+                    }
+                    PDF.save(title + '.pdf');
+                }
+            ).then(() => {
+                this.loading = false;
+            });
+        };
+
         Vue.prototype.getPdf2 = function (name) {
+
+
             html2Canvas(document.querySelector('#pdfDom'), {
                 allowTaint: true
             }).then(function (canvas) {

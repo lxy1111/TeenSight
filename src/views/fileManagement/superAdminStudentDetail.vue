@@ -539,6 +539,12 @@
                     surveyName:this.surveyName
                 }
                 getRecordList(para2).then((res)=>{
+                    if(!res.data.succeed){
+                        this.$message({
+                            type:'error',
+                            message:res.data.codeMessage
+                        })
+                    }
                     if(res.data.result.length!=0) {
                         this.recordList = res.data.result;
                         this.record = this.recordList[0];
