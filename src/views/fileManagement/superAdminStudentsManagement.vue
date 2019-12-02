@@ -120,8 +120,9 @@
                 stripe
                 highlight-current-row
                 tooltip-effect="dark"
+                :row-key="(row)=>{ return row.id}"
                 @selection-change="handleSelectionChange">
-          <el-table-column width="30" v-if="this.path!='superAdmin'"
+          <el-table-column width="30" :reserve-selection="true" v-if="this.path!='superAdmin'"
                   type="selection">
           </el-table-column>
           <el-table-column
@@ -371,6 +372,7 @@
     components: { UploadExcelComponent },
     data() {
       return {
+        allCheck:false,
         myid:'',
         isIns:false,
         ischeckins:false,
@@ -1005,6 +1007,15 @@
 
       });
     },
+      allCheckEvent () {
+        if (this.allCheck) {
+          this.students.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row, true)
+          })
+        } else {
+          this.$refs.multipleTable.clearSelection()
+        }
+      },
     //显示编辑界面
     handleEdit: function (index, row) {
       // this.editFormVisible = true;
