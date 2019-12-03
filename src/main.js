@@ -20,6 +20,8 @@ import axios from 'axios'
 import globalvariable from './global'
 import htmlToPdf from "./common/js/htmlToPdf";
 import global from "./common/js/global";
+import print from './common/js/print'
+Vue.use(print)
 
 Vue.use(htmlToPdf)
 Vue.prototype.$axios = axios

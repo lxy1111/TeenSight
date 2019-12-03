@@ -52,7 +52,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="!ishidden"> <el-button  v-loading.fullscreen.lock="fullscreenLoading"  type="primary" round  v-on:click="getPdf3(htmltitle)">下载PDF报告</el-button></el-form-item>
+          <el-form-item v-if="!ishidden"> <el-button  v-loading.fullscreen.lock="fullscreenLoading"  type="primary" round  v-on:click="printpdf(htmltitle)">下载PDF报告</el-button></el-form-item>
         </el-row>
         <el-row>
         <div v-if="notforschool">
@@ -99,8 +99,8 @@
           <el-form-item><el-button type="primary"  round @click="handlereset">重置</el-button></el-form-item>
         </el-row>
       </el-form>
-    <div class="retrieval  criteria Style" id="pdfDom">
-    <div :hidden="ishidden" class="pdfbody">
+    <div  id="pdfDom" ref="pdfDom">
+    <div :hidden="ishidden" class="content">
       <el-form :model="form" label-width="160px">
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12" >
@@ -210,7 +210,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div :hidden="showschooloverall" class="pdfbody2">
+    <div :hidden="showschooloverall" class="content">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >学校统计总览</el-breadcrumb-item>
       </el-breadcrumb>
@@ -320,7 +320,7 @@
 <!--        </el-row>-->
       </el-form>
     </div>
-      <div :hidden="showIns||onlygrade" class="pdfbody2">
+      <div :hidden="showIns||onlygrade" class="content">
         <el-form :model="form" label-width="160px">
 <!--          <el-row type="flex" class="row-bg" justify="right">-->
 <!--              <span style="font-size: large">视力不良变化趋势</span>-->
@@ -349,7 +349,7 @@
         </el-form>
       </div>
 
-    <div :hidden="showschooloverall||onlygrade" class="pdfbody">
+    <div :hidden="showschooloverall||onlygrade" class="content">
 
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >年级统计</el-breadcrumb-item>
@@ -370,7 +370,7 @@
 
       <div   :hidden="showschooloverall"  class="retrieval  criteria Style">
         <el-row v-for="item in gradesDetailList">
-          <div class="pdfbody2">
+          <div class="content">
         <el-breadcrumb separator="" class="bread-title" >
           <el-breadcrumb-item  style="font-size: xx-large" >{{item.gradeNo}}年级</el-breadcrumb-item>
         </el-breadcrumb>
@@ -541,7 +541,7 @@
           <!--          </el-col>-->
           <!--        </el-row>-->
           </div>
-          <div class="pdfbody">
+          <div class="content">
           <el-row type="flex" class="row-bg" justify="right">
             <el-col :span="12">
               <span style="font-size: x-large">视力变化趋势</span>
@@ -627,7 +627,7 @@
 <!--    </div>-->
 
 
-    <div  :hidden="showgradeoverall"  class="pdfbody2">
+    <div  :hidden="showgradeoverall"  class="content">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item  style="font-size: xx-large" >{{nowgrade}} <span v-if="showclassname"  style="font-size: xx-large" >{{nowclass}}班</span></el-breadcrumb-item>
       </el-breadcrumb>
@@ -687,7 +687,7 @@
         </el-row>
       </el-form>
     </div>
-      <div :hidden="showschooloverall&&showgradeoverall" class="pdfbody">
+      <div :hidden="showschooloverall&&showgradeoverall" class="content">
 
         <el-breadcrumb separator=">" class="bread-title" >
           <el-breadcrumb-item style="font-size: xx-large" >性别统计</el-breadcrumb-item>
@@ -1399,6 +1399,9 @@
       refresh(){
        this.initChart()
     },
+      printpdf(name){
+        this.$print(this.$refs.pdfDom,{'notPrint':'.el-button, .el-select'})
+      },
       handlegetdata(){
         getStatisticsDetail(this.selectForm).then(res=>{
           if(!res.data.succeed){
@@ -3150,10 +3153,10 @@
     margin-right: 0.5rem;
     margin-left: 0.5rem;
   }
-  .pdfbody{
-    height:130mm;
-  }
-  .pdfbody2{
-    height:310mm;
-  }
+  /*.pdfbody{*/
+  /*  height:130mm;*/
+  /*}*/
+  /*.pdfbody2{*/
+  /*  height:300mm;*/
+  /*}*/
 </style>
