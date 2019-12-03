@@ -3040,9 +3040,6 @@
     mounted() {
       var user = sessionStorage.getItem('user');
       user=JSON.parse(user);
-      if(user.type==3){
-          this.notforschool=false;
-      }
       if(user.type==1||user.type==2) {
         if(user.type==1){
           this.isGovern=true;
@@ -3055,6 +3052,7 @@
         this.getGradesWithoutCondition();
       }
       else{
+        this.notforschool=false;
         this.isschool=true;
         var schoolinfo = sessionStorage.getItem('schoolinfo');
         schoolinfo=JSON.parse(schoolinfo);
