@@ -99,7 +99,7 @@
           <el-form-item><el-button type="primary"  round @click="handlereset">重置</el-button></el-form-item>
         </el-row>
       </el-form>
-    <div  id="pdfDom" ref="pdfDom">
+    <div  id="pdfDom" ref="pdfDom" class="pdfbody">
     <div :hidden="ishidden" class="content">
       <el-form :model="form" label-width="160px">
         <el-row type="flex" class="row-bg" justify="right">
@@ -209,7 +209,7 @@
                 show-overflow-tooltip align="center">
         </el-table-column>
       </el-table>
-    </div>
+
     <div :hidden="showschooloverall" class="content">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >学校统计总览</el-breadcrumb-item>
@@ -320,6 +320,7 @@
 <!--        </el-row>-->
       </el-form>
     </div>
+
       <div :hidden="showIns||onlygrade" class="content">
         <el-form :model="form" label-width="160px">
 <!--          <el-row type="flex" class="row-bg" justify="right">-->
@@ -367,6 +368,7 @@
         </el-row>
       </el-form>
     </div>
+
 
       <div   :hidden="showschooloverall"  class="retrieval  criteria Style">
         <el-row v-for="item in gradesDetailList">
@@ -540,7 +542,7 @@
           <!--            <span style="font-size: large">视力不良且屈光度低于-0.5</span>-->
           <!--          </el-col>-->
           <!--        </el-row>-->
-          </div>
+
           <div class="content">
           <el-row type="flex" class="row-bg" justify="right">
             <el-col :span="12">
@@ -554,8 +556,9 @@
           </el-row>
           <el-row type="flex" class="row-bg" justify="right">
 
-              <div  style="width:1000px;height: 310px" :id="'changetrend'+item.gradeNo" :ref="'changetrend'+item.gradeNo"></div>
+              <div  style="width:1000px;height: 500px" :id="'changetrend'+item.gradeNo" :ref="'changetrend'+item.gradeNo"></div>
           </el-row>
+          </div>
           </div>
 
         </el-row>
@@ -687,6 +690,7 @@
         </el-row>
       </el-form>
     </div>
+
       <div :hidden="showschooloverall&&showgradeoverall" class="content">
 
         <el-breadcrumb separator=">" class="bread-title" >
@@ -715,6 +719,8 @@
           </el-row>
         </el-form>
       </div>
+    </div>
+
 
     </div>
   </section>
@@ -3104,12 +3110,12 @@
     height: 400px;
   }
   #gradestatistic{
-    width: 1080px;
-    height: 400px;
+    width: 1000px;
+    height: 800px;
   }
   #genderstatistic{
-    width: 400px;
-    height: 400px;
+    width: 800px;
+    height: 800px;
   }
   #schoolStatistic{
     width: 1080px;
@@ -3151,9 +3157,9 @@
     margin-right: 0.5rem;
     margin-left: 0.5rem;
   }
-  /*.pdfbody{*/
-  /*  height:130mm;*/
-  /*}*/
+  .pdfbody{
+    width: 1000px
+  }
   /*.pdfbody2{*/
   /*  height:300mm;*/
   /*}*/
