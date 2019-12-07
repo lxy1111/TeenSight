@@ -388,7 +388,8 @@
                     pupilCylinder:'',
                     pupilAxial:'',
                     axial:'',
-                    distance:''
+                    distance:'',
+                    diopter: ''
 
                 }, {
                     eyes: '右眼',
@@ -403,7 +404,8 @@
                     pupilCylinder:'',
                     pupilAxial:'',
                     axial:'',
-                    distance:''
+                    distance:'',
+                    diopter: ''
 
                 }],
                 form:{
@@ -608,6 +610,7 @@
                 this.lightcheck[0].pupilCylinder=this.record.result[0].pupilCylinder;
                 this.lightcheck[0].pupilAxial=this.record.result[0].pupilAxial;
                 this.lightcheck[0].distance=this.record.result[0].distance;
+                this.lightcheck[0].diopter=this.record.result[0].diopter;
 
                 this.lightcheck[1].manualSphere=this.record.result[1].manualSphere;
                 this.lightcheck[1].manualCylinder=this.record.result[1].manualCylinder;
@@ -620,6 +623,7 @@
                 this.lightcheck[1].pupilCylinder=this.record.result[1].pupilCylinder;
                 this.lightcheck[1].pupilAxial=this.record.result[1].pupilAxial;
                 this.lightcheck[1].distance=this.record.result[1].distance;
+                this.lightcheck[1].diopter=this.record.result[1].diopter;
 
 
                 this.lightcheck2[0].axial=this.record.result[0].axial;
