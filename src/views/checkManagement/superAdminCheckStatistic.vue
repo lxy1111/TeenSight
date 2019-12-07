@@ -1029,6 +1029,9 @@
         this.selectForm.gradeNo=this.primarygrade;
         this.secondarygradelist=null;
         this.highgradelist=null;
+        this.selectForm.surveyName=null;
+        this.schoolist=null;
+        this.selectForm.schoolId=null;
         console.log("!!!!!");
 
       },
@@ -1037,14 +1040,18 @@
         this.selectForm.gradeNo=this.secondarygrade;
         this.primarygradelist=null;
         this.highgradelist=null;
-
+         this.selectForm.surveyName=null;
+        this.schoolist=null;
+        this.selectForm.schoolId=null;
       },
       handlehighschoolgrade(){
         this.selectForm.type=5;
         this.selectForm.gradeNo=this.highgrade;
         this.primarygradelist=null;
         this.secondarygradelist=null;
-
+       this.selectForm.surveyName=null;
+        this.schoolist=null;
+        this.selectForm.schoolId=null;
       },
 
       handleChange(val){
@@ -1152,6 +1159,142 @@
         document.body.innerHTML = oldContent;
         return false;
       },
+       EncodeUtf8(s1)
+  {
+    var s = escape(s1);
+    var sa = s.split("%");
+    var retV ="";
+    if(sa[0] != "")
+    {
+      retV = sa[0];
+    }
+    for(var i = 1; i < sa.length; i ++)
+    {
+      if(sa[i].substring(0,1) == "u")
+      {
+        retV += Hex2Utf8(Str2Hex(sa[i].substring(1,5)));
+
+      }
+      else retV += "%" + sa[i];
+    }
+
+    return retV;
+  },
+   Str2Hex(s)
+  {
+    var c = "";
+    var n;
+    var ss = "0123456789ABCDEF";
+    var digS = "";
+    for(var i = 0; i < s.length; i ++)
+    {
+      c = s.charAt(i);
+      n = ss.indexOf(c);
+      digS += Dec2Dig(eval(n));
+
+    }
+//return value;
+    return digS;
+  },
+   Dec2Dig(n1)
+  {
+    var s = "";
+    var n2 = 0;
+    for(var i = 0; i < 4; i++)
+    {
+      n2 = Math.pow(2,3 - i);
+      if(n1 >= n2)
+      {
+        s += '1';
+        n1 = n1 - n2;
+      }
+      else
+        s += '0';
+
+    }
+    return s;
+
+  },
+   Dig2Dec(s)
+  {
+    var retV = 0;
+    if(s.length == 4)
+    {
+      for(var i = 0; i < 4; i ++)
+      {
+        retV += eval(s.charAt(i)) * Math.pow(2, 3 - i);
+      }
+      return retV;
+    }
+    return -1;
+  },
+   Hex2Utf8(s)
+  {
+    var retS = "";
+    var tempS = "";
+    var ss = "";
+    if(s.length == 16)
+    {
+      tempS = "1110" + s.substring(0, 4);
+      tempS += "10" + s.substring(4, 10);
+      tempS += "10" + s.substring(10,16);
+      var sss = "0123456789ABCDEF";
+      for(var i = 0; i < 3; i ++)
+      {
+        retS += "%";
+        ss = tempS.substring(i * 8, (eval(i)+1)*8);
+
+
+
+        retS += sss.charAt(Dig2Dec(ss.substring(0,4)));
+        retS += sss.charAt(Dig2Dec(ss.substring(4,8)));
+      }
+      return retS;
+    }
+    return "";
+  },
+
+   revertUTF8(szInput)
+  {
+    var x,wch,wch1,wch2,uch="",szRet="";
+    for (x=0; x<szInput.length; x++)
+    {
+      if (szInput.charAt(x)=="%")
+      {
+        wch =parseInt(szInput.charAt(++x) + szInput.charAt(++x),16);
+        if (!wch) {break;}
+        if (!(wch & 0x80))
+        {
+          wch = wch;
+        }
+        else if (!(wch & 0x20))
+        {
+          x++;
+          wch1 = parseInt(szInput.charAt(++x) + szInput.charAt(++x),16);
+          wch = (wch & 0x1F)<< 6;
+          wch1 = wch1 & 0x3F;
+          wch = wch + wch1;
+        }
+        else
+        {
+          x++;
+          wch1 = parseInt(szInput.charAt(++x) + szInput.charAt(++x),16);
+          x++;
+          wch2 = parseInt(szInput.charAt(++x) + szInput.charAt(++x),16);
+          wch = (wch & 0x0F)<< 12;
+          wch1 = (wch1 & 0x3F)<< 6;
+          wch2 = (wch2 & 0x3F);
+          wch = wch + wch1 + wch2;
+        }
+        szRet += String.fromCharCode(wch);
+      }
+      else
+      {
+        szRet += szInput.charAt(x);
+      }
+    }
+    return(szRet);
+  },
       exportExcel(){
         if(this.selectForm.surveyName==null){
           this.$message({
@@ -1169,9 +1312,12 @@
         }
 
         exportExcel(this.selectForm).then(res=>{
+
+          let filen=res.headers['filename'];
+          let newfilen=this.revertUTF8(filen);
           console.log(res);
           const blob = new Blob([res.data]);//处理文档流
-          const fileName = res.headers['filename']+'.xls';
+          const fileName = newfilen+'.xls';
           const elink = document.createElement('a');
           elink.download = fileName;
           elink.style.display = 'none';
@@ -1184,6 +1330,7 @@
         })
       },
       handlereset(){
+        this.getSchools();
         this.gradesDetailList=[];
         this.finalgradeNo=null;
         this.primarygrade=null;
@@ -3058,6 +3205,7 @@
                   console.log("login get success");
                   console.log(res);
                   this.allschool=res.data.result.items;
+                  this.schoolist=[];
 
                   for(let i=0;i<this.allschool.length;i++){
                     let school ={
