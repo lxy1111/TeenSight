@@ -6,6 +6,17 @@ let base = '';
 axios.defaults.baseURL="https://www.suporeiot.cn:8085";
 
 
+export const exportExcel = params => { return axios({
+    headers: {
+        'Content-Type':'application/json'
+    },
+    responseType: 'blob', //一定要写
+    method: 'get',
+    url:'/api/record/getRecordExcel',
+    params:params
+}) };
+
+
 export const upgrade = params => { return axios.post(`/api/teacher/upgrade`, params).then(res => res.data); };
 
 export const requestLogin = params => { return axios.post(`/api/user/login`, params).then(res => res.data); };

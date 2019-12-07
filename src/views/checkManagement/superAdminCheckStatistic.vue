@@ -97,6 +97,7 @@
           <!--          <el-form-item><el-button type="primary"  round @click="refresh">刷新</el-button></el-form-item>-->
 
           <el-form-item><el-button type="primary"  round @click="handlereset">重置</el-button></el-form-item>
+          <el-form-item><el-button type="primary"  round @click="exportExcel">导出excel</el-button></el-form-item>
         </el-row>
       </el-form>
     <div  id="pdfDom" ref="pdfDom" class="pdfbody">
@@ -158,7 +159,6 @@
           </el-col>
         </el-row>
       </div>
-      </el-form>
 
       <el-table
               ref="multipleTable"
@@ -209,7 +209,9 @@
                 show-overflow-tooltip align="center">
         </el-table-column>
       </el-table>
+      </el-form>
 
+      <br><br>
     <div :hidden="showschooloverall" class="content">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >学校统计总览</el-breadcrumb-item>
@@ -374,7 +376,7 @@
         <el-row v-for="item in gradesDetailList">
           <div class="content">
         <el-breadcrumb separator="" class="bread-title" >
-          <el-breadcrumb-item  style="font-size: xx-large" >{{item.gradeNo}}年级</el-breadcrumb-item>
+          <el-breadcrumb-item  style="font-size: xx-large" >{{item.gradeNo==0?'初中预备班':item.gradeNo+'年级'}}</el-breadcrumb-item>
         </el-breadcrumb>
           <el-table
                   ref="multipleTable"
@@ -744,7 +746,7 @@
     getStatisticsBySchool,
     getSurveyList,
     getStatisticsDetail,
-    getSchoolInfo, getSurveyName, getGrades
+    getSchoolInfo, getSurveyName, getGrades, exportExcel
   } from '../../api/api';
   import htmlToPdf from "../../common/js/htmlToPdf";
   import JsPDF from 'jspdf'
@@ -1149,6 +1151,37 @@
         window.location.reload();
         document.body.innerHTML = oldContent;
         return false;
+      },
+      exportExcel(){
+        if(this.selectForm.surveyName==null){
+          this.$message({
+            type:'error',
+            message:'请选择普查'
+          })
+          return;
+        }
+        if(this.selectForm.schoolId==null){
+          this.$message({
+            type:'error',
+            message:'请选择学校'
+          })
+          return;
+        }
+
+        exportExcel(this.selectForm).then(res=>{
+          console.log(res);
+          const blob = new Blob([res.data]);//处理文档流
+          const fileName = res.headers['filename']+'.xls';
+          const elink = document.createElement('a');
+          elink.download = fileName;
+          elink.style.display = 'none';
+          elink.href = URL.createObjectURL(blob);
+          document.body.appendChild(elink);
+          elink.click();
+          URL.revokeObjectURL(elink.href); // 释放URL 对象
+          document.body.removeChild(elink);
+
+        })
       },
       handlereset(){
         this.gradesDetailList=[];
