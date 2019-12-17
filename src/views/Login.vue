@@ -122,13 +122,13 @@
                     type:data.result.type
                 }
                 sessionStorage.setItem('user', JSON.stringify(user));
+                sessionStorage.setItem('token',data.result.token);
                 let type=data.result.type;
                 console.log("usertype:!!!!!!");
                 console.log(type);
                 if(type==0) {
                     globalvariable.setHideSuperAdmin(true);
                     console.log(globalvariable.hideSuperAdmin);
-
                     this.$router.push({path: '/superAdmin/superAdminInstituteManagement'});
                 }
                 else if(type==1||type==2){

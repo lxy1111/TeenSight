@@ -25,6 +25,7 @@ import register from "./views/register";
 import globalvariable from './global'
 import superAdminCheckInstitute from "./views/fileManagement/superAdminCheckInstitute";
 import myAccount from "./views/fileManagement/myAccount";
+import schoolHistoryRecord from "./views/fileManagement/schoolHistoryRecord";
 
 
 
@@ -189,6 +190,7 @@ let routes = [
         children: [
             { path: '/school/schoolGradeManagement', component: superAdminGradeManagement, name: '年级信息' },
             { path: '/school/schoolStudentsManagement', component: superAdminStudentsManagement, name: '学生信息' },
+            { path: '/school/schoolStudentHistoryRecord', component: schoolHistoryRecord, name: '历史视力' },
             { path: '/school/schoolStudentDetail', component: superAdminStudentDetail,hidden:true,name:'个人信息'},
             { path: '/school/schoolSightData', component: superAdminSightData,hidden:true,name:'屈光档案'},
             { path: '/school/schoolSightData', component: superAdminSightData,hidden:true,name:'历史记录'},

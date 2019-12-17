@@ -23,6 +23,9 @@ import global from "./common/js/global";
 import print from './common/js/print'
 Vue.use(print)
 
+
+
+
 Vue.use(htmlToPdf)
 Vue.prototype.$axios = axios
 Vue.use(ElementUI)
@@ -38,6 +41,9 @@ Vue.prototype.GLOBALVARIABLE=global;
 const router = new VueRouter({
   routes
 })
+
+
+
 
 router.beforeEach((to, from, next) => {
   //NProgress.start();

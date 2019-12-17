@@ -210,8 +210,6 @@
         </el-table-column>
       </el-table>
       </el-form>
-
-      <br><br>
     <div :hidden="showschooloverall" class="content">
       <el-breadcrumb separator=">" class="bread-title" >
         <el-breadcrumb-item style="font-size: xx-large" >学校统计总览</el-breadcrumb-item>
