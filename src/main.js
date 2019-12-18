@@ -21,7 +21,9 @@ import globalvariable from './global'
 import htmlToPdf from "./common/js/htmlToPdf";
 import global from "./common/js/global";
 import print from './common/js/print'
+import print2 from './common/js/print2'
 Vue.use(print)
+Vue.use(print2)
 
 
 

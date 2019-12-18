@@ -293,7 +293,7 @@
         editUser,
         addUser,
         getStudentDetail,
-        getRecordList, modifyStudents, getSurveyList, getPersonalReport
+        getRecordList, modifyStudents, getSurveyList, getPersonalReport, getDeletedStudentDetail, getAllSurveyNameList
     } from '../../api/api';
 
     export default {
@@ -481,6 +481,7 @@
                 }
             }
             let id=this.$route.query.id;
+            let type=this.$route.query.type;
             this.stuId=id;
            let para={
                id:id
@@ -495,21 +496,40 @@
                page:1,
                pageSize:100000
            }
-            getSurveyList(para3).then(res=>{
-                let allsurveys=res.data.result.items;
-                this.surveyList=[];
-                for(let i=0;i<allsurveys.length;i++){
-                    let survey ={
-                        value:allsurveys[i].surveyName,
-                        label:allsurveys[i].surveyName
-                    }
-                    this.surveyList.push(survey);
-                }
+           if(type==1){
+               getAllSurveyNameList(para3).then(res=>{
+                   let allsurveys=res.data.result.items;
+                   this.surveyList=[];
+                   for(let i=0;i<allsurveys.length;i++){
+                       let survey ={
+                           value:allsurveys[i].surveyName,
+                           label:allsurveys[i].surveyName
+                       }
+                       this.surveyList.push(survey);
+                   }
 
-            })
-            getStudentDetail(para).then((res)=>{
-                this.editForm=res.data.result;
-            })
+               })
+               getDeletedStudentDetail(para).then((res)=>{
+                   this.editForm=res.data.result;
+               })
+
+           }else {
+               getSurveyList(para3).then(res => {
+                   let allsurveys = res.data.result.items;
+                   this.surveyList = [];
+                   for (let i = 0; i < allsurveys.length; i++) {
+                       let survey = {
+                           value: allsurveys[i].surveyName,
+                           label: allsurveys[i].surveyName
+                       }
+                       this.surveyList.push(survey);
+                   }
+
+               })
+               getStudentDetail(para).then((res) => {
+                   this.editForm = res.data.result;
+               })
+           }
             // getSurveyList(this.selectForm).then(res=>{
             //     this.allsurveys=res.data.result.items;
             //     this.surveylist=[];

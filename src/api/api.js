@@ -30,6 +30,12 @@ export const exportExcel = params => { return axios({
     params:params
 }) };
 
+export const getDeletedStudentDetail = params => { return axios.get(`/api/student/getDeletedStudentDetail`, { params: params }); };
+
+export const getDeletedStudentList = params => { return axios.get(`/api/student/getDeletedStudentList`, { params: params }); };
+
+export const getAllSurveyNameList = params => { return axios.get(`/api/record/getAllSurveyNameList`, { params: params }); };
+
 
 export const upgrade = params => { return axios.post(`/api/teacher/upgrade`, params).then(res => res.data); };
 

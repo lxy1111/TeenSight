@@ -160,10 +160,10 @@
         </el-row>
       </div>
 
+
       <el-table
               ref="multipleTable"
               :data="smalltable"
-              border
               tooltip-effect="dark"
               style="width: 100%">
         <el-table-column
@@ -209,6 +209,7 @@
                 show-overflow-tooltip align="center">
         </el-table-column>
       </el-table>
+
       </el-form>
     <div :hidden="showschooloverall" class="content">
       <el-breadcrumb separator=">" class="bread-title" >
@@ -379,7 +380,6 @@
           <el-table
                   ref="multipleTable"
                   :data="item.smallTable"
-                  border
                   tooltip-effect="dark"
                   style="width: 100%">
             <el-table-column

@@ -1023,7 +1023,8 @@
       this.editForm = Object.assign({}, row);
       this.$router.push({path: '/' + this.path + '/' + this.path + 'StudentDetail',
         query:{
-        id:this.editForm.id
+        id:this.editForm.id,
+          query:0
         }
       });
     },

@@ -302,7 +302,14 @@
         editUser,
         addUser,
         getStudentsList,
-        addStudents, removeStudent, getStudentCode, getSurveyList, getSurveyCode, getSchoolListPage, upgrade
+        addStudents,
+        removeStudent,
+        getStudentCode,
+        getSurveyList,
+        getSurveyCode,
+        getSchoolListPage,
+        upgrade,
+        getDeletedStudentList
     } from '../../api/api';
 
 
@@ -907,7 +914,7 @@
                 // 发送请求:将数据返回到一个回到函数中
                 // 并且响应成功以后会执行then方法中的回调函数
 
-                getStudentsList(this.selectForm)
+                getDeletedStudentList(this.selectForm)
                     .then(res => {
                         console.log("login get success");
                         console.log(res);
@@ -965,7 +972,8 @@
                 this.editForm = Object.assign({}, row);
                 this.$router.push({path: '/' + this.path + '/' + this.path + 'StudentDetail',
                     query:{
-                        id:this.editForm.id
+                        id:this.editForm.id,
+                        type:1
                     }
                 });
             },
