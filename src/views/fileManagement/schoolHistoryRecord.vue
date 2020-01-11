@@ -112,7 +112,6 @@
                             show-overflow-tooltip align="center">
                         <template scope="scope">
                             <el-link style="color: #7980FA;" size="small" @click="handleEdit(scope.$index, scope.row)">详情</el-link>
-                            <el-link style="color: #7980FA;" size="small" v-if="!hidedelete" @click="handleDel(scope.$index, scope.row)">删除</el-link>
                         </template>
                     </el-table-column>
                 </el-table>

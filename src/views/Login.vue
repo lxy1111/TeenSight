@@ -43,6 +43,8 @@
             &nbsp &nbsp
             <el-link style="color: #787FFA;margin-top: 0rem !important;"  @click="showregisterSelectInstitute">注册筛查机构</el-link>
         </el-form-item>
+        <br><br><br><br>
+        <a  :href="'http://'+'www.beian.miit.gov.cn'">沪ICP备10004283号-3</a>
     </el-form>
 </template>
 

@@ -189,6 +189,7 @@
             <el-link disabled style="color: #B8B8B8;">已有账号？</el-link>
             <el-link style="color: #787FFA;" @click="showlogin" >快捷登录</el-link>
         </el-form-item>
+
     </el-form>
 </template>
 

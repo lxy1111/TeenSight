@@ -99,7 +99,7 @@
           <img  style="position: relative; width: 10%; height: 10%; left: 45%" src="../../assets/img/file.jpeg">
         </el-row>
         <el-row>
-          <el-link  :href="require('../../assets/img/template2.xlsx')" download="模版文件.xlsx"  style="left: 44%">
+          <el-link  :href="require('../../assets/img/template2.xlsx')" download="班级模版.xlsx"  style="left: 44%">
             下载模版文件
           </el-link>
         </el-row>

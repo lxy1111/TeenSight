@@ -611,6 +611,9 @@
         })
       }else{
         this.isAdimin=true;
+        var institute = sessionStorage.getItem('institute');
+        institute = JSON.parse(institute);
+        this.selectForm.institutionId=institute.insDetail.id;
         this.getSurveyList();
       }
     }

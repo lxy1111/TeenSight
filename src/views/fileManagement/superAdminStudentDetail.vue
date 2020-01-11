@@ -299,6 +299,7 @@
     export default {
         data() {
             return {
+                schoolId:null,
                 surveyName:null,
                 surveyList:[],
                 recordList:[],
@@ -358,7 +359,8 @@
                     sex: -1,
                     age: 0,
                     birth: '',
-                    addr: ''
+                    addr: '',
+                    schoolId:1
                 },
                shortsight : [{
                     eyes: '左眼',
@@ -477,6 +479,9 @@
                     this.isAdmin=true;
                 }
                 else {
+                    var school=sessionStorage.getItem('schoolinfo');
+                    school=JSON.parse(school);
+                    this.schoolId=school.schoolId;
                     this.path='school';
                 }
             }
@@ -498,12 +503,12 @@
            }
            if(type==1){
                getAllSurveyNameList(para3).then(res=>{
-                   let allsurveys=res.data.result.items;
+                   let allsurveys=res.data.result;
                    this.surveyList=[];
                    for(let i=0;i<allsurveys.length;i++){
                        let survey ={
-                           value:allsurveys[i].surveyName,
-                           label:allsurveys[i].surveyName
+                           value:allsurveys[i],
+                           label:allsurveys[i]
                        }
                        this.surveyList.push(survey);
                    }
@@ -771,6 +776,7 @@
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.editLoading = true;
                             //NProgress.start();
+                            this.editForm.schoolId=this.schoolId;
                             let para = Object.assign({}, this.editForm);
                             modifyStudents(para).then((res) => {
                                 this.editLoading = false;

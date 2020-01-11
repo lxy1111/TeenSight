@@ -246,7 +246,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12" align="left">
-            <span style="font-size: large">视力不良且屈光度低于-0.5</span>
+            <span style="font-size: large">视力不良且等效球镜低于-0.5</span>
           </el-col>
           <el-col :span="12">
             <span style="font-size: large">视力不良等级人数占比</span>
@@ -350,6 +350,34 @@
           </el-row>
         </el-form>
       </div>
+        <div :hidden="showschooloverall" class="content">
+
+            <el-breadcrumb separator=">" class="bread-title" >
+                <el-breadcrumb-item style="font-size: xx-large" >性别统计</el-breadcrumb-item>
+            </el-breadcrumb>
+            <el-form :model="form" label-width="160px">
+
+                <el-row type="flex" class="row-bg" justify="right">
+                    <span style="font-size: x-large">男女生视力情况</span>
+                </el-row>
+                <el-row type="flex" class="row-bg" justify="right">
+                    <!--          <div class="retrieval  criteria Style">-->
+                    <!--            <div id="gender">-->
+                    <!--              <el-row type="flex" class="row-bg" justify="right">-->
+                    <!--                <span  style="font-size: x-large">男生近视率       {{this.maleshortrate*100}}%</span>-->
+                    <!--              </el-row>-->
+                    <!--              <el-row type="flex" class="row-bg" justify="right">-->
+                    <!--                <span  style="font-size: x-large">女生近视率        {{this.femaleshortrate*100}}%</span>-->
+                    <!--              </el-row>-->
+                    <!--            </div>-->
+                    <!--          </div>-->
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+                    <div class="retrieval  criteria Style">
+                        <div style="page-break-inside: avoid" id="genderstatistic2" ref="genderstatistic2"></div>
+                    </div>
+                </el-row>
+            </el-form>
+        </div>
 
     <div :hidden="showschooloverall||onlygrade" class="content">
 
@@ -517,7 +545,7 @@
           </el-row>
           <el-row type="flex" class="row-bg" justify="right">
             <el-col :span="12" align="left">
-              <span style="font-size: large">视力不良且屈光度低于-0.5</span>
+              <span style="font-size: large">视力不良且等效球镜低于-0.5</span>
             </el-col>
 
           </el-row>
@@ -531,7 +559,7 @@
             </el-col>
             <el-col :span="12" align="left">
               <div class="retrieval  criteria Style">
-                <div  style="width: 400px;height: 400px;page-break-inside: avoid" :id="'proportion'+item.gradeNo" :ref="'proportion'+item.gradeNo"></div>
+                <div  style="width: 600px;height: 400px;page-break-inside: avoid" :id="'proportion'+item.gradeNo" :ref="'proportion'+item.gradeNo"></div>
               </div>
             </el-col>
             &nbsp; &nbsp; &nbsp; &nbsp;
@@ -647,7 +675,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="right">
           <el-col :span="12" align="left">
-            <span style="font-size: large">视力不良且屈光度低于-0.5</span>
+            <span style="font-size: large">视力不良且等效球镜低于-0.5</span>
           </el-col>
 
         </el-row>
@@ -691,7 +719,7 @@
       </el-form>
     </div>
 
-      <div :hidden="showschooloverall&&showgradeoverall" class="content">
+      <div :hidden="showgradeoverall" class="content">
 
         <el-breadcrumb separator=">" class="bread-title" >
           <el-breadcrumb-item style="font-size: xx-large" >性别统计</el-breadcrumb-item>
@@ -1603,21 +1631,21 @@
           let thirdDegree=res.data.result.warningRes.thirdDegree;
           let normalDegree=res.data.result.warningRes.normalDegree;
 
-          this.firstDegree=firstDegree;
-          this.secondDegree=secondDegree;
-          this.thirdDegree=thirdDegree;
-          this.normalDegree=normalDegree;
+          this.firstDegree=parseFloat(firstDegree*100).toFixed(2);
+          this.secondDegree=parseFloat(secondDegree*100).toFixed(2);
+          this.thirdDegree=parseFloat(thirdDegree*100).toFixed(2);
+          this.normalDegree=parseFloat(normalDegree*100).toFixed(2);
 
           let coveragecnt=res.data.result.coverageCount;
           let firstDegreecnt=res.data.result.warningRes.firstDegreeCount;
           let secondDegreecnt=res.data.result.warningRes.secondDegreeCount;
           let thirdDegreecnt=res.data.result.warningRes.thirdDegreeCount;
           let normalDegreecnt=res.data.result.warningRes.normalDegreeCount;
-          this.smalltable[0].coveragerate=coverage*100;
-          this.smalltable[0].firstDegree=firstDegree*100;
-          this.smalltable[0].secondDegree=secondDegree*100;
-          this.smalltable[0].thirdDegree=thirdDegree*100;
-          this.smalltable[0].normalDegree=normalDegree*100;
+          this.smalltable[0].coveragerate=parseFloat(coverage*100).toFixed(2);
+          this.smalltable[0].firstDegree=parseFloat(firstDegree*100).toFixed(2);
+          this.smalltable[0].secondDegree=parseFloat(secondDegree*100).toFixed(2);
+          this.smalltable[0].thirdDegree=parseFloat(thirdDegree*100).toFixed(2);
+          this.smalltable[0].normalDegree=parseFloat(normalDegree*100).toFixed(2);
 
 
           this.smalltable[1].coveragerate=coveragecnt;
@@ -1625,8 +1653,8 @@
           this.smalltable[1].secondDegree=secondDegreecnt;
           this.smalltable[1].thirdDegree=thirdDegreecnt;
           this.smalltable[1].normalDegree=normalDegreecnt;
-          let poorsightrate=res.data.result.shortSightRate*100;
-          let normalsightrate=100-poorsightrate;
+          let poorsightrate=parseFloat(res.data.result.shortSightRate*100).toFixed(2);
+          let normalsightrate=parseFloat(100-poorsightrate).toFixed(2);
           this.poorsightcount=res.data.result.poorSightCount;
           this.shortsightcount=res.data.result.shortSightCount;
           this.coveragecount=res.data.result.coverageCount;
@@ -2072,6 +2100,7 @@
             let a = echarts.init(document.getElementById('poor' + this.gradesDetailList[i].gradeNo));
             let b = echarts.init(document.getElementById('proportion' + this.gradesDetailList[i].gradeNo));
             let c = echarts.init(document.getElementById('changetrend' + this.gradesDetailList[i].gradeNo));
+            let shortsightrate=parseFloat(this.gradesDetailList[i].shortSightRate * 100).toFixed(2);
             a.setOption({
               color: ['#FF9900', '#FFCC33'],
               tooltip: {
@@ -2081,8 +2110,8 @@
               legend: {
                 orient: 'vertical',
                 x: 'left',
-                data: ['非近视率: ' + (100 - this.gradesDetailList[i].shortSightRate * 100 + '%'),
-                  '近视率: ' + this.gradesDetailList[i].shortSightRate * 100 + '%']
+                data: ['非近视率: ' + parseFloat(100 - this.gradesDetailList[i].shortSightRate * 100).toFixed(2) + '%',
+                  '近视率: ' + parseFloat(this.gradesDetailList[i].shortSightRate * 100).toFixed(2) + '%']
               },
               series: [
                 {
@@ -2111,11 +2140,11 @@
                   data: [
                     {
                       value: this.gradesDetailList[i].coverageCount - this.gradesDetailList[i].shortSightCount,
-                      name: '非近视率: ' + (100 - this.gradesDetailList[i].shortSightRate * 100) + '%'
+                      name: '非近视率: ' + parseFloat(100 - this.gradesDetailList[i].shortSightRate * 100).toFixed(2) + '%'
                     },
                     {
                       value: this.gradesDetailList[i].shortSightCount,
-                      name: '近视率: ' + this.gradesDetailList[i].shortSightRate * 100 + '%'
+                      name: '近视率: ' + parseFloat(this.gradesDetailList[i].shortSightRate * 100).toFixed(2) + '%'
                     },
 
                   ]
@@ -2132,7 +2161,7 @@
               legend: {
                 orient: 'vertical',
                 x: 'left',
-                data: ['视力正常: ' + this.gradesDetailList[i].warningRes.normalDegree * 100 + '%', '轻度不良: ' + this.gradesDetailList[i].warningRes.firstDegree * 100 + '%', '中度不良: ' + this.gradesDetailList[i].warningRes.secondDegree * 100 + '%', '重度不良: ' + this.gradesDetailList[i].warningRes.thirdDegree * 100 + '%']
+                data: ['视力正常: ' + parseFloat(this.gradesDetailList[i].warningRes.normalDegree * 100).toFixed(2) + '%', '轻度不良: ' + parseFloat(this.gradesDetailList[i].warningRes.firstDegree * 100).toFixed(2) + '%', '中度不良: ' + parseFloat(this.gradesDetailList[i].warningRes.secondDegree * 100).toFixed(2) + '%', '重度不良: ' + parseFloat(this.gradesDetailList[i].warningRes.thirdDegree * 100).toFixed(2) + '%']
               },
               series: [
                 {
@@ -2161,19 +2190,19 @@
                   data: [
                     {
                       value: this.gradesDetailList[i].warningRes.normalDegreeCount,
-                      name: '视力正常: ' + this.gradesDetailList[i].warningRes.normalDegree * 100 + '%'
+                      name: '视力正常: ' + parseFloat(this.gradesDetailList[i].warningRes.normalDegree * 100).toFixed(2) + '%'
                     },
                     {
                       value: this.gradesDetailList[i].warningRes.firstDegreeCount,
-                      name: '轻度不良: ' + this.gradesDetailList[i].warningRes.firstDegree * 100 + '%'
+                      name: '轻度不良: ' + parseFloat(this.gradesDetailList[i].warningRes.firstDegree * 100).toFixed(2) + '%'
                     },
                     {
                       value: this.gradesDetailList[i].warningRes.secondDegreeCount,
-                      name: '中度不良: ' + this.gradesDetailList[i].warningRes.secondDegree * 100 + '%'
+                      name: '中度不良: ' + parseFloat(this.gradesDetailList[i].warningRes.secondDegree * 100).toFixed(2) + '%'
                     },
                     {
                       value: this.gradesDetailList[i].warningRes.thirdDegreeCount,
-                      name: '重度不良: ' + this.gradesDetailList[i].warningRes.thirdDegree * 100 + '%'
+                      name: '重度不良: ' + parseFloat(this.gradesDetailList[i].warningRes.thirdDegree * 100).toFixed(2) + '%'
                     }
                   ]
                 }
@@ -2279,7 +2308,7 @@
           legend: {
             orient: 'vertical',
             x: 'left',
-            data: ['非近视率: ' + (100 - this.shortsightrate) + '%', '近视率: ' + this.shortsightrate + '%']
+            data: ['非近视率: ' + parseFloat(100 - this.shortsightrate).toFixed(2) + '%', '近视率: ' + this.shortsightrate + '%']
           },
           series: [
             {
@@ -2306,7 +2335,7 @@
                 }
               },
               data: [
-                {value: this.coveragecount - this.shortsightcount, name: '非近视率: ' + (100 - this.shortsightrate) + '%'},
+                {value: this.coveragecount - this.shortsightcount, name: '非近视率: ' + parseFloat(100 - this.shortsightrate).toFixed(2) + '%'},
                 {value: this.shortsightcount, name: '近视率: ' + this.shortsightrate + '%'},
 
               ]
@@ -2326,7 +2355,7 @@
           legend: {
             orient: 'vertical',
             x: 'left',
-            data: ['视力正常: ' + this.normalDegree * 100 + '%', '轻度不良: ' + this.firstDegree * 100 + '%', '中度不良: ' + this.secondDegree * 100 + '%', '重度不良: ' + this.thirdDegree * 100 + '%']
+            data: ['视力正常: ' + this.normalDegree + '%', '轻度不良: ' + this.firstDegree  + '%', '中度不良: ' + this.secondDegree  + '%', '重度不良: ' + this.thirdDegree  + '%']
           },
           series: [
             {
@@ -2353,10 +2382,10 @@
                 }
               },
               data: [
-                {value: this.normalwarning, name: '视力正常: ' + this.normalDegree * 100 + '%'},
-                {value: this.firstwarning, name: '轻度不良: ' + this.firstDegree * 100 + '%'},
-                {value: this.secondwarning, name: '中度不良: ' + this.secondDegree * 100 + '%'},
-                {value: this.thirdwarning, name: '重度不良: ' + this.thirdDegree * 100 + '%'}
+                {value: this.normalwarning, name: '视力正常: ' + this.normalDegree  + '%'},
+                {value: this.firstwarning, name: '轻度不良: ' + this.firstDegree  + '%'},
+                {value: this.secondwarning, name: '中度不良: ' + this.secondDegree  + '%'},
+                {value: this.thirdwarning, name: '重度不良: ' + this.thirdDegree  + '%'}
               ]
             }
           ]
@@ -2535,7 +2564,9 @@
           ]
         };
         this.chart4 = echarts.init(this.$refs.genderstatistic);
+        let newchart=echarts.init(this.$refs.genderstatistic2);
         this.chart4.setOption(option2);
+        newchart.setOption(option2);
         // this.chart4.setOption({
         //   color: ['#3398DB'],
         //   tooltip : {
@@ -3285,7 +3316,7 @@
     height: 400px;
   }
   #warning{
-    width: 400px;
+    width: 600px;
     height: 400px;
   }
   #gradestatistic{
@@ -3296,6 +3327,11 @@
     width: 800px;
     height: 800px;
   }
+  #genderstatistic2{
+      width: 800px;
+      height: 800px;
+  }
+
   #schoolStatistic{
     width: 1080px;
     height: 400px;
