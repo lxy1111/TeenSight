@@ -2617,7 +2617,7 @@
           legend: {
             orient: 'vertical',
             x: 'left',
-            data: ['近视率', '非近视率']
+            data:['非近视率: ' + parseFloat(100 - this.shortsightrate).toFixed(2) + '%', '近视率: ' + this.shortsightrate + '%']
           },
           series: [
             {
@@ -2644,8 +2644,8 @@
                 }
               },
               data: [
-                {value: this.poorsightcount, name: '近视率'},
-                {value: this.coveragecount - this.poorsightcount, name: '非近视率'}
+                {value: this.coveragecount - this.shortsightcount, name: '非近视率: ' + parseFloat(100 - this.shortsightrate).toFixed(2) + '%'},
+                {value: this.shortsightcount, name: '近视率: ' + this.shortsightrate + '%'}
               ]
             }
           ]
@@ -2660,7 +2660,7 @@
           legend: {
             orient: 'vertical',
             x: 'left',
-            data: ['视力正常', '轻度视力不良', '中度视力不良', '重度视力不良']
+            data: ['视力正常: ' + this.normalDegree + '%', '轻度不良: ' + this.firstDegree  + '%', '中度不良: ' + this.secondDegree  + '%', '重度不良: ' + this.thirdDegree  + '%']
           },
           series: [
             {
@@ -2687,10 +2687,10 @@
                 }
               },
               data: [
-                {value: this.normalwarning, name: '视力正常'},
-                {value: this.firstwarning, name: '轻度视力不良'},
-                {value: this.secondwarning, name: '中度视力不良'},
-                {value: this.thirdwarning, name: '重度视力不良'},
+                {value: this.normalwarning, name: '视力正常: ' + this.normalDegree  + '%'},
+                {value: this.firstwarning, name: '轻度不良: ' + this.firstDegree  + '%'},
+                {value: this.secondwarning, name: '中度不良: ' + this.secondDegree  + '%'},
+                {value: this.thirdwarning, name: '重度不良: ' + this.thirdDegree  + '%'}
 
               ]
             }
@@ -3361,7 +3361,7 @@
     height: 400px;
   }
   #gradewarning{
-    width: 400px;
+    width: 600px;
     height: 400px;
   }
   #specificgradestatistic{
