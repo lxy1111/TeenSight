@@ -719,7 +719,7 @@
       </el-form>
     </div>
 
-      <div :hidden="showgradeoverall" class="content">
+      <div :hidden="showgradeoverall||showclassoverall" class="content">
 
         <el-breadcrumb separator=">" class="bread-title" >
           <el-breadcrumb-item style="font-size: xx-large" >性别统计</el-breadcrumb-item>
@@ -888,6 +888,7 @@
         schooltype:'',
         studentno:'',
         gendervalue: '性别-全部',
+        showclassoverall:false,
         users: [],
         total: 0,
         page: 1,
@@ -1357,6 +1358,7 @@
       },
       handlereset(){
         this.getSchools();
+        this.showclassoverall=false;
         this.gradesDetailList=[];
         this.finalgradeNo=null;
         this.primarygrade=null;
@@ -1942,13 +1944,14 @@
             this.showschooloverall = true;
             this.showgradeoverall=false;
             this.htmltitle+=this.nowgrade;
-          }else if(this.selectForm.classNo!=null){
-            this.nowclass=this.selectForm.classNo;
-            this.showschooloverall=false;
-            this.htmltitle+=this.nowclass+'班';
+            if(this.selectForm.classNo!=null){
+              this.nowclass=this.selectForm.classNo;
+              // this.showschooloverall=false;
+              this.showclassoverall=true;
+              this.htmltitle+=this.nowclass+'班';
+            }
           }else{
             this.showschooloverall=false;
-
 
           }
           this.htmltitle+='视力报告';
