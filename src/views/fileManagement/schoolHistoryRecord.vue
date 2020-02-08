@@ -70,11 +70,11 @@
                         tooltip-effect="dark"
                         :row-key="(row)=>{ return row.id}"
                         @selection-change="handleSelectionChange">
-                    <el-table-column
-                            prop="schoolName"
-                            label="所在学校"
-                            show-overflow-tooltip align="center">
-                    </el-table-column>
+<!--                    <el-table-column-->
+<!--                            prop="schoolName"-->
+<!--                            label="所在学校"-->
+<!--                            show-overflow-tooltip align="center">-->
+<!--                    </el-table-column>-->
                     <el-table-column
                             prop="gradeNo"
                             label="年级"

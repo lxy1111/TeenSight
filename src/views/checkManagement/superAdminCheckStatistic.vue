@@ -2239,6 +2239,14 @@
               },
               xAxis: [
                 {
+                  axisLabel:{     //加上这个强制显示
+                    interval: 0,
+                    rotate:-90,
+                    margin: 110,
+                    textStyle: {
+                      align: 'center'
+                    }
+                  },
                   type: 'category',
                   boundaryGap: false,
                   data: surveyNameList
@@ -2248,6 +2256,7 @@
                 {
                   type: 'value'
                 }
+
               ],
               series: [
 
@@ -2770,6 +2779,14 @@
           },
           xAxis: [
             {
+              axisLabel:{     //加上这个强制显示
+                interval: 0,
+                rotate:-90,
+                margin: 110,
+                textStyle: {
+                  align: 'center'
+                }
+              },
               type: 'category',
               boundaryGap: false,
               data: this.surveyNameList
@@ -3352,16 +3369,16 @@
     height: 400px;
   }
   #trend{
-    width: 1000px;
-    height: 400px;
+    width: 900px;
+    height: 600px;
   }
   #trend2{
     width: 1000px;
     height: 400px;
   }
   #trend3{
-    width: 1000px;
-    height: 400px;
+    width: 900px;
+    height: 600px;
   }
   #gradewarning{
     width: 600px;
