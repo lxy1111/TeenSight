@@ -3377,8 +3377,8 @@
     height: 400px;
   }
   #trend3{
-    width: 700px;
-    height: 600px;
+    width: 500px;
+    height: 500px;
   }
   #gradewarning{
     width: 600px;

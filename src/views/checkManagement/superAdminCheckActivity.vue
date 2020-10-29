@@ -204,6 +204,14 @@
           schoolId:null,
           institutionId:null
         },
+        queryform:{
+          page:1,
+          pageSize:10000000,
+          surveyName:null,
+          schoolName:null,
+          schoolId:null,
+          institutionId:null
+        },
         gender:[{
           label:'男',
           value:'男'
@@ -567,7 +575,7 @@
             }
           }
         })
-        getSchoolListPage(this.selectForm)
+        getSchoolListPage(para)
                 .then(res => {
                   console.log("login get success");
                   console.log(res);
